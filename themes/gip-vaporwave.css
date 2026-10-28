@@ -1,0 +1,60 @@
+/* Vaporwave: theme for GIP++. Pink and teal gradient with lilac Windows 95 panels.
+   Colours, fonts and shapes only (no sizes or padding), so it cannot shift the layout. */
+:root {
+  --t-bg: #2a1a5e; --t-panel: #cbbcf2; --t-solid: #e6dcff; --t-fg: #ffffff; --t-mute: #f1d9ff; --t-line: #6b5b95;
+  --t-acc: #01cdfe; --t-accfg: #2a1a5e; --t-hi: rgba(255,113,206,.28);
+  --gip-inv-bg: var(--t-acc); --gip-inv-fg: var(--t-accfg); --gip-sw-knob: #fff;
+  color-scheme: dark;
+}
+.app { background: linear-gradient(160deg, #2a1a5e 0%, #6a2c91 50%, #ff71ce 100%) !important; color: var(--t-fg) !important; isolation: isolate; font-family: "Trebuchet MS", Tahoma, system-ui, sans-serif; }
+main.main, .chat-wrap, .chat, .messages, .messages-inner, .main-head { background: transparent !important; }
+nav.rail, aside.sidebar, aside.side-panel, .user-bar { background: var(--t-panel) !important; border-color: var(--t-line) !important; }
+.main-head { border-color: var(--t-line) !important; }
+body, .msg-text, .msg-head, .channel-name, .user-bar-name { color: var(--t-fg) !important; }
+.hint { color: var(--t-mute) !important; }
+a { color: var(--t-acc) !important; }
+.mention { background: var(--t-hi) !important; color: var(--t-fg) !important; }
+.channel-item:hover, .sidebar-channel:hover { background: var(--t-hi) !important; }
+.channel-item.active, .sidebar-channel.active { background: var(--t-acc) !important; color: var(--t-accfg) !important; }
+.channel-item.active .channel-name, .sidebar-channel.active .channel-name { color: var(--t-accfg) !important; }
+.msg:hover { background: color-mix(in srgb, var(--t-fg) 6%, transparent) !important; }
+.msg.mentioned { background: var(--t-hi) !important; box-shadow: inset 3px 0 0 var(--t-acc); }
+.composer-box { background: var(--t-solid) !important; box-shadow: inset 0 0 0 1px var(--t-line); }
+.composer-box textarea { color: var(--t-fg) !important; }
+input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]), textarea, [contenteditable="true"], .input {
+  background: var(--t-solid) !important; color: var(--t-fg) !important; border-color: var(--t-line) !important; caret-color: var(--t-acc) !important;
+}
+input:focus, textarea:focus, [contenteditable="true"]:focus, .composer-box:focus-within { border-color: var(--t-acc) !important; outline: none !important; }
+.btn { background: color-mix(in srgb, var(--t-fg) 10%, var(--t-solid)) !important; color: var(--t-fg) !important; border-color: var(--t-line) !important; }
+.btn:hover { background: color-mix(in srgb, var(--t-fg) 18%, var(--t-solid)) !important; }
+.btn.primary { background: var(--t-acc) !important; color: var(--t-accfg) !important; border-color: transparent !important; }
+.btn.primary:hover { filter: brightness(1.1); }
+.settings-nav button.active { background: var(--t-acc) !important; color: var(--t-accfg) !important; }
+.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .profile-card, .invite-embed {
+  background: var(--t-solid) !important; color: var(--t-fg) !important; border-color: var(--t-line) !important;
+}
+.overlay { background: rgba(0, 0, 0, 0.55) !important; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--t-fg) 28%, transparent); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--t-acc); }
+::selection { background: var(--t-acc); color: var(--t-accfg); }
+/* GIP++ menu and additions */
+#gip-nav-button { color: var(--t-fg) !important; }
+#gip-panel a { color: var(--t-acc) !important; text-decoration: underline; }
+#gip-panel .gp-sw input:checked + span { background: var(--t-acc) !important; }
+.gip-toast { background: var(--t-solid) !important; color: var(--t-fg) !important; }
+.app *, .app { border-radius: 0 !important; }
+nav.rail, aside.sidebar, aside.side-panel, .user-bar { color: #2a1a5e !important; box-shadow: inset 1px 1px #fff, inset -1px -1px #6b5b95, inset 2px 2px #efe8ff, inset -2px -2px #8f80c2 !important; }
+aside.sidebar .channel-name, aside.side-panel *, .user-bar-name, .user-bar * { color: #2a1a5e !important; }
+.channel-item.active, .sidebar-channel.active { background: linear-gradient(90deg, #01cdfe, #ff71ce) !important; }
+aside.sidebar .channel-item.active .channel-name { color: #2a1a5e !important; font-weight: 700; }
+.main-head { background: linear-gradient(90deg, #01cdfe, #b967ff 60%, #ff71ce) !important; border-color: transparent !important; }
+.main-head * { color: #2a1a5e !important; font-weight: 700; }
+.msg-text, .msg-author { text-shadow: 0 1px 2px rgba(42,26,94,.7); }
+.msg-author { color: #05ffa1 !important; }
+.composer-box, input, textarea, .input { background: #fff !important; color: #2a1a5e !important; box-shadow: inset 1px 1px #6b5b95, inset -1px -1px #fff; }
+.composer-box textarea { color: #2a1a5e !important; }
+.btn { background: #cbbcf2 !important; color: #2a1a5e !important; box-shadow: inset 1px 1px #fff, inset -1px -1px #6b5b95, inset 2px 2px #efe8ff, inset -2px -2px #8f80c2 !important; }
+.btn.primary { background: linear-gradient(90deg, #01cdfe, #ff71ce) !important; color: #2a1a5e !important; font-weight: 700; }
+.modal, [role="dialog"], [role="menu"], .settings, .settings-nav, .settings-main { color: #2a1a5e !important; }

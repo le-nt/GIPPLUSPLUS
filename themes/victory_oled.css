@@ -1,0 +1,48 @@
+.app, .chat-wrap, .main, .chat, .messages, .messages-inner, .main-head {
+  background-color: #0d0d0d !important;
+}
+
+nav.rail, aside.sidebar, .side-panel, .user-bar {
+  background-color: #050505 !important;
+  border-right: 2px solid #fcee0a !important; /* Cyberpunk Yellow */
+}
+
+body, .msg-text, .msg-head, .channel-name, .user-bar-name {
+  color: #ffffff !important;
+}
+
+a, .msg-author, .mention, .sidebar-channel.active, .channel-item.active {
+  color: #00f0ff !important;
+}
+
+.channel-item.active {
+  background-color: rgba(252, 238, 10, 0.1) !important;
+  border-left: 4px solid #fcee0a !important;
+}
+
+.msg:hover {
+  background-color: rgba(0, 240, 255, 0.05) !important;
+  border-left: 2px solid #00f0ff;
+}
+
+.msg.mentioned {
+  background-color: rgba(252, 238, 10, 0.15) !important;
+  border-left: 3px solid #fcee0a;
+}
+
+.composer-box {
+  background-color: #000000 !important;
+  border: 2px solid #00f0ff !important;
+}
+.composer-box textarea {
+  color: #ffffff !important;
+}
+.composer-box:focus-within {
+  border-color: #fcee0a !important;
+  box-shadow: 0 0 12px rgba(252, 238, 10, 0.3);
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #0d0d0d; }
+::-webkit-scrollbar-thumb { background: #fcee0a; border-radius: 0px; }
+::-webkit-scrollbar-thumb:hover { background: #00f0ff; }

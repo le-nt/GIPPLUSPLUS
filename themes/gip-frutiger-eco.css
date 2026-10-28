@@ -1,0 +1,148 @@
+/* GIP++ Frutiger Eco theme.
+   Frutiger Aero with nature: leaf and water greens, droplets and a lighter background.
+   Colours, radii, shadows and backgrounds only (no sizes or padding), so it cannot shift the layout.
+   No backdrop-filter on panels: it makes them the containing block for fixed or absolute children and moves the floating user bar.
+   Accent colour follows the GIP++ > Themes > Accent slider ( --gip-h ). */
+:root {
+  --fa-blue: hsl(var(--gip-h, 140) 66% 48%);
+  --fa-blue-dk: hsl(var(--gip-h, 140) 82% 33%);
+  --fa-green: #47b422;
+  --fa-glow: hsl(var(--gip-h, 140) 90% 60% / .55);
+  --fa-ink: #17402a;
+  --fa-mute: #4a6f58;
+  --fa-line: rgba(20,90,50,.3);
+  --fa-hl: rgba(255,255,255,.9);
+  --fa-glass: linear-gradient(180deg,rgba(255,255,255,.8),rgba(215,245,225,.68));
+  --fa-glassbd: rgba(255,255,255,.9);
+  --fa-panel: linear-gradient(180deg,#ffffff,#f0fbf2);
+  --fa-head: linear-gradient(180deg,#ffffff,#e5f6e8 50%,#d4eed9 52%,#e9f8ec);
+  --fa-headbd: #b5dcbe;
+  --fa-user: linear-gradient(180deg,#fff,#e8f7ec 50%,#d4eedb 52%,#ecf9ef);
+  --fa-userbd: #98cba5;
+  --fa-field: #ffffff;
+  --fa-fieldbd: #8fc3a0;
+  --fa-fieldsh: rgba(0,90,40,.28);
+  --fa-btn: linear-gradient(180deg,#fff 0,#eef8f0 48%,#d3ead9 52%,#e6f5ea);
+  --fa-btnink: #17402a;
+  --fa-btnbd: #6aa07c;
+  --fa-sel: linear-gradient(180deg, color-mix(in srgb, var(--fa-blue) 10%, #fff), color-mix(in srgb, var(--fa-blue) 28%, #fff) 48%, color-mix(in srgb, var(--fa-blue) 46%, #fff) 52%, color-mix(in srgb, var(--fa-blue) 26%, #fff));
+  --fa-go: linear-gradient(180deg, #d0ff9c 0, #6fd23c 48%, #3fae16 52%, #7ad84a);
+  --fa-hover: rgba(110,200,130,.22);
+  --fa-modal: linear-gradient(180deg,rgba(255,255,255,.92),rgba(222,246,230,.9));
+  --fa-modalbd: rgba(255,255,255,.95);
+  --fa-overlay: rgba(10,70,40,.4);
+  --fa-shadow: rgba(0,70,30,.25);
+  --gip-sw-knob: #ffffff;
+  color-scheme: light;
+}
+
+.app {
+  color: var(--fa-ink) !important;
+  isolation: isolate;
+  font-family: "Segoe UI", "Frutiger", "Open Sans", "Trebuchet MS", system-ui, sans-serif;
+  background: radial-gradient(520px 260px at 20% 5%,rgba(255,255,255,.8),transparent 70%),radial-gradient(700px 240px at 80% 60%,rgba(120,230,255,.45),transparent 70%),linear-gradient(180deg,#cdeffd 0%,#e6f9e0 45%,#bfe98a 78%,#6fbf3a 100%) !important;
+}
+.app::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(circle at 8% 20%,rgba(255,255,255,.85) 0 0.40%,rgba(150,225,255,.4) 0.48% 1.60%,transparent 1.73%),radial-gradient(circle at 14% 34%,rgba(255,255,255,.85) 0 0.25%,rgba(150,225,255,.4) 0.30% 1.00%,transparent 1.08%),radial-gradient(circle at 90% 16%,rgba(255,255,255,.85) 0 0.45%,rgba(150,225,255,.4) 0.54% 1.80%,transparent 1.94%),radial-gradient(circle at 84% 30%,rgba(255,255,255,.85) 0 0.23%,rgba(150,225,255,.4) 0.27% 0.90%,transparent 0.97%),radial-gradient(circle at 94% 62%,rgba(255,255,255,.85) 0 0.35%,rgba(150,225,255,.4) 0.42% 1.40%,transparent 1.51%),radial-gradient(circle at 5% 70%,rgba(255,255,255,.85) 0 0.30%,rgba(150,225,255,.4) 0.36% 1.20%,transparent 1.30%),radial-gradient(circle at 50% 6%,rgba(255,255,255,.85) 0 0.25%,rgba(150,225,255,.4) 0.30% 1.00%,transparent 1.08%),radial-gradient(circle at 70% 48%,rgba(255,255,255,.85) 0 0.20%,rgba(150,225,255,.4) 0.24% 0.80%,transparent 0.86%),radial-gradient(circle at 30% 58%,rgba(255,255,255,.85) 0 0.23%,rgba(150,225,255,.4) 0.27% 0.90%,transparent 0.97%);
+}
+.app::after {
+  content: ""; position: fixed; left: -10%; right: -10%; bottom: -24vh; height: 36vh; z-index: -1; pointer-events: none;
+  border-radius: 50%; background: radial-gradient(ellipse at 50% 0,#9de35a,#2f8f2a 70%);
+}
+html.ypp-bg-active .app::before, html.ypp-bg-active .app::after { display: none; }
+
+body, .msg-text, .msg-head, .channel-name, .user-bar-name { color: var(--fa-ink) !important; }
+a { color: var(--fa-blue-dk) !important; }
+.msg-author { font-weight: 700; }
+
+nav.rail, aside.sidebar, aside.side-panel {
+  background: var(--fa-glass) !important;
+  border-color: var(--fa-glassbd) !important;
+  box-shadow: inset 0 0 0 1px var(--fa-line), 0 6px 20px var(--fa-shadow) !important;
+}
+.user-bar { background: var(--fa-user) !important; border-color: var(--fa-userbd) !important; }
+.main-head {
+  background: var(--fa-head) !important; border-color: var(--fa-headbd) !important;
+  box-shadow: 0 2px 6px var(--fa-shadow) !important;
+}
+main.main { background: var(--fa-panel) !important; box-shadow: inset 0 0 0 1px var(--fa-line), 0 6px 20px var(--fa-shadow); }
+.chat-wrap, .chat, .messages, .messages-inner { background: transparent !important; }
+
+.channel-item, .sidebar-channel { border-radius: 4px !important; border: 1px solid transparent; }
+.channel-item.active, .sidebar-channel.active {
+  background: var(--fa-sel) !important; color: var(--fa-ink) !important; border-color: var(--fa-blue) !important;
+  box-shadow: inset 0 0 0 1px var(--fa-hl), 0 0 9px var(--fa-glow) !important;
+}
+.channel-item.active .channel-name, .sidebar-channel.active .channel-name { color: var(--fa-ink) !important; }
+.channel-item:hover:not(.active), .sidebar-channel:hover:not(.active) { background: var(--fa-hover) !important; }
+
+.msg { border-radius: 8px; }
+.msg:hover { background: var(--fa-hover) !important; }
+.msg.mentioned { background: rgba(255,243,168,.6) !important; box-shadow: inset 3px 0 0 #e6a800; }
+.mention { background: #fff3a8 !important; color: var(--fa-ink) !important; border-radius: 3px; }
+
+.composer-box, input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]), textarea, [contenteditable="true"], .input {
+  background: var(--fa-field) !important; color: var(--fa-ink) !important;
+  border: 1px solid var(--fa-fieldbd) !important; border-radius: 4px !important;
+  box-shadow: inset 0 1px 4px var(--fa-fieldsh) !important; caret-color: var(--fa-blue) !important;
+}
+.composer-box { border-radius: 6px !important; }
+.composer-box textarea { color: var(--fa-ink) !important; border: 0 !important; box-shadow: none !important; background: transparent !important; }
+input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]):focus, textarea:focus, [contenteditable="true"]:focus, .composer-box:focus-within {
+  border-color: var(--fa-blue) !important;
+  box-shadow: 0 0 0 2px var(--fa-glow), inset 0 1px 3px var(--fa-fieldsh) !important; outline: none !important;
+}
+
+.btn, .modal button, .settings-main button {
+  border-radius: 5px !important; border: 1px solid var(--fa-btnbd) !important;
+  background: var(--fa-btn) !important; color: var(--fa-btnink) !important;
+  box-shadow: inset 0 0 0 1px var(--fa-hl), 0 1px 2px var(--fa-shadow) !important;
+  transition: box-shadow .15s ease, filter .15s ease !important;
+}
+.btn:hover, .modal button:hover, .settings-main button:hover {
+  border-color: var(--fa-blue) !important; box-shadow: inset 0 0 0 1px var(--fa-hl), 0 0 9px var(--fa-glow) !important;
+}
+.btn.primary, .btn-primary, .modal button.primary {
+  background: var(--fa-go) !important; color: #fff !important; text-shadow: 0 1px 1px rgba(0,60,0,.6);
+  border-color: #2a7a14 !important; box-shadow: inset 0 0 0 1px rgba(255,255,255,.55), 0 0 10px rgba(110,230,60,.55) !important;
+}
+.settings-nav button { border-radius: 4px !important; }
+.settings-nav button.active {
+  background: var(--fa-sel) !important; color: var(--fa-ink) !important;
+  box-shadow: inset 0 0 0 1px var(--fa-hl), 0 0 9px var(--fa-glow) !important;
+}
+
+.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .profile-card, .invite-embed {
+  background: var(--fa-modal) !important; color: var(--fa-ink) !important;
+  border: 1px solid var(--fa-modalbd) !important; border-radius: 8px !important;
+  box-shadow: 0 0 0 1px var(--fa-line), 0 12px 32px rgba(0,20,60,.45) !important;
+}
+.overlay { background: var(--fa-overlay) !important; }
+
+::-webkit-scrollbar { width: 12px; height: 12px; }
+::-webkit-scrollbar-track { background: rgba(255,255,255,.35); }
+::-webkit-scrollbar-thumb { background: linear-gradient(90deg,#f4fcf6,#bfe3c8 50%,#a6d6b3 52%,#d3eedb); border: 1px solid var(--fa-btnbd); border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(90deg, color-mix(in srgb, var(--fa-blue) 25%, #fff), var(--fa-blue)); }
+::selection { background: var(--fa-blue); color: #fff; }
+
+#gip-nav-button { color: var(--fa-ink) !important; }
+#gip-panel a { color: var(--fa-blue-dk) !important; text-decoration: underline; }
+#gip-panel .gp-tab.on { border-bottom-color: var(--fa-blue); }
+#gip-panel .gp-sw span { background: linear-gradient(180deg,#c3d8c9,#e6f2e9) !important; box-shadow: inset 0 2px 3px rgba(0,50,100,.35); border: 1px solid var(--fa-btnbd); }
+#gip-panel .gp-sw input:checked + span { background: linear-gradient(180deg, #3fae16, #9bec62) !important; border-color: #2a7a14; }
+#gip-panel .gp-sw span::before { background: linear-gradient(180deg, #fff, #cfe0ec) !important; border: 1px solid #7a9bb4; }
+#gip-panel .gp-chip { border-radius: 99px !important; }
+#gip-panel .gp-chip.on { background: var(--fa-hover); }
+#gip-panel .gp-credit { border-radius: 8px !important; background: var(--fa-panel); }
+.gip-tag {
+  border-radius: 99px !important; color: #fff !important; text-shadow: 0 1px 1px rgba(0,40,80,.5);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--fa-blue) 55%, #fff), var(--fa-blue) 50%, var(--fa-blue-dk) 52%, var(--fa-blue)) !important;
+}
+.gip-tag-yap { background: linear-gradient(180deg, #ffe08a, #e69a14 50%, #cf7f06 52%, #f0b03a) !important; }
+.gip-folder-panel, .gip-popmenu, .gip-overlay .modal { border-radius: 8px !important; }
+.gip-folder-panel .gfp-ico, .rail-folder .gip-folder-ico {
+  border-radius: 50% !important; box-shadow: 0 3px 8px var(--fa-shadow), inset 0 -5px 9px rgba(255,255,255,.35);
+}
+.gip-fav-view .gif-tile { border-radius: 8px !important; }
+.gip-star { border-radius: 99px !important; }

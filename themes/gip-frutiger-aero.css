@@ -1,0 +1,148 @@
+/* GIP++ Frutiger Aero theme.
+   Windows Aero style glass, glossy buttons, sky, aurora glows, bubbles and a grass hill.
+   Colours, radii, shadows and backgrounds only (no sizes or padding), so it cannot shift the layout.
+   No backdrop-filter on panels: it makes them the containing block for fixed or absolute children and moves the floating user bar.
+   Accent colour follows the GIP++ > Themes > Accent slider ( --gip-h ). */
+:root {
+  --fa-blue: hsl(var(--gip-h, 205) 78% 48%);
+  --fa-blue-dk: hsl(var(--gip-h, 205) 82% 33%);
+  --fa-green: #47b422;
+  --fa-glow: hsl(var(--gip-h, 205) 90% 60% / .55);
+  --fa-ink: #17354f;
+  --fa-mute: #4d6f8a;
+  --fa-line: rgba(10,50,90,.3);
+  --fa-hl: rgba(255,255,255,.9);
+  --fa-glass: linear-gradient(180deg,rgba(255,255,255,.72),rgba(205,236,252,.62));
+  --fa-glassbd: rgba(255,255,255,.9);
+  --fa-panel: linear-gradient(180deg,#ffffff,#eef6fc);
+  --fa-head: linear-gradient(180deg,#ffffff,#e4f1fa 50%,#d6e8f5 52%,#e8f3fb);
+  --fa-headbd: #b7d3e7;
+  --fa-user: linear-gradient(180deg,#fff,#e6f3fc 50%,#d3e8f6 52%,#eaf5fc);
+  --fa-userbd: #9cc2de;
+  --fa-field: #ffffff;
+  --fa-fieldbd: #8fb4d0;
+  --fa-fieldsh: rgba(0,60,110,.3);
+  --fa-btn: linear-gradient(180deg,#fff 0,#eef4f9 48%,#d6e3ee 52%,#e7f0f7);
+  --fa-btnink: #17354f;
+  --fa-btnbd: #6d8ea8;
+  --fa-sel: linear-gradient(180deg, color-mix(in srgb, var(--fa-blue) 10%, #fff), color-mix(in srgb, var(--fa-blue) 28%, #fff) 48%, color-mix(in srgb, var(--fa-blue) 46%, #fff) 52%, color-mix(in srgb, var(--fa-blue) 26%, #fff));
+  --fa-go: linear-gradient(180deg, #d0ff9c 0, #6fd23c 48%, #3fae16 52%, #7ad84a);
+  --fa-hover: rgba(120,190,240,.2);
+  --fa-modal: linear-gradient(180deg,rgba(255,255,255,.9),rgba(215,239,252,.88));
+  --fa-modalbd: rgba(255,255,255,.95);
+  --fa-overlay: rgba(10,50,100,.45);
+  --fa-shadow: rgba(0,40,90,.25);
+  --gip-sw-knob: #ffffff;
+  color-scheme: light;
+}
+
+.app {
+  color: var(--fa-ink) !important;
+  isolation: isolate;
+  font-family: "Segoe UI", "Frutiger", "Open Sans", "Trebuchet MS", system-ui, sans-serif;
+  background: radial-gradient(520px 260px at 82% 8%,rgba(255,255,255,.75),transparent 70%),radial-gradient(700px 220px at 20% 62%,rgba(120,255,200,.5),transparent 70%),radial-gradient(600px 200px at 70% 55%,rgba(150,120,255,.3),transparent 70%),linear-gradient(180deg,#1e8fe0 0%,#6cc8f2 45%,#bdeaf0 72%,#8fd45a 100%) !important;
+}
+.app::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(circle at 6% 78%,rgba(255,255,255,.55) 0 3.5%,rgba(255,255,255,.12) 3.7% 5.2%,transparent 5.4%),radial-gradient(circle at 94% 12%,rgba(255,255,255,.55) 0 2.5%,rgba(255,255,255,.12) 2.7% 3.8%,transparent 4%),radial-gradient(circle at 96% 82%,rgba(255,255,255,.5) 0 3%,rgba(255,255,255,.12) 3.2% 4.4%,transparent 4.6%),radial-gradient(circle at 42% 2%,rgba(255,255,255,.5) 0 1.6%,transparent 1.8%);
+}
+.app::after {
+  content: ""; position: fixed; left: -10%; right: -10%; bottom: -24vh; height: 36vh; z-index: -1; pointer-events: none;
+  border-radius: 50%; background: radial-gradient(ellipse at 50% 0,#b6ee6e,#4fa82a 70%);
+}
+html.ypp-bg-active .app::before, html.ypp-bg-active .app::after { display: none; }
+
+body, .msg-text, .msg-head, .channel-name, .user-bar-name { color: var(--fa-ink) !important; }
+a { color: var(--fa-blue-dk) !important; }
+.msg-author { font-weight: 700; }
+
+nav.rail, aside.sidebar, aside.side-panel {
+  background: var(--fa-glass) !important;
+  border-color: var(--fa-glassbd) !important;
+  box-shadow: inset 0 0 0 1px var(--fa-line), 0 6px 20px var(--fa-shadow) !important;
+}
+.user-bar { background: var(--fa-user) !important; border-color: var(--fa-userbd) !important; }
+.main-head {
+  background: var(--fa-head) !important; border-color: var(--fa-headbd) !important;
+  box-shadow: 0 2px 6px var(--fa-shadow) !important;
+}
+main.main { background: var(--fa-panel) !important; box-shadow: inset 0 0 0 1px var(--fa-line), 0 6px 20px var(--fa-shadow); }
+.chat-wrap, .chat, .messages, .messages-inner { background: transparent !important; }
+
+.channel-item, .sidebar-channel { border-radius: 4px !important; border: 1px solid transparent; }
+.channel-item.active, .sidebar-channel.active {
+  background: var(--fa-sel) !important; color: var(--fa-ink) !important; border-color: var(--fa-blue) !important;
+  box-shadow: inset 0 0 0 1px var(--fa-hl), 0 0 9px var(--fa-glow) !important;
+}
+.channel-item.active .channel-name, .sidebar-channel.active .channel-name { color: var(--fa-ink) !important; }
+.channel-item:hover:not(.active), .sidebar-channel:hover:not(.active) { background: var(--fa-hover) !important; }
+
+.msg { border-radius: 8px; }
+.msg:hover { background: var(--fa-hover) !important; }
+.msg.mentioned { background: rgba(255,243,168,.6) !important; box-shadow: inset 3px 0 0 #e6a800; }
+.mention { background: #fff3a8 !important; color: var(--fa-ink) !important; border-radius: 3px; }
+
+.composer-box, input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]), textarea, [contenteditable="true"], .input {
+  background: var(--fa-field) !important; color: var(--fa-ink) !important;
+  border: 1px solid var(--fa-fieldbd) !important; border-radius: 4px !important;
+  box-shadow: inset 0 1px 4px var(--fa-fieldsh) !important; caret-color: var(--fa-blue) !important;
+}
+.composer-box { border-radius: 6px !important; }
+.composer-box textarea { color: var(--fa-ink) !important; border: 0 !important; box-shadow: none !important; background: transparent !important; }
+input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]):focus, textarea:focus, [contenteditable="true"]:focus, .composer-box:focus-within {
+  border-color: var(--fa-blue) !important;
+  box-shadow: 0 0 0 2px var(--fa-glow), inset 0 1px 3px var(--fa-fieldsh) !important; outline: none !important;
+}
+
+.btn, .modal button, .settings-main button {
+  border-radius: 5px !important; border: 1px solid var(--fa-btnbd) !important;
+  background: var(--fa-btn) !important; color: var(--fa-btnink) !important;
+  box-shadow: inset 0 0 0 1px var(--fa-hl), 0 1px 2px var(--fa-shadow) !important;
+  transition: box-shadow .15s ease, filter .15s ease !important;
+}
+.btn:hover, .modal button:hover, .settings-main button:hover {
+  border-color: var(--fa-blue) !important; box-shadow: inset 0 0 0 1px var(--fa-hl), 0 0 9px var(--fa-glow) !important;
+}
+.btn.primary, .btn-primary, .modal button.primary {
+  background: var(--fa-go) !important; color: #fff !important; text-shadow: 0 1px 1px rgba(0,60,0,.6);
+  border-color: #2a7a14 !important; box-shadow: inset 0 0 0 1px rgba(255,255,255,.55), 0 0 10px rgba(110,230,60,.55) !important;
+}
+.settings-nav button { border-radius: 4px !important; }
+.settings-nav button.active {
+  background: var(--fa-sel) !important; color: var(--fa-ink) !important;
+  box-shadow: inset 0 0 0 1px var(--fa-hl), 0 0 9px var(--fa-glow) !important;
+}
+
+.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .profile-card, .invite-embed {
+  background: var(--fa-modal) !important; color: var(--fa-ink) !important;
+  border: 1px solid var(--fa-modalbd) !important; border-radius: 8px !important;
+  box-shadow: 0 0 0 1px var(--fa-line), 0 12px 32px rgba(0,20,60,.45) !important;
+}
+.overlay { background: var(--fa-overlay) !important; }
+
+::-webkit-scrollbar { width: 12px; height: 12px; }
+::-webkit-scrollbar-track { background: rgba(255,255,255,.35); }
+::-webkit-scrollbar-thumb { background: linear-gradient(90deg,#f5fbff,#bcd9ee 50%,#a5cbe6 52%,#d3e8f6); border: 1px solid var(--fa-btnbd); border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(90deg, color-mix(in srgb, var(--fa-blue) 25%, #fff), var(--fa-blue)); }
+::selection { background: var(--fa-blue); color: #fff; }
+
+#gip-nav-button { color: var(--fa-ink) !important; }
+#gip-panel a { color: var(--fa-blue-dk) !important; text-decoration: underline; }
+#gip-panel .gp-tab.on { border-bottom-color: var(--fa-blue); }
+#gip-panel .gp-sw span { background: linear-gradient(180deg,#c3d3df,#e6eef4) !important; box-shadow: inset 0 2px 3px rgba(0,50,100,.35); border: 1px solid var(--fa-btnbd); }
+#gip-panel .gp-sw input:checked + span { background: linear-gradient(180deg, #3fae16, #9bec62) !important; border-color: #2a7a14; }
+#gip-panel .gp-sw span::before { background: linear-gradient(180deg, #fff, #cfe0ec) !important; border: 1px solid #7a9bb4; }
+#gip-panel .gp-chip { border-radius: 99px !important; }
+#gip-panel .gp-chip.on { background: var(--fa-hover); }
+#gip-panel .gp-credit { border-radius: 8px !important; background: var(--fa-panel); }
+.gip-tag {
+  border-radius: 99px !important; color: #fff !important; text-shadow: 0 1px 1px rgba(0,40,80,.5);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--fa-blue) 55%, #fff), var(--fa-blue) 50%, var(--fa-blue-dk) 52%, var(--fa-blue)) !important;
+}
+.gip-tag-yap { background: linear-gradient(180deg, #ffe08a, #e69a14 50%, #cf7f06 52%, #f0b03a) !important; }
+.gip-folder-panel, .gip-popmenu, .gip-overlay .modal { border-radius: 8px !important; }
+.gip-folder-panel .gfp-ico, .rail-folder .gip-folder-ico {
+  border-radius: 50% !important; box-shadow: 0 3px 8px var(--fa-shadow), inset 0 -5px 9px rgba(255,255,255,.35);
+}
+.gip-fav-view .gif-tile { border-radius: 8px !important; }
+.gip-star { border-radius: 99px !important; }

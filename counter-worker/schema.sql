@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS installs (
+  id TEXT PRIMARY KEY,
+  first_seen INTEGER NOT NULL,
+  last_seen INTEGER NOT NULL
+);

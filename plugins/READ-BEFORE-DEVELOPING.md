@@ -1,0 +1,3 @@
+Make sure to have `window.PluginHost.register(yourpluginfunc);` at the end of every plugin!
+
+READ THE RULES IN README.MD BEFORE CONTRIBUTING. IF YOU BREAK ANY OF THOSE RULES, THEN YOU WILL BE BANNED IN ALL GUILDS REGARDING YAP++ IN EVERY SOCIAL PLATFORM,

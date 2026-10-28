@@ -1,0 +1,9 @@
+name = "gip-counter"
+main = "index.js"
+compatibility_date = "2024-11-01"
+
+# After `npx wrangler d1 create gip-counter`, paste the database_id it prints here.
+[[d1_databases]]
+binding = "DB"
+database_name = "gip-counter"
+database_id = "PASTE_DATABASE_ID_HERE"

@@ -1,0 +1,57 @@
+/* Mac OS X Aqua: theme for GIP++. Pinstripes, brushed side panels and glossy gel buttons. The accent slider recolours it.
+   Colours, fonts and shapes only (no sizes or padding), so it cannot shift the layout. */
+:root {
+  --t-bg: #ececec; --t-panel: #dfe4ea; --t-solid: #f6f6f6; --t-fg: #222222; --t-mute: #555555; --t-line: rgba(0,0,0,.28);
+  --t-acc: hsl(var(--gip-h, 214) 75% 53%); --t-accfg: #ffffff; --t-hi: color-mix(in srgb, var(--t-acc) 18%, transparent);
+  --gip-inv-bg: var(--t-acc); --gip-inv-fg: var(--t-accfg); --gip-sw-knob: #fff;
+  color-scheme: light;
+}
+.app { background: repeating-linear-gradient(0deg, #f3f3f3 0 2px, #e8e8e8 2px 4px) !important; color: var(--t-fg) !important; isolation: isolate; font-family: "Lucida Grande", "Helvetica Neue", Helvetica, Arial, sans-serif; }
+main.main, .chat-wrap, .chat, .messages, .messages-inner, .main-head { background: transparent !important; }
+nav.rail, aside.sidebar, aside.side-panel, .user-bar { background: var(--t-panel) !important; border-color: var(--t-line) !important; }
+.main-head { border-color: var(--t-line) !important; }
+body, .msg-text, .msg-head, .channel-name, .user-bar-name { color: var(--t-fg) !important; }
+.hint { color: var(--t-mute) !important; }
+a { color: var(--t-acc) !important; }
+.mention { background: var(--t-hi) !important; color: var(--t-fg) !important; }
+.channel-item:hover, .sidebar-channel:hover { background: var(--t-hi) !important; }
+.channel-item.active, .sidebar-channel.active { background: var(--t-acc) !important; color: var(--t-accfg) !important; }
+.channel-item.active .channel-name, .sidebar-channel.active .channel-name { color: var(--t-accfg) !important; }
+.msg:hover { background: color-mix(in srgb, var(--t-fg) 6%, transparent) !important; }
+.msg.mentioned { background: var(--t-hi) !important; box-shadow: inset 3px 0 0 var(--t-acc); }
+.composer-box { background: var(--t-solid) !important; box-shadow: inset 0 0 0 1px var(--t-line); }
+.composer-box textarea { color: var(--t-fg) !important; }
+input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]), textarea, [contenteditable="true"], .input {
+  background: var(--t-solid) !important; color: var(--t-fg) !important; border-color: var(--t-line) !important; caret-color: var(--t-acc) !important;
+}
+input:focus, textarea:focus, [contenteditable="true"]:focus, .composer-box:focus-within { border-color: var(--t-acc) !important; outline: none !important; }
+.btn { background: color-mix(in srgb, var(--t-fg) 10%, var(--t-solid)) !important; color: var(--t-fg) !important; border-color: var(--t-line) !important; }
+.btn:hover { background: color-mix(in srgb, var(--t-fg) 18%, var(--t-solid)) !important; }
+.btn.primary { background: var(--t-acc) !important; color: var(--t-accfg) !important; border-color: transparent !important; }
+.btn.primary:hover { filter: brightness(1.1); }
+.settings-nav button.active { background: var(--t-acc) !important; color: var(--t-accfg) !important; }
+.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .profile-card, .invite-embed {
+  background: var(--t-solid) !important; color: var(--t-fg) !important; border-color: var(--t-line) !important;
+}
+.overlay { background: rgba(0, 0, 0, 0.55) !important; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--t-fg) 28%, transparent); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--t-acc); }
+::selection { background: var(--t-acc); color: var(--t-accfg); }
+/* GIP++ menu and additions */
+#gip-nav-button { color: var(--t-fg) !important; }
+#gip-panel a { color: var(--t-acc) !important; text-decoration: underline; }
+#gip-panel .gp-sw input:checked + span { background: var(--t-acc) !important; }
+.gip-toast { background: var(--t-solid) !important; color: var(--t-fg) !important; }
+:root { --aq: hsl(var(--gip-h, 211) 85% 52%); --aq-hi: hsl(var(--gip-h, 211) 90% 74%); --aq-dk: hsl(var(--gip-h, 211) 80% 38%); }
+nav.rail { background: linear-gradient(90deg, #d9dde2, #c6ccd4) !important; }
+aside.sidebar { background: linear-gradient(#e9eef4, #d9e0e9) !important; }
+.channel-item { border-radius: 6px !important; }
+.channel-item.active, .sidebar-channel.active { background: linear-gradient(var(--aq-hi), var(--aq-dk)) !important; color: #fff !important; text-shadow: 0 1px 1px rgba(0,0,0,.4); box-shadow: inset 0 1px 0 rgba(255,255,255,.55), 0 1px 2px rgba(0,0,0,.3); }
+.channel-item.active .channel-name { color: #fff !important; }
+.btn, .modal button, .settings-main button { border-radius: 99px !important; border: 1px solid #8995a6 !important; background: linear-gradient(#ffffff 0%, #eef2f8 49%, #d3dce8 50%, #eaf1fa 100%) !important; box-shadow: 0 1px 2px rgba(0,0,0,.25), inset 0 1px 0 #fff !important; color: #222 !important; }
+.btn.primary { border-color: var(--aq-dk) !important; background: linear-gradient(var(--aq-hi) 0%, var(--aq) 49%, var(--aq-dk) 50%, var(--aq-hi) 100%) !important; color: #fff !important; text-shadow: 0 -1px 0 rgba(0,0,0,.35); box-shadow: 0 1px 3px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.7) !important; }
+.composer-box, input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]), textarea, .input { border-radius: 6px !important; box-shadow: inset 0 1px 3px rgba(0,0,0,.3) !important; border: 1px solid #9aa4b2 !important; background: #fff !important; }
+.modal, [role="dialog"], [role="menu"], .popout, .profile-card { border-radius: 10px !important; background: repeating-linear-gradient(0deg, #f3f3f3 0 2px, #e8e8e8 2px 4px) !important; box-shadow: 0 10px 30px rgba(0,0,0,.4) !important; }
+#gip-panel .gp-sw input:checked + span { background: linear-gradient(var(--aq-hi), var(--aq)) !important; }

@@ -1,0 +1,111 @@
+/* GIP & CO International: light theme for GIP++.
+   Monochrome, halftone dots, square corners. Uses colour-only changes (no borders, sizes or padding)
+   so it cannot shift the layout. Selectors are the ones the built-in Yap++ themes already use. */
+:root {
+  --gip-bg: #f3f3f1;
+  --gip-panel: rgba(243, 243, 241, 0.92);
+  --gip-solid: #fafaf8;
+  --gip-fg: #0a0a0a;
+  --gip-line: rgba(10, 10, 10, 0.26);
+  --gip-dot: rgba(10, 10, 10, 0.12);
+  --gip-inv-bg: #0a0a0a;
+  --gip-inv-fg: #f3f3f1;
+  color-scheme: light;
+}
+
+.app {
+  background-color: var(--gip-bg) !important;
+  color: var(--gip-fg) !important;
+  isolation: isolate;
+  font-family: "Futura", "Century Gothic", "Avenir Next", "Trebuchet MS", system-ui, sans-serif;
+}
+
+/* halftone, fading from the top-left; hidden when a custom background image is on */
+.app::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle, var(--gip-dot) 22%, transparent 25%),
+    radial-gradient(circle, var(--gip-dot) 22%, transparent 25%);
+  background-size: 26px 26px;
+  background-position: 0 0, 13px 13px;
+  -webkit-mask-image: linear-gradient(120deg, #000 0%, rgba(0, 0, 0, 0.35) 45%, transparent 85%);
+  mask-image: linear-gradient(120deg, #000 0%, rgba(0, 0, 0, 0.35) 45%, transparent 85%);
+}
+html.ypp-bg-active .app::before { display: none; }
+
+main.main, .chat-wrap, .chat, .messages, .messages-inner, .main-head {
+  background: transparent !important;
+}
+nav.rail, aside.sidebar, aside.side-panel, .user-bar {
+  background: var(--gip-panel) !important;
+  border-color: var(--gip-line) !important;
+}
+.main-head { border-color: var(--gip-line) !important; }
+
+body, .msg-text, .msg-head, .channel-name, .user-bar-name { color: var(--gip-fg) !important; }
+a { color: var(--gip-fg) !important; text-decoration-color: var(--gip-line); }
+.msg-author { color: var(--gip-fg) !important; font-weight: 700; }
+.mention { background: var(--gip-line) !important; color: var(--gip-fg) !important; }
+
+.channel-item.active, .sidebar-channel.active {
+  background: var(--gip-inv-bg) !important;
+  color: var(--gip-inv-fg) !important;
+}
+.channel-item.active .channel-name, .sidebar-channel.active .channel-name { color: var(--gip-inv-fg) !important; }
+
+.msg:hover { background: var(--gip-dot) !important; }
+.msg.mentioned {
+  background: var(--gip-dot) !important;
+  box-shadow: inset 2px 0 0 var(--gip-fg);
+}
+
+.composer-box {
+  background: var(--gip-solid) !important;
+  box-shadow: inset 0 0 0 1px var(--gip-line);
+  border-radius: 0 !important;
+}
+.composer-box textarea { color: var(--gip-fg) !important; }
+input, textarea, [contenteditable="true"], .input {
+  background: var(--gip-solid) !important;
+  color: var(--gip-fg) !important;
+  border-color: var(--gip-line) !important;
+  border-radius: 0 !important;
+  caret-color: var(--gip-fg) !important;
+}
+input:focus, textarea:focus, [contenteditable="true"]:focus, .composer-box:focus-within {
+  border-color: var(--gip-fg) !important;
+  outline: none !important;
+}
+
+.btn, .modal button, .settings-main button, .settings-nav button { border-radius: 0 !important; }
+.btn:hover { background: var(--gip-inv-bg) !important; color: var(--gip-inv-fg) !important; }
+.settings-nav button.active { background: var(--gip-inv-bg) !important; color: var(--gip-inv-fg) !important; }
+
+.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .profile-card, .invite-embed {
+  background: var(--gip-solid) !important;
+  color: var(--gip-fg) !important;
+  border-color: var(--gip-line) !important;
+  border-radius: 0 !important;
+}
+.overlay { background: rgba(0, 0, 0, 0.7) !important; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--gip-line); border-radius: 0; }
+::-webkit-scrollbar-thumb:hover { background: var(--gip-fg); }
+::selection { background: var(--gip-fg); color: var(--gip-bg); }
+
+/* GIP++ menu and additions (accent becomes monochrome) */
+#gip-nav-button { color: var(--gip-fg) !important; }
+#gip-panel a { color: var(--gip-fg) !important; text-decoration: underline; }
+#gip-panel .gp-sw input:checked + span { background: var(--gip-fg) !important; }
+#gip-panel .gp-sw span::before { background: var(--gip-bg) !important; }
+#gip-panel .gp-sw span, #gip-panel .gp-sw span::before { border-radius: 0 !important; }
+#gip-panel .gp-chip, #gip-panel .gp-credit { border-radius: 0 !important; }
+.gip-tag { border-radius: 0 !important; }
+.gip-folder-panel, .gip-popmenu, .gip-overlay .modal { border-radius: 0 !important; }
+.gip-folder-panel .gfp-ico, .rail-folder .gip-folder-ico, .gip-star, .gip-fav-view .gif-tile { border-radius: 0 !important; }

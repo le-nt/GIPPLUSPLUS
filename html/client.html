@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>GIP++ (Unofficial)</title>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #080808; }
+        webview { width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+    <script>
+        // One window per account. The profile id comes from the URL; 'default' keeps the original login partition.
+        const rawProfile = new URLSearchParams(location.search).get('profile') || 'default';
+        const profileId = /^[a-z0-9]{4,16}$/.test(rawProfile) ? rawProfile : 'default';
+        const webview = document.createElement('webview');
+        webview.id = 'yapper-view';
+        webview.setAttribute('partition', profileId === 'default' ? 'persist:yapper' : 'persist:yapper-' + profileId);
+        document.body.appendChild(webview);
+        if (window.electronAPI && window.electronAPI.getPreloadPath) {
+            const path = window.electronAPI.getPreloadPath();
+            if (path) {
+                const formattedPath = path.startsWith('/') ? path : '/' + path;
+                webview.setAttribute('preload', `file://${formattedPath}`);
+            }
+        }
+        webview.setAttribute('src', 'https://yapper.website');
+        let retryCount = 0;
+        webview.addEventListener('did-finish-load', async () => {
+            retryCount = 0;
+            try {
+                const names = { gipSeal: 'GipSeal.png', gipSealWhite: 'GipSealWhite.png' };
+                const assets = {};
+                for (const key of Object.keys(names)) assets[key] = await window.electronAPI.getAsset(names[key]);
+                await webview.executeJavaScript(`window.YapPlusAssets = ${JSON.stringify(assets)};`);
+                let profile = { id: 'default', name: 'Main', color: '' };
+                try { profile = await window.electronAPI.altsSelf() || profile; } catch (e) {}
+                await webview.executeJavaScript(`window.__gipProfile = ${JSON.stringify(profile)};`);
+
+                setTimeout(async () => {
+                    // Each plugin runs on its own, so a syntax error in one no longer stops all the others.
+                    let files = [];
+                    try { files = await window.electronAPI.getPluginFiles(); } catch (e) {}
+                    for (const p of files) {
+                        if (!p.code || !p.code.trim()) continue;
+                        try {
+                            await webview.executeJavaScript(p.code);
+                        } catch (err) {
+                            console.error('[GIP++] plugin failed to load:', p.file, err);
+                        }
+                    }
+                }, 1500);
+            } catch (err) {
+                console.error('[GIP++] startup failed', err);
+            }
+        });
+
+        webview.addEventListener('did-fail-load', (event) => {
+            if (event.isMainFrame && retryCount < 3) {
+                retryCount++;
+                setTimeout(() => webview.reload(), 2000);
+            }
+        });
+    </script>
+</body>
+</html>
