@@ -1,0 +1,99 @@
+:root {
+  --ypp-bg-image: none;
+  --ypp-bg-overlay: transparent;
+  color-scheme: dark;
+}
+.app,
+main.main {
+  background: #000000 !important;
+  color: #f5f5f5 !important;
+}
+nav.rail,
+aside.sidebar,
+aside.side-panel {
+  background: #000000 !important;
+  border-color: #202020 !important;
+}
+.main-head,
+.user-bar {
+  background: #000000 !important;
+  border-bottom: 1px solid #1d1d1d !important;
+}
+.chat-wrap,
+.chat,
+.messages,
+.messages-inner {
+  background: #000000 !important;
+}
+.composer-box {
+  background: #0a0a0a !important;
+  border: 1px solid #262626 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 0 12px #000000 !important;
+}
+input,
+textarea,
+[contenteditable="true"],
+.input {
+  background: #080808 !important;
+  color: #f5f5f5 !important;
+  border: 1px solid #292929 !important;
+  border-radius: 10px !important;
+  caret-color: #60a5fa !important;
+}
+
+input:focus,
+textarea:focus,
+[contenteditable="true"]:focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 2px #3b82f622 !important;
+  outline: none !important;
+}
+button,
+.btn {
+  border-radius: 10px !important;
+  transition: background-color 0.18s ease, border-color 0.18s ease !important;
+}
+button:hover,
+.btn:hover {
+  background-color: #181818 !important;
+  border-color: #3b82f6 !important;
+}
+.modal,
+.settings,
+[role="dialog"],
+[role="menu"],
+.popout,
+.profile-card,
+.invite-embed {
+  background: #050505 !important;
+  color: #f5f5f5 !important;
+  border: 1px solid #242424 !important;
+  border-radius: 14px !important;
+}
+.settings-nav,
+.settings-main {
+  background: #000000 !important;
+  color: #f5f5f5 !important;
+}
+.settings-main .input {
+  background: #080808 !important;
+  border-color: #292929 !important;
+}
+hr {
+  border-color: #202020 !important;
+}
+* {
+  scrollbar-color: #383838 #000000;
+  scrollbar-width: thin;
+}
+::selection {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+a {
+  color: #60a5fa;
+}
+* {
+  box-shadow-color: #000000;
+}

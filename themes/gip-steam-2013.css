@@ -1,0 +1,55 @@
+/* Steam 2013: theme for GIP++. The dark blue-grey Steam client from the early 2010s: navy panels, steel-blue highlights, bright blue links.
+   The accent slider recolours it. Colours, fonts and shapes only (no sizes or padding), so it cannot shift the layout. */
+:root {
+  --t-bg: #1b2838; --t-panel: #171a21; --t-solid: #101822; --t-fg: #c6d4df; --t-mute: #8f98a0; --t-line: #2a475e;
+  --t-acc: hsl(var(--gip-h, 203) 88% 65%); --t-link: hsl(var(--gip-h, 203) 88% 65%); --t-sel: hsl(var(--gip-h, 203) 55% 32%); --t-selfg: #ffffff; --t-hi: rgba(102,192,244,.16);
+  --t-btn: #2a475e; --t-btnfg: #c6d4df;
+  --gip-inv-bg: var(--t-sel); --gip-inv-fg: var(--t-selfg); --gip-sw-knob: #fff;
+  color-scheme: dark;
+}
+.app { background: linear-gradient(#1b2838, #16202d) !important; color: var(--t-fg) !important; isolation: isolate; font-family: "Motiva Sans", Arial, Helvetica, sans-serif; }
+main.main, .chat-wrap, .chat, .messages, .messages-inner, .main-head { background: transparent !important; }
+nav.rail, aside.sidebar, aside.side-panel, .user-bar { background: var(--t-panel) !important; border-color: var(--t-line) !important; }
+.main-head { border-color: var(--t-line) !important; }
+
+body, .msg-text, .msg-head, .channel-name, .user-bar-name { color: var(--t-fg) !important; }
+.hint { color: var(--t-mute) !important; }
+a { color: var(--t-link) !important; }
+.mention { background: var(--t-hi) !important; color: var(--t-fg) !important; }
+.channel-item:hover, .sidebar-channel:hover { background: var(--t-hi) !important; }
+.channel-item.active, .sidebar-channel.active { background: var(--t-sel) !important; color: var(--t-selfg) !important; }
+.channel-item.active .channel-name, .sidebar-channel.active .channel-name { color: var(--t-selfg) !important; }
+.msg:hover { background: color-mix(in srgb, var(--t-fg) 6%, transparent) !important; }
+.msg.mentioned { background: var(--t-hi) !important; box-shadow: inset 3px 0 0 var(--t-acc); }
+.composer-box { background: var(--t-solid) !important; box-shadow: inset 0 0 0 1px var(--t-line); }
+.composer-box textarea { color: var(--t-fg) !important; }
+input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]), textarea, [contenteditable="true"], .input {
+  background: var(--t-solid) !important; color: var(--t-fg) !important; border-color: var(--t-line) !important; caret-color: var(--t-acc) !important;
+}
+input:focus, textarea:focus, [contenteditable="true"]:focus, .composer-box:focus-within { border-color: var(--t-acc) !important; outline: none !important; }
+.btn { background: var(--t-btn) !important; color: var(--t-btnfg) !important; border-color: var(--t-line) !important; }
+.btn:hover { filter: brightness(1.12); }
+.btn.primary { background: var(--t-sel) !important; color: var(--t-selfg) !important; border-color: transparent !important; }
+.settings-nav button.active { background: var(--t-sel) !important; color: var(--t-selfg) !important; }
+.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .profile-card, .invite-embed {
+  background: var(--t-panel) !important; color: var(--t-fg) !important; border-color: var(--t-line) !important;
+}
+.overlay { background: rgba(0, 0, 0, 0.6) !important; }
+::selection { background: var(--t-sel); color: var(--t-selfg); }
+#gip-nav-button { color: var(--t-fg) !important; }
+#gip-panel a { color: var(--t-link) !important; text-decoration: underline; }
+#gip-panel .gp-sw input:checked + span { background: var(--t-acc) !important; }
+.gip-toast { background: var(--t-panel) !important; color: var(--t-fg) !important; }
+.app * { border-radius: 2px !important; }
+.rail-item, .rail-item * { border-radius: 4px !important; }
+.main-head { background: linear-gradient(90deg, #171a21, #1b2838) !important; }
+.main-head, .main-head * { color: #ffffff !important; }
+.msg-author { color: #ffffff !important; font-weight: 700; }
+.btn, .modal button, .settings-main button { background: linear-gradient(135deg, #2a475e, #1f3a50) !important; color: var(--t-btnfg) !important; }
+.btn.primary { background: linear-gradient(90deg, #47bfff, #1a44c2) !important; color: #ffffff !important; }
+.composer-box { background: rgba(0,0,0,.28) !important; box-shadow: inset 0 0 0 1px var(--t-line); }
+.rail-item.active { box-shadow: 0 0 0 2px var(--t-acc) !important; }
+::-webkit-scrollbar { width: 12px; height: 12px; }
+::-webkit-scrollbar-track { background: rgba(0,0,0,.25); }
+::-webkit-scrollbar-thumb { background: #3d6c8e; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--t-acc); }

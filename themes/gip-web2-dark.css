@@ -1,0 +1,140 @@
+/* GIP++ Web 2.0 Dark theme: web 2.0 style (dark).
+   Glossy gradients, glass panels, pill buttons, soft shadows. Colours, radii, shadows and backgrounds only,
+   no sizes or padding, so it cannot shift the layout. Selectors are the ones the built-in themes use. */
+:root {
+  --w2-bg-top: #0b1a2e;
+  --w2-bg-bot: #14304f;
+  --w2-glass-top: rgba(32,62,98,.92);
+  --w2-glass-bot: rgba(16,36,62,.88);
+  --w2-solid: #0f2540;
+  --w2-fg: #e8f3ff;
+  --w2-mute: #9db8d2;
+  --w2-line: rgba(140,200,255,.25);
+  --w2-accent: hsl(var(--gip-h, 206) 90% 61%);
+  --w2-accent-dk: hsl(var(--gip-h, 211) 75% 46%);
+  --w2-accent-ln: hsl(var(--gip-h, 211) 82% 34%);
+  --w2-field-top: #0a1829;
+  --w2-field-bot: #16314e;
+  --w2-shadow: 0 8px 24px rgba(0,0,0,.45);
+  --w2-gloss: linear-gradient(rgba(255,255,255,.4), rgba(255,255,255,0) 52%);
+  --gip-sw-knob: #f4f9fd;
+  color-scheme: dark;
+}
+
+.app {
+  background: radial-gradient(900px 420px at 15% -10%, rgba(120,190,255,.28) 0%, transparent 70%),
+              linear-gradient(180deg, var(--w2-bg-top), var(--w2-bg-bot)) !important;
+  color: var(--w2-fg) !important;
+  font-family: "Nunito", "Trebuchet MS", Verdana, system-ui, sans-serif;
+}
+body, .msg-text, .msg-head, .channel-name, .user-bar-name { color: var(--w2-fg) !important; }
+a { color: var(--w2-accent-ln) !important; }
+.msg-author { font-weight: 800; }
+
+/* glass panels */
+nav.rail, aside.sidebar, aside.side-panel, .user-bar {
+  background: linear-gradient(180deg, var(--w2-glass-top), var(--w2-glass-bot)) !important;
+  border-color: var(--w2-line) !important;
+  box-shadow: var(--w2-shadow), inset 0 1px 0 rgba(255,255,255,.18) !important;
+}
+main.main, .chat-wrap, .chat, .messages, .messages-inner { background: transparent !important; }
+.main-head {
+  background: linear-gradient(180deg, var(--w2-glass-top), var(--w2-glass-bot)) !important;
+  border-color: var(--w2-line) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.12) !important;
+}
+
+/* glossy selected channel */
+.channel-item, .sidebar-channel { border-radius: 10px !important; }
+.channel-item.active, .sidebar-channel.active {
+  background-color: var(--w2-accent-dk) !important;
+  background-image: var(--w2-gloss) !important;
+  color: #fff !important;
+  text-shadow: 0 1px 1px rgba(0,0,0,.35);
+  box-shadow: 0 2px 5px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.6) !important;
+}
+.channel-item.active .channel-name, .sidebar-channel.active .channel-name { color: #fff !important; }
+
+/* messages as soft bubbles */
+.msg { border-radius: 4px 14px 14px 14px; }
+.msg:hover { background: color-mix(in srgb, var(--w2-accent) 10%, transparent) !important; }
+.msg.mentioned {
+  background: color-mix(in srgb, #ffd23f 22%, transparent) !important;
+  box-shadow: inset 3px 0 0 #f0b400;
+}
+.mention { background: color-mix(in srgb, #ffd23f 35%, transparent) !important; color: var(--w2-fg) !important; border-radius: 6px; }
+
+/* inset fields */
+.composer-box {
+  background: linear-gradient(var(--w2-field-top), var(--w2-field-bot)) !important;
+  border: 1px solid var(--w2-line) !important;
+  border-radius: 18px !important;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.18) !important;
+}
+.composer-box textarea { color: var(--w2-fg) !important; }
+input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]), textarea, [contenteditable="true"], .input {
+  background: linear-gradient(var(--w2-field-top), var(--w2-field-bot)) !important;
+  color: var(--w2-fg) !important;
+  border: 1px solid var(--w2-line) !important;
+  border-radius: 99px !important;
+  box-shadow: inset 0 2px 3px rgba(0,0,0,.15) !important;
+  caret-color: var(--w2-accent) !important;
+}
+textarea { border-radius: 14px !important; }
+input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]):focus, textarea:focus, [contenteditable="true"]:focus, .composer-box:focus-within {
+  border-color: var(--w2-accent) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--w2-accent) 35%, transparent), inset 0 2px 3px rgba(0,0,0,.15) !important;
+  outline: none !important;
+}
+
+/* glossy pill buttons */
+button, .btn { transition: filter .15s ease, box-shadow .15s ease !important; }
+.btn, .modal button, .settings-main button {
+  border-radius: 99px !important;
+  border: 1px solid var(--w2-accent-ln) !important;
+  background-color: var(--w2-accent-dk) !important;
+  background-image: var(--w2-gloss) !important;
+  color: #fff !important;
+  text-shadow: 0 1px 1px rgba(0,0,0,.35);
+  box-shadow: 0 2px 5px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.6) !important;
+}
+.btn:hover, .modal button:hover, .settings-main button:hover { filter: brightness(1.12); }
+.settings-nav button { border-radius: 10px !important; }
+.settings-nav button.active {
+  background-color: var(--w2-accent-dk) !important;
+  background-image: var(--w2-gloss) !important;
+  color: #fff !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.6) !important;
+}
+
+/* dialogs and menus */
+.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .profile-card, .invite-embed {
+  background: linear-gradient(180deg, var(--w2-glass-top), var(--w2-solid)) !important;
+  color: var(--w2-fg) !important;
+  border: 1px solid var(--w2-line) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 14px 34px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.18) !important;
+}
+.overlay { background: rgba(10, 30, 55, .55) !important; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: linear-gradient(90deg, var(--w2-accent), var(--w2-accent-dk)); border-radius: 99px; border: 2px solid transparent; background-clip: padding-box; }
+::selection { background: var(--w2-accent); color: #fff; }
+
+/* GIP++ menu and additions */
+#gip-nav-button { color: var(--w2-fg) !important; }
+#gip-panel a { color: var(--w2-accent-ln) !important; text-decoration: underline; }
+#gip-panel .gp-sw span { background: linear-gradient(#10263d, #264866) !important; box-shadow: inset 0 2px 3px rgba(0,0,0,.3); }
+#gip-panel .gp-sw input:checked + span { background: linear-gradient(#5fa81a, #9be04a) !important; }
+#gip-panel .gp-sw span::before { background: linear-gradient(#fff, #dbe8f2) !important; box-shadow: 0 1px 3px rgba(0,0,0,.4); }
+#gip-panel .gp-chip { border-radius: 99px !important; }
+#gip-panel .gp-chip.on { background: color-mix(in srgb, var(--w2-accent) 22%, transparent); }
+#gip-panel .gp-credit { border-radius: 14px !important; background: linear-gradient(var(--w2-field-top), var(--w2-field-bot)); }
+.gip-tag { border-radius: 99px !important; background-image: var(--w2-gloss) !important; }
+.gip-folder-panel, .gip-popmenu, .gip-overlay .modal { border-radius: 16px !important; }
+.gip-folder-panel .gfp-ico, .rail-folder .gip-folder-ico, .gip-fav-view .gif-tile {
+  border-radius: 13px !important;
+  box-shadow: 0 3px 6px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.6);
+}
+.gip-star { border-radius: 99px !important; }

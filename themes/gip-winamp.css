@@ -1,0 +1,96 @@
+/* GIP++ Winamp theme.
+   Brushed-metal bevelled panels, black LED displays and glowing green text, like a classic Winamp skin.
+   Colours, radii, shadows and backgrounds only. LED colour follows the GIP++ > Themes > Accent slider ( --gip-h ). */
+:root {
+  --wa-led: hsl(var(--gip-h, 120) 100% 62%);
+  --wa-led-dk: hsl(var(--gip-h, 120) 80% 34%);
+  --wa-metal: linear-gradient(180deg, #5a5d6b 0, #3a3c47 18%, #2b2d36 60%, #20222a 100%);
+  --wa-metal-hi: linear-gradient(180deg, #7a7e8e 0, #4a4d5a 22%, #353743 100%);
+  --wa-black: #07080a;
+  --wa-text: #cfe3d2;
+  --wa-bevel: inset 1px 1px 0 #8d91a1, inset -1px -1px 0 #101116;
+  --gip-sw-knob: #d9dce6;
+  color-scheme: dark;
+}
+.app {
+  isolation: isolate; color: var(--wa-text) !important;
+  font-family: "Lucida Console", "Consolas", "Courier New", monospace;
+  background: #141519 !important;
+}
+.app::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 3px), radial-gradient(600px 300px at 20% 0, rgba(120,130,160,.25), transparent 70%);
+}
+html.ypp-bg-active .app::before { display: none; }
+
+body, .msg-text, .msg-head, .channel-name, .user-bar-name { color: var(--wa-text) !important; }
+a { color: var(--wa-led) !important; }
+.msg-author { color: var(--wa-led) !important; text-shadow: 0 0 6px var(--wa-led-dk); font-weight: 700; }
+
+nav.rail, aside.sidebar, aside.side-panel {
+  background: var(--wa-metal) !important; border-color: #14151a !important; border-radius: 2px !important;
+  box-shadow: var(--wa-bevel), 0 4px 14px rgba(0,0,0,.6) !important;
+}
+.user-bar { background: var(--wa-black) !important; border: 1px solid #14151a !important; border-radius: 2px !important; box-shadow: inset 1px 1px 3px #000, 0 1px 0 #6b6e7a !important; }
+.user-bar .user-bar-name { color: var(--wa-led) !important; text-shadow: 0 0 6px var(--wa-led-dk); }
+.main-head {
+  background: linear-gradient(180deg, #4d5060 0, #2e303b 50%, #22242c 100%) !important; border-color: #14151a !important;
+  box-shadow: var(--wa-bevel) !important; color: var(--wa-led) !important; text-shadow: 0 0 6px var(--wa-led-dk);
+}
+.main-head .channel-name { color: var(--wa-led) !important; }
+main.main { background: var(--wa-black) !important; border: 1px solid #14151a; border-radius: 2px; box-shadow: inset 1px 1px 4px #000, 0 1px 0 #6b6e7a, 0 4px 14px rgba(0,0,0,.6); }
+.chat-wrap, .chat, .messages, .messages-inner { background: transparent !important; }
+
+.channel-item, .sidebar-channel { border-radius: 0 !important; }
+aside.sidebar .channel-name { color: #c4c8d6 !important; }
+.channel-item:hover:not(.active), .sidebar-channel:hover:not(.active) { background: rgba(255,255,255,.08) !important; }
+.channel-item.active, .sidebar-channel.active {
+  background: var(--wa-black) !important; box-shadow: inset 0 0 0 1px var(--wa-led-dk), 0 0 8px var(--wa-led-dk) !important;
+}
+.channel-item.active .channel-name, .sidebar-channel.active .channel-name { color: var(--wa-led) !important; text-shadow: 0 0 6px var(--wa-led-dk); }
+
+.msg:hover { background: rgba(255,255,255,.05) !important; }
+.msg.mentioned { background: rgba(255,200,0,.1) !important; box-shadow: inset 3px 0 0 #ffc800; }
+.mention { background: rgba(255,200,0,.22) !important; color: #ffe27a !important; border-radius: 0; }
+
+.composer-box, input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]), textarea, [contenteditable="true"], .input {
+  background: var(--wa-black) !important; color: var(--wa-led) !important; border: 1px solid #14151a !important; border-radius: 0 !important;
+  box-shadow: inset 1px 1px 4px #000, 0 1px 0 #6b6e7a !important; caret-color: var(--wa-led) !important;
+}
+.composer-box textarea { border: 0 !important; box-shadow: none !important; background: transparent !important; color: var(--wa-led) !important; }
+input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]):focus, textarea:focus, [contenteditable="true"]:focus, .composer-box:focus-within {
+  border-color: var(--wa-led-dk) !important; box-shadow: 0 0 8px var(--wa-led-dk), inset 1px 1px 4px #000 !important; outline: none !important;
+}
+
+.btn, .modal button, .settings-main button {
+  background: var(--wa-metal-hi) !important; color: #e3e6f0 !important; border: 1px solid #101116 !important; border-radius: 2px !important;
+  box-shadow: var(--wa-bevel) !important; text-shadow: 0 1px 0 #000;
+}
+.btn:hover, .modal button:hover, .settings-main button:hover { color: var(--wa-led) !important; text-shadow: 0 0 6px var(--wa-led-dk); }
+.btn.primary, .btn-primary, .modal button.primary {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--wa-led) 55%, #fff) 0, var(--wa-led-dk) 100%) !important; color: #031a05 !important; text-shadow: none; font-weight: 700;
+}
+.settings-nav button { border-radius: 0 !important; }
+.settings-nav button.active { background: var(--wa-black) !important; color: var(--wa-led) !important; box-shadow: inset 0 0 0 1px var(--wa-led-dk) !important; }
+
+.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .profile-card, .invite-embed {
+  background: var(--wa-metal) !important; color: var(--wa-text) !important; border: 1px solid #101116 !important; border-radius: 2px !important;
+  box-shadow: var(--wa-bevel), 0 10px 30px rgba(0,0,0,.7) !important;
+}
+.overlay { background: rgba(0,0,0,.65) !important; }
+
+::-webkit-scrollbar { width: 12px; height: 12px; }
+::-webkit-scrollbar-track { background: #0c0d11; }
+::-webkit-scrollbar-thumb { background: linear-gradient(90deg, #6a6d7b, #3b3d48); border: 1px solid #101116; border-radius: 0; }
+::selection { background: var(--wa-led-dk); color: #fff; }
+
+#gip-nav-button { color: inherit !important; }
+#gip-panel a { color: var(--wa-led) !important; text-decoration: underline; }
+#gip-panel .gp-tab.on { border-bottom-color: var(--wa-led); color: var(--wa-led); }
+#gip-panel .gp-sw span { background: #0c0d11 !important; box-shadow: inset 1px 1px 3px #000; border: 1px solid #101116; }
+#gip-panel .gp-sw input:checked + span { background: var(--wa-led-dk) !important; box-shadow: 0 0 8px var(--wa-led-dk); }
+#gip-panel .gp-credit { border-radius: 2px !important; background: var(--wa-black); }
+.gip-tag { border-radius: 0 !important; color: #031a05 !important; background: var(--wa-led-dk) !important; }
+.gip-tag-yap { background: #c98a14 !important; color: #1a1200 !important; }
+.gip-folder-panel, .gip-popmenu, .gip-overlay .modal { border-radius: 2px !important; }
+.gip-folder-panel .gfp-ico, .rail-folder .gip-folder-ico { border-radius: 2px !important; box-shadow: var(--wa-bevel); }

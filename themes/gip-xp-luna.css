@@ -1,0 +1,125 @@
+/* GIP++ Windows XP Luna theme.
+   Blue title bar and task pane, beige dialog surfaces, orange hover glow and a green Start-button primary.
+   Colours, radii, shadows and backgrounds only. Accent hue follows the GIP++ > Themes > Accent slider ( --gip-h ). */
+:root {
+  --lu-b1: hsl(var(--gip-h, 217) 100% 62%);
+  --lu-b2: hsl(var(--gip-h, 217) 100% 46%);
+  --lu-b3: hsl(var(--gip-h, 217) 100% 36%);
+  --lu-pane1: hsl(var(--gip-h, 217) 70% 71%);
+  --lu-pane2: hsl(var(--gip-h, 217) 60% 58%);
+  --lu-edge: hsl(var(--gip-h, 217) 100% 26%);
+  --lu-beige: #ece9d8;
+  --lu-beige-dk: #d6d0b8;
+  --lu-ink: #1a1a1a;
+  --lu-title: linear-gradient(180deg, var(--lu-b1) 0, var(--lu-b2) 9%, var(--lu-b2) 50%, var(--lu-b3) 94%, var(--lu-edge) 100%);
+  --lu-btn: linear-gradient(180deg, #ffffff 0, #f3f1e6 55%, #d9d4bf 100%);
+  --gip-sw-knob: #ffffff;
+  color-scheme: light;
+}
+.app {
+  isolation: isolate; color: var(--lu-ink) !important;
+  font-family: Tahoma, "Segoe UI", Verdana, sans-serif;
+  background: linear-gradient(180deg, #245edb 0%, #5aa0f0 52%, #9bd0ff 62%, #5aa832 63%, #3b8a1e 100%) !important;
+}
+.app::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(ellipse 60% 24% at 28% 22%, rgba(255,255,255,.7), transparent 70%), radial-gradient(ellipse 40% 14% at 72% 12%, rgba(255,255,255,.6), transparent 70%);
+}
+.app::after {
+  content: ""; position: fixed; left: -15%; right: -15%; bottom: -30vh; height: 46vh; z-index: -1; pointer-events: none; border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 0, #8cd44a, #2f7d16 72%);
+}
+html.ypp-bg-active .app::before, html.ypp-bg-active .app::after { display: none; }
+
+body, .msg-text, .msg-head, .main .channel-name, .user-bar-name { color: var(--lu-ink) !important; }
+a { color: #0a3dc4 !important; }
+.msg-author { font-weight: 700; color: var(--lu-edge); }
+
+/* window frame look: blue border, task-pane sidebar, beige rail */
+nav.rail {
+  background: linear-gradient(180deg, var(--lu-b1) 0, var(--lu-b2) 4%, var(--lu-b3) 100%) !important;
+  border: 1px solid var(--lu-edge) !important; border-radius: 8px 8px 0 0 !important;
+  box-shadow: inset 1px 1px 0 rgba(255,255,255,.4), 0 4px 12px rgba(0,30,90,.4) !important;
+}
+aside.sidebar {
+  background: linear-gradient(180deg, var(--lu-pane1), var(--lu-pane2)) !important;
+  border: 1px solid var(--lu-edge) !important; border-radius: 8px 8px 0 0 !important;
+  box-shadow: 0 4px 12px rgba(0,30,90,.4) !important;
+}
+aside.sidebar, aside.sidebar .channel-name, aside.sidebar .channel-item { color: #fff !important; text-shadow: 0 1px 1px rgba(0,30,90,.5); }
+aside.side-panel {
+  background: var(--lu-beige) !important; border: 1px solid var(--lu-edge) !important; border-radius: 8px 8px 0 0 !important;
+  box-shadow: 0 4px 12px rgba(0,30,90,.4) !important;
+}
+.user-bar { background: linear-gradient(180deg, var(--lu-b2), var(--lu-b3)) !important; border-color: var(--lu-edge) !important; }
+.user-bar, .user-bar .user-bar-name { color: #fff !important; text-shadow: 0 1px 1px rgba(0,30,90,.6); }
+main.main {
+  background: #ffffff !important; border: 1px solid var(--lu-edge); border-radius: 8px 8px 0 0;
+  box-shadow: 0 4px 12px rgba(0,30,90,.4);
+}
+.main-head {
+  background: var(--lu-title) !important; border-color: var(--lu-edge) !important; border-radius: 7px 7px 0 0;
+  color: #fff !important; text-shadow: 1px 1px 0 rgba(0,0,60,.55);
+}
+.main-head, .main-head .channel-name { color: #fff !important; }
+.chat-wrap, .chat, .messages, .messages-inner { background: transparent !important; }
+
+.channel-item, .sidebar-channel { border-radius: 3px !important; }
+.channel-item:hover:not(.active), .sidebar-channel:hover:not(.active) { background: rgba(255,255,255,.22) !important; }
+.channel-item.active, .sidebar-channel.active {
+  background: #ffffff !important; border-radius: 3px !important; box-shadow: inset 0 0 0 1px #a8bff0 !important;
+}
+.channel-item.active, .channel-item.active .channel-name, .sidebar-channel.active, .sidebar-channel.active .channel-name {
+  color: #0a3dc4 !important; text-shadow: none; font-weight: 700;
+}
+
+.msg:hover { background: #eaf1ff !important; }
+.msg.mentioned { background: #fff7c7 !important; box-shadow: inset 3px 0 0 #f0a800; }
+.mention { background: #fff0a0 !important; color: #1a1a1a !important; border-radius: 2px; }
+
+.composer-box, input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]), textarea, [contenteditable="true"], .input {
+  background: #fff !important; color: var(--lu-ink) !important; border: 1px solid #7f9db9 !important; border-radius: 2px !important;
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,.15) !important; caret-color: #000 !important;
+}
+.composer-box textarea { border: 0 !important; box-shadow: none !important; background: transparent !important; }
+input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]):focus, textarea:focus, [contenteditable="true"]:focus, .composer-box:focus-within {
+  border-color: var(--lu-b2) !important; box-shadow: 0 0 0 1px var(--lu-b2), inset 1px 1px 2px rgba(0,0,0,.15) !important; outline: none !important;
+}
+
+.btn, .modal button, .settings-main button {
+  background: var(--lu-btn) !important; color: var(--lu-ink) !important; border: 1px solid #003c74 !important; border-radius: 3px !important;
+  box-shadow: inset 0 0 0 1px #fff !important; text-shadow: none;
+}
+.btn:hover, .modal button:hover, .settings-main button:hover {
+  box-shadow: inset 0 0 0 2px #f8b330 !important;
+}
+.btn.primary, .btn-primary, .modal button.primary {
+  background: linear-gradient(180deg, #7bd45a 0, #3c9b3c 55%, #2c7d2c 100%) !important; color: #fff !important;
+  text-shadow: 1px 1px 1px rgba(0,50,0,.7); font-weight: 700; border: 1px solid #1f5e1f !important; border-radius: 8px !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.45), 0 1px 2px rgba(0,0,0,.3) !important;
+}
+.settings-nav button { border-radius: 3px !important; }
+.settings-nav button.active { background: #fff !important; color: #0a3dc4 !important; box-shadow: inset 0 0 0 1px #a8bff0 !important; }
+
+.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .profile-card, .invite-embed {
+  background: var(--lu-beige) !important; color: var(--lu-ink) !important;
+  border: 3px solid var(--lu-b2) !important; border-top-width: 3px; border-radius: 8px 8px 3px 3px !important;
+  box-shadow: 0 6px 20px rgba(0,0,40,.5) !important;
+}
+.overlay { background: rgba(0,20,80,.45) !important; }
+
+::-webkit-scrollbar { width: 16px; height: 16px; }
+::-webkit-scrollbar-track { background: #f3f1e6; }
+::-webkit-scrollbar-thumb { background: linear-gradient(90deg, #c9d8fa, #b4c9f7 50%, #9fb8f2); border: 1px solid #7c9bd9; border-radius: 3px; }
+::selection { background: #316ac5; color: #fff; }
+
+#gip-nav-button { color: inherit !important; }
+#gip-panel a { color: #0a3dc4 !important; text-decoration: underline; }
+#gip-panel .gp-tab.on { border-bottom-color: #316ac5; }
+#gip-panel .gp-sw span { background: linear-gradient(180deg, #b9b49a, #d6d0b8) !important; border: 1px solid #7a7456; }
+#gip-panel .gp-sw input:checked + span { background: linear-gradient(180deg, #3c9b3c, #7bd45a) !important; border-color: #1f5e1f; }
+#gip-panel .gp-credit { border-radius: 3px !important; background: #fff; }
+.gip-tag { border-radius: 3px !important; color: #fff !important; background: linear-gradient(180deg, var(--lu-b1), var(--lu-b3)) !important; }
+.gip-tag-yap { background: linear-gradient(180deg, #ffd35a, #e69a14) !important; color: #3a2a00 !important; }
+.gip-folder-panel, .gip-popmenu, .gip-overlay .modal { border-radius: 8px 8px 3px 3px !important; }
+.gip-folder-panel .gfp-ico, .rail-folder .gip-folder-ico { border-radius: 8px !important; box-shadow: 0 2px 5px rgba(0,0,60,.5), inset 1px 1px 0 rgba(255,255,255,.5); }

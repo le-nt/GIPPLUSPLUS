@@ -1,0 +1,53 @@
+/* Cyberpunk: theme for GIP++. Hazard yellow and cyan on near-black, with cut corners.
+   Colours, fonts and shapes only (no sizes or padding), so it cannot shift the layout. */
+:root {
+  --t-bg: #0a0a12; --t-panel: #0f0f1a; --t-solid: #14141f; --t-fg: #e8e8f0; --t-mute: #9a9ab0; --t-line: rgba(252,238,10,.35);
+  --t-acc: #fcee0a; --t-accfg: #000000; --t-hi: rgba(0,240,255,.14);
+  --gip-inv-bg: var(--t-acc); --gip-inv-fg: var(--t-accfg); --gip-sw-knob: #fff;
+  color-scheme: dark;
+}
+.app { background: var(--t-bg) !important; color: var(--t-fg) !important; isolation: isolate; font-family: "Rajdhani", "Bahnschrift", "Segoe UI", system-ui, sans-serif; }
+main.main, .chat-wrap, .chat, .messages, .messages-inner, .main-head { background: transparent !important; }
+nav.rail, aside.sidebar, aside.side-panel, .user-bar { background: var(--t-panel) !important; border-color: var(--t-line) !important; }
+.main-head { border-color: var(--t-line) !important; }
+body, .msg-text, .msg-head, .channel-name, .user-bar-name { color: var(--t-fg) !important; }
+.hint { color: var(--t-mute) !important; }
+a { color: var(--t-acc) !important; }
+.mention { background: var(--t-hi) !important; color: var(--t-fg) !important; }
+.channel-item:hover, .sidebar-channel:hover { background: var(--t-hi) !important; }
+.channel-item.active, .sidebar-channel.active { background: var(--t-acc) !important; color: var(--t-accfg) !important; }
+.channel-item.active .channel-name, .sidebar-channel.active .channel-name { color: var(--t-accfg) !important; }
+.msg:hover { background: color-mix(in srgb, var(--t-fg) 6%, transparent) !important; }
+.msg.mentioned { background: var(--t-hi) !important; box-shadow: inset 3px 0 0 var(--t-acc); }
+.composer-box { background: var(--t-solid) !important; box-shadow: inset 0 0 0 1px var(--t-line); }
+.composer-box textarea { color: var(--t-fg) !important; }
+input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]), textarea, [contenteditable="true"], .input {
+  background: var(--t-solid) !important; color: var(--t-fg) !important; border-color: var(--t-line) !important; caret-color: var(--t-acc) !important;
+}
+input:focus, textarea:focus, [contenteditable="true"]:focus, .composer-box:focus-within { border-color: var(--t-acc) !important; outline: none !important; }
+.btn { background: color-mix(in srgb, var(--t-fg) 10%, var(--t-solid)) !important; color: var(--t-fg) !important; border-color: var(--t-line) !important; }
+.btn:hover { background: color-mix(in srgb, var(--t-fg) 18%, var(--t-solid)) !important; }
+.btn.primary { background: var(--t-acc) !important; color: var(--t-accfg) !important; border-color: transparent !important; }
+.btn.primary:hover { filter: brightness(1.1); }
+.settings-nav button.active { background: var(--t-acc) !important; color: var(--t-accfg) !important; }
+.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .profile-card, .invite-embed {
+  background: var(--t-solid) !important; color: var(--t-fg) !important; border-color: var(--t-line) !important;
+}
+.overlay { background: rgba(0, 0, 0, 0.55) !important; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--t-fg) 28%, transparent); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--t-acc); }
+::selection { background: var(--t-acc); color: var(--t-accfg); }
+/* GIP++ menu and additions */
+#gip-nav-button { color: var(--t-fg) !important; }
+#gip-panel a { color: var(--t-acc) !important; text-decoration: underline; }
+#gip-panel .gp-sw input:checked + span { background: var(--t-acc) !important; }
+.gip-toast { background: var(--t-solid) !important; color: var(--t-fg) !important; }
+a { color: #00f0ff !important; }
+.channel-item.active, .sidebar-channel.active { box-shadow: inset 3px 0 0 #00f0ff; }
+.btn, .btn.primary { clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px)); border-radius: 0 !important; }
+.btn.primary { text-transform: uppercase; font-weight: 800; }
+.msg.mentioned { box-shadow: inset 3px 0 0 #fcee0a; }
+.composer-box:focus-within { box-shadow: 0 0 0 1px #fcee0a, 0 0 12px rgba(252,238,10,.35); }
+#gip-panel .gp-sw input:checked + span { background: #fcee0a !important; }

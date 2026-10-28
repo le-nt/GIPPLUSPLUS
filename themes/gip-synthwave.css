@@ -1,0 +1,54 @@
+/* Synthwave: theme for GIP++. Neon purple and pink with a glowing grid horizon. The accent slider recolours it.
+   Colours, fonts and shapes only (no sizes or padding), so it cannot shift the layout. */
+:root {
+  --t-bg: #1a0b2e; --t-panel: rgba(26,11,46,.86); --t-solid: #24103f; --t-fg: #f4e9ff; --t-mute: #b69ad6; --t-line: rgba(255,62,165,.35);
+  --t-acc: hsl(var(--gip-h, 328) 100% 62%); --t-accfg: #ffffff; --t-hi: color-mix(in srgb, var(--t-acc) 18%, transparent);
+  --gip-inv-bg: var(--t-acc); --gip-inv-fg: var(--t-accfg); --gip-sw-knob: #fff;
+  color-scheme: dark;
+}
+.app { background: linear-gradient(180deg, #1a0b2e 0%, #2d1150 70%, #4a1465 100%) !important; color: var(--t-fg) !important; isolation: isolate; font-family: "Trebuchet MS", "Segoe UI", system-ui, sans-serif; }
+main.main, .chat-wrap, .chat, .messages, .messages-inner, .main-head { background: transparent !important; }
+nav.rail, aside.sidebar, aside.side-panel, .user-bar { background: var(--t-panel) !important; border-color: var(--t-line) !important; }
+.main-head { border-color: var(--t-line) !important; }
+body, .msg-text, .msg-head, .channel-name, .user-bar-name { color: var(--t-fg) !important; }
+.hint { color: var(--t-mute) !important; }
+a { color: var(--t-acc) !important; }
+.mention { background: var(--t-hi) !important; color: var(--t-fg) !important; }
+.channel-item:hover, .sidebar-channel:hover { background: var(--t-hi) !important; }
+.channel-item.active, .sidebar-channel.active { background: var(--t-acc) !important; color: var(--t-accfg) !important; }
+.channel-item.active .channel-name, .sidebar-channel.active .channel-name { color: var(--t-accfg) !important; }
+.msg:hover { background: color-mix(in srgb, var(--t-fg) 6%, transparent) !important; }
+.msg.mentioned { background: var(--t-hi) !important; box-shadow: inset 3px 0 0 var(--t-acc); }
+.composer-box { background: var(--t-solid) !important; box-shadow: inset 0 0 0 1px var(--t-line); }
+.composer-box textarea { color: var(--t-fg) !important; }
+input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]), textarea, [contenteditable="true"], .input {
+  background: var(--t-solid) !important; color: var(--t-fg) !important; border-color: var(--t-line) !important; caret-color: var(--t-acc) !important;
+}
+input:focus, textarea:focus, [contenteditable="true"]:focus, .composer-box:focus-within { border-color: var(--t-acc) !important; outline: none !important; }
+.btn { background: color-mix(in srgb, var(--t-fg) 10%, var(--t-solid)) !important; color: var(--t-fg) !important; border-color: var(--t-line) !important; }
+.btn:hover { background: color-mix(in srgb, var(--t-fg) 18%, var(--t-solid)) !important; }
+.btn.primary { background: var(--t-acc) !important; color: var(--t-accfg) !important; border-color: transparent !important; }
+.btn.primary:hover { filter: brightness(1.1); }
+.settings-nav button.active { background: var(--t-acc) !important; color: var(--t-accfg) !important; }
+.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .profile-card, .invite-embed {
+  background: var(--t-solid) !important; color: var(--t-fg) !important; border-color: var(--t-line) !important;
+}
+.overlay { background: rgba(0, 0, 0, 0.55) !important; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--t-fg) 28%, transparent); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--t-acc); }
+::selection { background: var(--t-acc); color: var(--t-accfg); }
+/* GIP++ menu and additions */
+#gip-nav-button { color: var(--t-fg) !important; }
+#gip-panel a { color: var(--t-acc) !important; text-decoration: underline; }
+#gip-panel .gp-sw input:checked + span { background: var(--t-acc) !important; }
+.gip-toast { background: var(--t-solid) !important; color: var(--t-fg) !important; }
+.app::before { content: ""; position: fixed; left: 0; right: 0; bottom: 0; height: 40vh; z-index: -1; pointer-events: none;
+  background: linear-gradient(transparent, rgba(255,62,165,.2)), repeating-linear-gradient(90deg, rgba(0,229,255,.3) 0 1px, transparent 1px 48px), repeating-linear-gradient(0deg, rgba(0,229,255,.3) 0 1px, transparent 1px 32px);
+  -webkit-mask-image: linear-gradient(transparent, #000 75%); mask-image: linear-gradient(transparent, #000 75%); }
+html.ypp-bg-active .app::before { display: none; }
+.channel-item.active, .sidebar-channel.active { box-shadow: 0 0 14px color-mix(in srgb, var(--t-acc) 70%, transparent); }
+.msg-author { text-shadow: 0 0 8px color-mix(in srgb, var(--t-acc) 60%, transparent); }
+.composer-box:focus-within, input:focus, textarea:focus { box-shadow: 0 0 12px color-mix(in srgb, var(--t-acc) 60%, transparent); }
+a { color: #00e5ff !important; }

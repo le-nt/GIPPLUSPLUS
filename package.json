@@ -1,0 +1,36 @@
+{
+  "name": "gip-plus-plus",
+  "productName": "GIP++",
+  "version": "2.1.0",
+  "description": "GIP++ (Unofficial): an unofficial client mod for Yappin', not affiliated with Yapper Media LLC. Based on Yap++ by salami.",
+  "main": "app.js",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "clean": "node clean.js"
+  },
+  "keywords": [],
+  "author": "GIP & CO International (based on Yap++ by salami)",
+  "license": "Apache-2.0",
+  "type": "commonjs",
+  "devDependencies": {
+    "@electron-forge/cli": "^8.0.1",
+    "@electron-forge/maker-zip": "^8.0.1",
+    "electron": "^45.0.0",
+    "electron-forge-maker-appimage": "^26.18.0",
+    "electron-forge-maker-nsis": "^26.18.0"
+  },
+  "gip": {
+    "updateRepo": "le-nt/GIPPLUSPLUS",
+    "counterUrl": "https://gip-counter.lentzlan000.workers.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/le-nt/GIPPLUSPLUS.git"
+  },
+  "homepage": "https://github.com/le-nt/GIPPLUSPLUS",
+  "bugs": {
+    "url": "https://github.com/le-nt/GIPPLUSPLUS/issues"
+  }
+}
