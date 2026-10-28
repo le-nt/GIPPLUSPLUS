@@ -31,7 +31,7 @@ input:focus, textarea:focus, [contenteditable="true"]:focus, .composer-box:focus
 .btn:hover { filter: brightness(1.12); }
 .btn.primary { background: var(--t-sel) !important; color: var(--t-selfg) !important; border-color: transparent !important; }
 .settings-nav button.active { background: var(--t-sel) !important; color: var(--t-selfg) !important; }
-.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .profile-card, .invite-embed {
+.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .invite-embed {
   background: var(--t-panel) !important; color: var(--t-fg) !important; border-color: var(--t-line) !important;
 }
 .overlay { background: rgba(0, 0, 0, 0.6) !important; }
@@ -49,7 +49,7 @@ nav.rail, aside.sidebar, aside.side-panel, .user-bar { box-shadow: inset 1px 1px
 .btn, .btn.primary, .modal button, .settings-main button { border: 0 !important; box-shadow: inset 1px 1px var(--t-light), inset -1px -1px var(--t-dark) !important; font-weight: 700; }
 .btn:active { box-shadow: inset 1px 1px var(--t-dark), inset -1px -1px var(--t-light) !important; }
 .composer-box, input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]), textarea, .input { border: 0 !important; box-shadow: inset 1px 1px var(--t-dark), inset -1px -1px var(--t-light) !important; }
-.modal, [role="dialog"], [role="menu"], .popout, .profile-card, .settings, .settings-nav, .settings-main { border: 0 !important; box-shadow: inset 1px 1px var(--t-light), inset -1px -1px var(--t-dark), 2px 2px 0 rgba(0,0,0,.5) !important; }
+.modal, [role="dialog"], [role="menu"], .popout, .settings, .settings-nav, .settings-main { border: 0 !important; box-shadow: inset 1px 1px var(--t-light), inset -1px -1px var(--t-dark), 2px 2px 0 rgba(0,0,0,.5) !important; }
 .rail-item.active { box-shadow: 0 0 0 2px var(--t-acc) !important; }
 ::-webkit-scrollbar { width: 16px; height: 16px; }
 ::-webkit-scrollbar-track { background: var(--t-solid); }

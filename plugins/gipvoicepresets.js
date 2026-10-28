@@ -13,7 +13,7 @@
     else { try { const all = prefs(); const cur = Object.assign(all[key] || {}, patch); Object.keys(cur).forEach(k => { if (cur[k] == null) delete cur[k]; }); if (Object.keys(cur).length) all[key] = cur; else delete all[key]; localStorage.setItem(STORE, JSON.stringify(all)); } catch (e) {} }
     if (V && V.entriesFor) V.entriesFor(key).forEach(e => {
       try {
-        if ('vol' in patch) { e.override = patch.vol == null ? null : V.clamp(patch.vol, 2); V.applyGain(e); }
+        if ('vol' in patch) { e.override = patch.vol == null ? null : V.clamp(patch.vol, V.MAXV); V.applyGain(e); }
         if ('pan' in patch) V.setPan(e, patch.pan || 0);
       } catch (err) {}
     });
@@ -38,7 +38,7 @@
       list.innerHTML = ''; const all = prefs(); const keys = Object.keys(all).filter(k => /^[us]:/.test(k)).sort((a, b) => nice(a).localeCompare(nice(b)));
       if (!keys.length) list.appendChild(el('div', { class: 'gp-desc', text: 'No one saved yet. Adjust someone\u2019s volume or direction in a call, or add a person below.' }));
       keys.forEach(k => {
-        const p = all[k] || {}; const vol = el('input', { type: 'range', min: 0, max: 200, step: 5, 'aria-label': 'Volume', style: 'width:150px' }); vol.value = p.vol != null ? Math.round(p.vol * 100) : 100;
+        const p = all[k] || {}; const vol = el('input', { type: 'range', min: 0, max: 500, step: 5, 'aria-label': 'Volume', style: 'width:150px' }); vol.value = p.vol != null ? Math.round(p.vol * 100) : 100;
         const vl = el('span', { class: 'gp-ver', text: vol.value + '%', style: 'min-width:42px' });
         vol.addEventListener('input', () => { vl.textContent = vol.value + '%'; patchPref(k, { vol: Number(vol.value) === 100 ? null : Number(vol.value) / 100 }); });
         const pan = el('input', { type: 'range', min: -180, max: 180, step: 5, 'aria-label': 'Direction', style: 'width:150px' }); pan.value = p.pan || 0;

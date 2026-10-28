@@ -30,7 +30,7 @@ input:focus, textarea:focus, [contenteditable="true"]:focus, .composer-box:focus
 .btn.primary { background: var(--t-acc) !important; color: var(--t-accfg) !important; border-color: transparent !important; }
 .btn.primary:hover { filter: brightness(1.1); }
 .settings-nav button.active { background: var(--t-acc) !important; color: var(--t-accfg) !important; }
-.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .profile-card, .invite-embed {
+.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .invite-embed {
   background: var(--t-solid) !important; color: var(--t-fg) !important; border-color: var(--t-line) !important;
 }
 .overlay { background: rgba(0, 0, 0, 0.55) !important; }
@@ -56,7 +56,7 @@ nav.rail, aside.sidebar, aside.side-panel, .user-bar { box-shadow: inset 1px 1px
 .btn:active { box-shadow: inset 1px 1px #808080, inset -1px -1px #fff, inset 2px 2px #0a0a0a, inset -2px -2px #dfdfdf !important; }
 .btn.primary { font-weight: 700; }
 .composer-box, input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]), textarea, .input { background: #fff !important; color: #000 !important; border: 0 !important; box-shadow: inset 1px 1px #808080, inset -1px -1px #fff, inset 2px 2px #0a0a0a, inset -2px -2px #dfdfdf !important; }
-.modal, [role="dialog"], [role="menu"], .popout, .profile-card, .settings, .settings-nav, .settings-main { background: #c0c0c0 !important; color: #000 !important; border: 0 !important; box-shadow: inset 1px 1px #fff, inset -1px -1px #0a0a0a, inset 2px 2px #dfdfdf, inset -2px -2px #808080, 2px 2px 0 #000 !important; }
+.modal, [role="dialog"], [role="menu"], .popout, .settings, .settings-nav, .settings-main { background: #c0c0c0 !important; color: #000 !important; border: 0 !important; box-shadow: inset 1px 1px #fff, inset -1px -1px #0a0a0a, inset 2px 2px #dfdfdf, inset -2px -2px #808080, 2px 2px 0 #000 !important; }
 ::-webkit-scrollbar { width: 16px; height: 16px; }
 ::-webkit-scrollbar-track { background: repeating-conic-gradient(#c0c0c0 0 25%, #fff 0 50%) 0 0 / 2px 2px; }
 ::-webkit-scrollbar-thumb { background: #c0c0c0; box-shadow: inset 1px 1px #fff, inset -1px -1px #0a0a0a, inset 2px 2px #dfdfdf, inset -2px -2px #808080; border-radius: 0; }

@@ -256,7 +256,7 @@ const gipvolume = {
     let n = range.parentElement;
     for (let i = 0; n && i < 3; i++, n = n.parentElement) {
       const hit = Array.from(n.querySelectorAll('span,div,label,output')).find(x => !x.querySelector('input') && x.children.length === 0 && /^\s*\d{1,3}\s*%\s*$/.test(x.textContent));
-      if (hit) { hit.textContent = Math.round(value) + '%'; return; }
+      if (hit) { const txt = Math.round(value) + '%'; if (hit.firstChild && hit.firstChild.nodeType === 3) { if (hit.firstChild.nodeValue !== txt) hit.firstChild.nodeValue = txt; } else hit.textContent = txt; return; }
     }
   },
   setSlider(range, value) {

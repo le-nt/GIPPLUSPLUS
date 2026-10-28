@@ -31,7 +31,7 @@ input:focus, textarea:focus, [contenteditable="true"]:focus, .composer-box:focus
 .btn:hover { filter: brightness(1.12); }
 .btn.primary { background: var(--t-sel) !important; color: var(--t-selfg) !important; border-color: transparent !important; }
 .settings-nav button.active { background: var(--t-sel) !important; color: var(--t-selfg) !important; }
-.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .profile-card, .invite-embed {
+.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .invite-embed {
   background: var(--t-panel) !important; color: var(--t-fg) !important; border-color: var(--t-line) !important;
 }
 .overlay { background: rgba(0, 0, 0, 0.6) !important; }

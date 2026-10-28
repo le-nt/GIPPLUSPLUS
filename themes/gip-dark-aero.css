@@ -113,7 +113,7 @@ input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="
   box-shadow: inset 0 0 0 1px var(--fa-hl), 0 0 9px var(--fa-glow) !important;
 }
 
-.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .profile-card, .invite-embed {
+.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .invite-embed {
   background: var(--fa-modal) !important; color: var(--fa-ink) !important;
   border: 1px solid var(--fa-modalbd) !important; border-radius: 8px !important;
   box-shadow: 0 0 0 1px var(--fa-line), 0 12px 32px rgba(0,20,60,.45) !important;

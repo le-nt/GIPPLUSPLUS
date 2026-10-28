@@ -30,7 +30,7 @@ input:focus, textarea:focus, [contenteditable="true"]:focus, .composer-box:focus
 .btn.primary { background: var(--t-acc) !important; color: var(--t-accfg) !important; border-color: transparent !important; }
 .btn.primary:hover { filter: brightness(1.1); }
 .settings-nav button.active { background: var(--t-acc) !important; color: var(--t-accfg) !important; }
-.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .profile-card, .invite-embed {
+.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .invite-embed {
   background: var(--t-solid) !important; color: var(--t-fg) !important; border-color: var(--t-line) !important;
 }
 .overlay { background: rgba(0, 0, 0, 0.55) !important; }
@@ -53,5 +53,5 @@ aside.sidebar { background: linear-gradient(#e9eef4, #d9e0e9) !important; }
 .btn, .modal button, .settings-main button { border-radius: 99px !important; border: 1px solid #8995a6 !important; background: linear-gradient(#ffffff 0%, #eef2f8 49%, #d3dce8 50%, #eaf1fa 100%) !important; box-shadow: 0 1px 2px rgba(0,0,0,.25), inset 0 1px 0 #fff !important; color: #222 !important; }
 .btn.primary { border-color: var(--aq-dk) !important; background: linear-gradient(var(--aq-hi) 0%, var(--aq) 49%, var(--aq-dk) 50%, var(--aq-hi) 100%) !important; color: #fff !important; text-shadow: 0 -1px 0 rgba(0,0,0,.35); box-shadow: 0 1px 3px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.7) !important; }
 .composer-box, input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]), textarea, .input { border-radius: 6px !important; box-shadow: inset 0 1px 3px rgba(0,0,0,.3) !important; border: 1px solid #9aa4b2 !important; background: #fff !important; }
-.modal, [role="dialog"], [role="menu"], .popout, .profile-card { border-radius: 10px !important; background: repeating-linear-gradient(0deg, #f3f3f3 0 2px, #e8e8e8 2px 4px) !important; box-shadow: 0 10px 30px rgba(0,0,0,.4) !important; }
+.modal, [role="dialog"], [role="menu"], .popout { border-radius: 10px !important; background: repeating-linear-gradient(0deg, #f3f3f3 0 2px, #e8e8e8 2px 4px) !important; box-shadow: 0 10px 30px rgba(0,0,0,.4) !important; }
 #gip-panel .gp-sw input:checked + span { background: linear-gradient(var(--aq-hi), var(--aq)) !important; }

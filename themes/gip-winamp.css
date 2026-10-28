@@ -73,7 +73,7 @@ input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="
 .settings-nav button { border-radius: 0 !important; }
 .settings-nav button.active { background: var(--wa-black) !important; color: var(--wa-led) !important; box-shadow: inset 0 0 0 1px var(--wa-led-dk) !important; }
 
-.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .profile-card, .invite-embed {
+.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .invite-embed {
   background: var(--wa-metal) !important; color: var(--wa-text) !important; border: 1px solid #101116 !important; border-radius: 2px !important;
   box-shadow: var(--wa-bevel), 0 10px 30px rgba(0,0,0,.7) !important;
 }

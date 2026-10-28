@@ -30,7 +30,7 @@ input:focus, textarea:focus, [contenteditable="true"]:focus, .composer-box:focus
 .btn.primary { background: var(--t-acc) !important; color: var(--t-accfg) !important; border-color: transparent !important; }
 .btn.primary:hover { filter: brightness(1.1); }
 .settings-nav button.active { background: var(--t-acc) !important; color: var(--t-accfg) !important; }
-.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .profile-card, .invite-embed {
+.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .invite-embed {
   background: var(--t-solid) !important; color: var(--t-fg) !important; border-color: var(--t-line) !important;
 }
 .overlay { background: rgba(0, 0, 0, 0.55) !important; }
@@ -55,4 +55,4 @@ nav.rail, aside.sidebar, aside.side-panel, .user-bar { box-shadow: inset 1px 1px
 .btn, .btn.primary, .modal button, .settings-main button { border-radius: 6px !important; border: 1px solid #000 !important; background: linear-gradient(#fff, #bbb) !important; color: #000 !important; box-shadow: inset 1px 1px #fff, 1px 1px 0 #666 !important; }
 .btn.primary { border-width: 2px !important; font-weight: 700; }
 .composer-box, input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]), textarea, .input { background: #fff !important; border: 1px solid #000 !important; box-shadow: inset 1px 1px #999 !important; border-radius: 0 !important; }
-.modal, [role="dialog"], [role="menu"], .popout, .profile-card { background: #ddd !important; border: 1px solid #000 !important; border-radius: 0 !important; box-shadow: inset 1px 1px #fff, 3px 3px 0 rgba(0,0,0,.5) !important; }
+.modal, [role="dialog"], [role="menu"], .popout { background: #ddd !important; border: 1px solid #000 !important; border-radius: 0 !important; box-shadow: inset 1px 1px #fff, 3px 3px 0 rgba(0,0,0,.5) !important; }

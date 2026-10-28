@@ -155,3 +155,6 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+# local helper scripts
+push.ps1
+push.bat

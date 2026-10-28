@@ -9,7 +9,9 @@ This is **GIP++**, a fork of [salami-reborn/yapplusplus](https://github.com/sala
 - `plugins/gipvolume.js`: fixes Yappin's OWN volume sliders (right-click a person in voice, and the stream slider) to work 0 to 500%, no separate mixer. Streams play natively up to 100% and only use the Web Audio boost above that (fixes silent streams). Adds a per-person Direction slider (left/right/behind, TeamSpeak-style) to the person menu.
 - `plugins/gipgifs.js`: Favorites tile in Yappin's GIF picker, star to save GIFs (from the picker or chat), categories (rename/delete), like Vencord's Better GIF Categories.
 - `plugins/gipfolders.js`: opening a folder shows a sidebar of its servers; custom folder icons; privacy option replacing the 4 mini server icons with a folder icon.
-- `plugins/gipserverinfo.js`: hover a server in the rail for a card with its name, users in voice, online members and total members.
+- `plugins/gipserverinfo.js`: hover a server in the rail for a card with its name and the users in voice.
+- `plugins/gipdmreturn.js`: clicking the Direct messages button reopens the DM you were last in instead of the DM home.
+- `plugins/gipprofileguard.js`: themes no longer recolour people's profile themes (profile cards, banners, name colours). `.profile-card` was also removed from every theme's override rules.
 - `plugins/gipvoice.js`: confirmation when switching voice channel while in a call.
 - `plugins/gipreadall.js`: one rail button that marks every server, folder and DM read (text channels only, never joins voice).
 - `plugins/gipnav.js`: mouse side buttons / Alt+Arrows go back and forward through servers and channels visited.
@@ -27,6 +29,12 @@ This is **GIP++**, a fork of [salami-reborn/yapplusplus](https://github.com/sala
 - `plugins/gipsearch.js`: Message Search, in its own Search tab. Local index of messages seen while it is on (off by default).
 - `plugins/gipvoicepresets.js`: Voice tab: edit remembered volume/direction per person, voice presets.
 - `assets/GipSeal.png`, `assets/GipSealWhite.png`: the GIP & CO seal.
+
+## Bug sweep
+- `plugins/gipserverinfo.js`: hover card no longer shows on the Direct messages button or other non-server rail buttons, and no longer writes to storage every few seconds. On by default.
+- `plugins/gipvolume.js`: the "NN%" label fix now edits the site's own text node, so Yappin can keep updating it.
+- `plugins/gipvoicepresets.js`: volume slider and clamp raised to 500% to match the new limit.
+- `plugins/gipdmreturn.js`: DM rows are matched by `.channel-row` first, so unrelated elements can no longer be mistaken for DMs.
 
 ## Steam themes
 - `themes/gip-steam-classic.css`: the olive-green Steam skin from the 2003 to 2010 era (flat khaki panels, bevelled edges, gold highlights).

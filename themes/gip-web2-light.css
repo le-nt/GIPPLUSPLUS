@@ -108,7 +108,7 @@ button, .btn { transition: filter .15s ease, box-shadow .15s ease !important; }
 }
 
 /* dialogs and menus */
-.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .profile-card, .invite-embed {
+.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .invite-embed {
   background: linear-gradient(180deg, var(--w2-glass-top), var(--w2-solid)) !important;
   color: var(--w2-fg) !important;
   border: 1px solid var(--w2-line) !important;

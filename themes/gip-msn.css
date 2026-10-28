@@ -30,7 +30,7 @@ input:focus, textarea:focus, [contenteditable="true"]:focus, .composer-box:focus
 .btn.primary { background: var(--t-acc) !important; color: var(--t-accfg) !important; border-color: transparent !important; }
 .btn.primary:hover { filter: brightness(1.1); }
 .settings-nav button.active { background: var(--t-acc) !important; color: var(--t-accfg) !important; }
-.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .profile-card, .invite-embed {
+.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .invite-embed {
   background: var(--t-solid) !important; color: var(--t-fg) !important; border-color: var(--t-line) !important;
 }
 .overlay { background: rgba(0, 0, 0, 0.55) !important; }
@@ -55,4 +55,4 @@ aside.sidebar { background: #fff !important; border-color: #9bb8dd !important; }
 .btn, .modal button, .settings-main button { border-radius: 4px !important; border: 1px solid #5b87c4 !important; background: linear-gradient(#fdfeff, #dce9f8 50%, #c3d8f1 51%, #dbe8f7) !important; color: #0b3d7a !important; box-shadow: inset 0 1px 0 #fff !important; }
 .btn.primary { background: linear-gradient(#6fa6e6, #2b6bb3 50%, #1f5aa0 51%, #4f8fd6) !important; color: #fff !important; text-shadow: 0 -1px 0 rgba(0,0,0,.35); }
 .composer-box, input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]), textarea, .input { border: 1px solid #9bb8dd !important; border-radius: 4px !important; }
-.modal, [role="dialog"], [role="menu"], .popout, .profile-card { border-radius: 6px !important; box-shadow: 0 6px 20px rgba(30,70,130,.35) !important; }
+.modal, [role="dialog"], [role="menu"], .popout { border-radius: 6px !important; box-shadow: 0 6px 20px rgba(30,70,130,.35) !important; }

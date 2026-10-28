@@ -85,7 +85,7 @@ input:focus, textarea:focus, [contenteditable="true"]:focus, .composer-box:focus
 .btn:hover { background: var(--gip-inv-bg) !important; color: var(--gip-inv-fg) !important; }
 .settings-nav button.active { background: var(--gip-inv-bg) !important; color: var(--gip-inv-fg) !important; }
 
-.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .profile-card, .invite-embed {
+.modal, .settings, .settings-nav, .settings-main, [role="dialog"], [role="menu"], .popout, .invite-embed {
   background: var(--gip-solid) !important;
   color: var(--gip-fg) !important;
   border-color: var(--gip-line) !important;
