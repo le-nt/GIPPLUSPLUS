@@ -80,7 +80,7 @@ const gipserverinfo = {
     c.style.top = Math.round(Math.max(8, Math.min(innerHeight - h - 8, r.top + r.height / 2 - h / 2))) + 'px';
   },
   show(b) {
-    if (!b.isConnected || this.hovered !== b) return;
+    if (!b.isConnected || this.hovered !== b || document.querySelector('.ctx-menu, .gip-popmenu')) return;
     this.hideNow(true);
     this.hovered = b;
     // hide Yappin's own plain tooltip while ours is up
@@ -106,6 +106,7 @@ const gipserverinfo = {
       over: (e) => {
         const b = self.serverBtn(e.target); if (!b) return;
         if (self.hovered === b) { clearTimeout(self.hideT); return; }
+        if (document.querySelector('.ctx-menu, .gip-popmenu')) return;
         clearTimeout(self.showT); clearTimeout(self.hideT);
         self.hovered = b;
         self.showT = setTimeout(() => { try { self.show(b); } catch (er) { console.error('[GIP++ server info]', er); } }, self.card ? 40 : 260);
@@ -117,10 +118,12 @@ const gipserverinfo = {
         self.hideT = setTimeout(() => self.hideNow(), 90);
       },
       away: () => self.hideNow(),
+      ctx: () => { self.hideNow(); self.hovered = null; clearTimeout(self.showT); },
     };
     document.addEventListener('pointerover', this.handlers.over, true);
     document.addEventListener('pointerout', this.handlers.out, true);
     document.addEventListener('pointerdown', this.handlers.away, true);
+    document.addEventListener('contextmenu', this.handlers.ctx, true);
     document.addEventListener('wheel', this.handlers.away, { capture: true, passive: true });
     window.addEventListener('blur', this.handlers.away);
     window.YapPlus.serverInfo = this;
@@ -130,6 +133,7 @@ const gipserverinfo = {
       document.removeEventListener('pointerover', this.handlers.over, true);
       document.removeEventListener('pointerout', this.handlers.out, true);
       document.removeEventListener('pointerdown', this.handlers.away, true);
+      document.removeEventListener('contextmenu', this.handlers.ctx, true);
       document.removeEventListener('wheel', this.handlers.away, true);
       window.removeEventListener('blur', this.handlers.away);
       this.handlers = null;

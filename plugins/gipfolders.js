@@ -58,6 +58,7 @@ const gipfolders = {
     .ctx-menu{z-index:2147483000 !important}
     nav.rail:has(.ctx-menu){z-index:2147483000 !important}
     nav.rail .overlay:has(.ctx-menu){z-index:2147483000 !important}
+    :where(.ctx-menu[popover]){color:inherit;border:0;overflow:visible;margin:0;right:auto;bottom:auto}
     .gip-folder-panel.gfp-under{z-index:0 !important;pointer-events:none}
     .gip-hid{display:none !important}
     .rail-folder.gip-folder-custom,.rail-folder.gip-folder-private{position:relative;overflow:hidden}
@@ -75,6 +76,14 @@ const gipfolders = {
     if (clear(bg)) bg = getComputedStyle(this.rail()).backgroundColor;
     if (clear(bg)) bg = getComputedStyle(document.querySelector('.app') || document.body).backgroundColor;
     p.style.background = bg; p.style.color = cs.color; p.style.fontFamily = cs.fontFamily;
+  },
+  // Right-click menus live inside the rail, which can sit under the folder panel. While the panel is open, move any
+  // such menu into the browser's top layer (Popover API) so nothing can cover it, whatever the stacking order is.
+  lift() {
+    if (!this.panel) return;
+    document.querySelectorAll('.ctx-menu:not([popover])').forEach(m => {
+      try { m.setAttribute('popover', 'manual'); m.showPopover(); } catch (e) { m.removeAttribute('popover'); }
+    });
   },
   closePanel() { if (this.panel) { this.panel.remove(); this.panel = null; } this.panelFor = null; document.querySelectorAll('.gip-hid').forEach(n => n.classList.remove('gip-hid')); },
   openPanel(btn) {
@@ -135,6 +144,7 @@ const gipfolders = {
     const rail = this.rail();
     if (!rail) { if (this.panel) this.closePanel(); return; }
     rail.querySelectorAll('.rail-folder').forEach(b => this.decorate(b));
+    this.lift();
     if (this.panel) this.panel.classList.toggle('gfp-under', !!document.querySelector('.ctx-menu, .gip-popmenu'));
     const open = this.expandedBtn();
     if (!open) { if (this.panel) this.closePanel(); return; }
@@ -203,7 +213,7 @@ const gipfolders = {
     };
     document.addEventListener('contextmenu', this.handlers.ctx, true);
     document.addEventListener('pointerdown', this.handlers.away, true);
-    this.obs = new MutationObserver(() => { if (!self.pend) self.pend = setTimeout(() => { self.pend = 0; try { self.sync(); } catch (e) {} }, 60); });
+    this.obs = new MutationObserver(() => { try { self.lift(); } catch (e) {} if (!self.pend) self.pend = setTimeout(() => { self.pend = 0; try { self.sync(); } catch (e) {} }, 60); });
     this.obs.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['aria-expanded', 'class'] });
     this.timer = setInterval(() => { try { this.sync(); } catch (e) {} }, 700);
     this.sync();
