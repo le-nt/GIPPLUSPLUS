@@ -55,6 +55,7 @@ const gipfolders = {
     .gip-folder-panel .gfp-badge{min-width:18px;padding:1px 6px;border-radius:9px;background:#e5484d;color:#fff;font-size:11px;font-weight:700;text-align:center}
     .gip-folder-panel .gfp-empty{padding:10px 14px;font-size:12px;opacity:.75;line-height:1.5}
     .gip-folder-panel .gfp-empty button{margin-top:8px}
+    .ctx-menu{z-index:2147483000 !important}
     .gip-hid{display:none !important}
     .rail-folder.gip-folder-custom,.rail-folder.gip-folder-private{position:relative;overflow:hidden}
     .rail-folder.gip-folder-custom .folder-grid,.rail-folder.gip-folder-private .folder-grid{display:none !important}

@@ -33,15 +33,15 @@ const gipserverinfo = {
   },
   // ---------- the card ----------
   css: `
-    .gip-sinfo{position:fixed;z-index:2147482000;box-sizing:border-box;width:292px;padding:14px 16px 13px;border-radius:12px;border:1px solid color-mix(in srgb,currentColor 16%,transparent);box-shadow:0 10px 32px rgba(0,0,0,.42);pointer-events:none;animation:gipsi-in .12s ease-out}
+    .gip-sinfo{position:fixed;z-index:2147482000;box-sizing:border-box;width:max-content;min-width:90px;max-width:230px;padding:7px 11px;border-radius:9px;border:1px solid color-mix(in srgb,currentColor 16%,transparent);box-shadow:0 6px 20px rgba(0,0,0,.4);pointer-events:none;animation:gipsi-in .12s ease-out}
     @keyframes gipsi-in{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
-    .gip-sinfo .gsi-name{font-weight:700;font-size:19px;line-height:1.2;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .gip-sinfo .gsi-voice{display:flex;align-items:center;gap:8px;margin:10px 0 0;min-height:26px}
-    .gip-sinfo .gsi-voice svg{width:22px;height:22px;flex:0 0 22px;opacity:.85}
+    .gip-sinfo .gsi-name{font-weight:700;font-size:14px;line-height:1.25;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .gip-sinfo .gsi-voice{display:flex;align-items:center;gap:6px;margin:6px 0 0}
+    .gip-sinfo .gsi-voice svg{width:16px;height:16px;flex:0 0 16px;opacity:.85}
     .gip-sinfo .gsi-av{display:flex;align-items:center}
-    .gip-sinfo .gsi-av>*{width:26px;height:26px;border-radius:50%;margin-left:-7px;border:2px solid var(--gsi-bg,#1e1f22);object-fit:cover;background:color-mix(in srgb,currentColor 18%,transparent);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;box-sizing:border-box;overflow:hidden}
+    .gip-sinfo .gsi-av>*{width:20px;height:20px;border-radius:50%;margin-left:-6px;border:2px solid var(--gsi-bg,#1e1f22);object-fit:cover;background:color-mix(in srgb,currentColor 18%,transparent);font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;box-sizing:border-box;overflow:hidden}
     .gip-sinfo .gsi-av>*:first-child{margin-left:0}
-    .gip-sinfo .gsi-vl{font-size:12px;opacity:.7}
+    .gip-sinfo .gsi-vl{font-size:11px;opacity:.7}
   `,
   speaker: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg>',
   paint(el) {
@@ -75,9 +75,9 @@ const gipserverinfo = {
   place(b) {
     const c = this.card; if (!c) return;
     const r = b.getBoundingClientRect(), rr = (this.rail() || b).getBoundingClientRect();
-    const h = c.offsetHeight || 120;
+    const h = c.offsetHeight || 40;
     c.style.left = Math.round(Math.max(rr.right, r.right) + 10) + 'px';
-    c.style.top = Math.round(Math.max(8, Math.min(innerHeight - h - 8, r.top + r.height / 2 - 28))) + 'px';
+    c.style.top = Math.round(Math.max(8, Math.min(innerHeight - h - 8, r.top + r.height / 2 - h / 2))) + 'px';
   },
   show(b) {
     if (!b.isConnected || this.hovered !== b) return;

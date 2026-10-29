@@ -118,7 +118,7 @@
   const CAT_OF = {
     giptextcursor: 'chat', doubleclickreply: 'chat', charactercounter: 'chat', draftsaved: 'chat', notyping: 'chat', gipgifs: 'chat', imagesearch: 'chat', filenamedisguiser: 'chat', gipsearch: 'chat',
     gipvolume: 'voice', giphifimic: 'voice', customvoice: 'voice', gipvoice: 'voice', gipsounds: 'voice',
-    gipnav: 'nav', gipreadall: 'nav', gipfolders: 'nav', gipdmreturn: 'nav', gipserverinfo: 'nav',
+    gipnav: 'nav', gipreadall: 'nav', gipfolders: 'nav', gipserverinfo: 'nav',
     gipfx: 'look', gipprofileguard: 'look', gipbrand: 'look', custombackground: 'look',
     gipalts: 'acct', gipcounter: 'acct',
     oneko: 'fun',
