@@ -9,6 +9,7 @@ This is **GIP++**, a fork of [salami-reborn/yapplusplus](https://github.com/sala
 - `plugins/gipvolume.js`: fixes Yappin's OWN volume sliders (right-click a person in voice, and the stream slider) to work 0 to 500%, no separate mixer. Streams play natively up to 100% and only use the Web Audio boost above that (fixes silent streams). Adds a per-person Direction slider (left/right/behind, TeamSpeak-style) to the person menu.
 - `plugins/gipgifs.js`: Favorites tile in Yappin's GIF picker, star to save GIFs (from the picker or chat), categories (rename/delete), like Vencord's Better GIF Categories.
 - `plugins/gipfolders.js`: opening a folder shows a sidebar of its servers; custom folder icons; privacy option replacing the 4 mini server icons with a folder icon.
+- `plugins/gipnopopups.js`: No Popups. Hides pop-up nags like the "Help keep Yapin running" Plus card (hide only, reversible).
 - `plugins/gipserverinfo.js`: hover a server in the rail for a card with its name and the users in voice.
 - `plugins/gipprofileguard.js`: themes no longer recolour people's profile themes (profile cards, banners, name colours). `.profile-card` was also removed from every theme's override rules.
 - `plugins/gipvoice.js`: confirmation when switching voice channel while in a call.
@@ -17,7 +18,7 @@ This is **GIP++**, a fork of [salami-reborn/yapplusplus](https://github.com/sala
 - `plugins/gipbrand.js`: black and white / greyscale Yappin logo.
 - `plugins/gipqol.js`: Text Cursor In Chat, Hi-Fi Mic (experimental stereo).
 - `plugins/gipinspector.js`: dev helper, `Alt+Shift+Click` copies element info.
-- `plugins/0shim.js`: startup fixes and first-run defaults. Also keeps Yappin's own light/dark mode in step with the active theme's `color-scheme` (themes that declare one), and undoes it when the theme is switched off.
+- `plugins/0shim.js`: startup fixes and first-run defaults. Also stops the active theme from restyling profile cards (the popup from clicking or right-clicking someone in the member list or voice): every theme selector is rewritten to skip anything inside a profile. Also keeps Yappin's own light/dark mode in step with the active theme's `color-scheme` (themes that declare one), and undoes it when the theme is switched off.
 - `themes/gipco-dark.css`, `themes/gipco-light.css`: GIP & CO themes.
 - `themes/gip-web2-light.css`, `themes/gip-web2-dark.css`: Web 2.0 themes (glossy gradients, glass panels, pill buttons).
 - `themes/gip-frutiger-aero.css`, `themes/gip-dark-aero.css`, `themes/gip-frutiger-eco.css`, `themes/gip-time-aero.css`: Frutiger Aero family (Aero glass, glossy buttons, sky, bubbles, grass hill). Dark Aero is a night sky; Eco is greener with droplets; Time-of-day Aero changes its sky with the clock.

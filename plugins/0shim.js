@@ -15,7 +15,7 @@
   }
 
   // Switch on the plugins that matter most once, on first launch, without overriding anyone's later choice.
-  ['gipvolume', 'giptextcursor', 'gipgifs', 'gipfolders', 'gipvoice', 'gipreadall', 'gipnav', 'gipprofileguard', 'gipserverinfo', 'gipbrand', 'gipcounter', 'gipalts', 'gipfx'].forEach(function (id) {
+  ['gipvolume', 'giptextcursor', 'gipgifs', 'gipfolders', 'gipvoice', 'gipreadall', 'gipnav', 'gipprofileguard', 'gipserverinfo', 'gipnopopups', 'gipbrand', 'gipcounter', 'gipalts', 'gipfx'].forEach(function (id) {
     try {
       if (!localStorage.getItem('yapplus.gip.default.' + id)) {
         localStorage.setItem('yapplus.gip.default.' + id, '1');
@@ -170,4 +170,84 @@
     el.textContent = themes[name];
     try { window.YapPlus.syncMode(themes[name]); } catch (e) {}
   })();
+})();
+
+// GIP++ profile guard for themes. A person's profile (the little card that opens when you click or right-click someone in the
+// member list or in voice, and the full profile) is theirs, so no theme may restyle it. Every selector in the active theme gets
+// ":not(:where(<profile things>))" added to its last part, so a theme rule simply never matches anything inside a profile.
+// It adds no specificity, so nothing else about the theme changes.
+(function () {
+  if (window.__gipprofilethemeguard) return;
+  window.__gipprofilethemeguard = true;
+  var PROFILE = ['.mini-pop', '.mini-pop *', '[class*="profile-card"]', '[class*="profile-card"] *', '[class*="profile-pop"]', '[class*="profile-pop"] *', '[class*="profile-modal"]', '[class*="profile-modal"] *'].join(',');
+  var NOT = ':not(:where(' + PROFILE + '))';
+  var MARK = '/*gip-pg*/';
+
+  function splitTop(s) {
+    var out = [], d = 0, q = '', cur = '';
+    for (var i = 0; i < s.length; i++) {
+      var c = s[i];
+      if (q) { cur += c; if (c === '\\') { cur += s[++i] || ''; } else if (c === q) q = ''; continue; }
+      if (c === '"' || c === "'") { q = c; cur += c; continue; }
+      if (c === '(' || c === '[') d++; else if (c === ')' || c === ']') d--;
+      if (c === ',' && d === 0) { out.push(cur); cur = ''; continue; }
+      cur += c;
+    }
+    out.push(cur); return out;
+  }
+  function pseudoAt(p) {
+    var d = 0, q = '';
+    for (var i = 0; i < p.length; i++) {
+      var c = p[i];
+      if (q) { if (c === '\\') i++; else if (c === q) q = ''; continue; }
+      if (c === '"' || c === "'") { q = c; continue; }
+      if (c === '(' || c === '[') d++; else if (c === ')' || c === ']') d--;
+      if (d === 0 && c === ':') {
+        if (p[i + 1] === ':') return i;
+        if (/^:(before|after|first-line|first-letter)\b/i.test(p.slice(i))) return i;
+        // skip a normal pseudo-class like :hover or :nth-child(...)
+      }
+    }
+    return -1;
+  }
+  function fixSelector(sel) {
+    return splitTop(sel).map(function (p) {
+      p = p.trim(); if (!p) return p;
+      var i = pseudoAt(p);
+      return i < 0 ? p + NOT : p.slice(0, i) + NOT + p.slice(i);
+    }).join(',');
+  }
+  function rewrite(rules) {
+    var out = '';
+    Array.prototype.forEach.call(rules, function (r) {
+      try {
+        if (typeof CSSStyleRule !== 'undefined' && r instanceof CSSStyleRule) {
+          out += r.cssRules && r.cssRules.length ? r.cssText : fixSelector(r.selectorText) + '{' + r.style.cssText + '}';
+        } else if (typeof CSSMediaRule !== 'undefined' && (r instanceof CSSMediaRule || (typeof CSSSupportsRule !== 'undefined' && r instanceof CSSSupportsRule))) {
+          var t = r.cssText; out += t.slice(0, t.indexOf('{')) + '{' + rewrite(r.cssRules) + '}';
+        } else out += r.cssText;
+      } catch (e) { out += r.cssText; }
+    });
+    return out;
+  }
+  function guard(css) {
+    if (!css || css.indexOf(MARK) === 0) return css;
+    try { var sh = new CSSStyleSheet(); sh.replaceSync(css); return MARK + rewrite(sh.cssRules); } catch (e) { return css; }
+  }
+  window.YapPlus.guardThemeCss = guard;
+
+  var watched = null, busy = false;
+  function fix(el) {
+    if (busy) return; var t = el.textContent;
+    if (!t || t.indexOf(MARK) === 0) return;
+    busy = true; try { el.textContent = guard(t); } finally { busy = false; }
+  }
+  function watch() {
+    var el = document.getElementById('yapplus-active-theme');
+    if (!el || el === watched) return;
+    watched = el; fix(el);
+    new MutationObserver(function () { fix(el); }).observe(el, { childList: true, characterData: true, subtree: true });
+  }
+  new MutationObserver(watch).observe(document.head || document.documentElement, { childList: true });
+  watch();
 })();

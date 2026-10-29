@@ -120,7 +120,7 @@
     gipvolume: 'voice', giphifimic: 'voice', customvoice: 'voice', gipvoice: 'voice', gipsounds: 'voice',
     gipnav: 'nav', gipreadall: 'nav', gipfolders: 'nav', gipserverinfo: 'nav',
     gipfx: 'look', gipprofileguard: 'look', gipbrand: 'look', custombackground: 'look',
-    gipalts: 'acct', gipcounter: 'acct',
+    gipalts: 'acct', gipcounter: 'acct', gipnopopups: 'look',
     oneko: 'fun',
   };
   function tabPlugins() {
