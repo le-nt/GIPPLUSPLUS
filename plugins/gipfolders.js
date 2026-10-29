@@ -56,6 +56,9 @@ const gipfolders = {
     .gip-folder-panel .gfp-empty{padding:10px 14px;font-size:12px;opacity:.75;line-height:1.5}
     .gip-folder-panel .gfp-empty button{margin-top:8px}
     .ctx-menu{z-index:2147483000 !important}
+    nav.rail:has(.ctx-menu){z-index:2147483000 !important}
+    nav.rail .overlay:has(.ctx-menu){z-index:2147483000 !important}
+    .gip-folder-panel.gfp-under{z-index:0 !important;pointer-events:none}
     .gip-hid{display:none !important}
     .rail-folder.gip-folder-custom,.rail-folder.gip-folder-private{position:relative;overflow:hidden}
     .rail-folder.gip-folder-custom .folder-grid,.rail-folder.gip-folder-private .folder-grid{display:none !important}
@@ -132,6 +135,7 @@ const gipfolders = {
     const rail = this.rail();
     if (!rail) { if (this.panel) this.closePanel(); return; }
     rail.querySelectorAll('.rail-folder').forEach(b => this.decorate(b));
+    if (this.panel) this.panel.classList.toggle('gfp-under', !!document.querySelector('.ctx-menu, .gip-popmenu'));
     const open = this.expandedBtn();
     if (!open) { if (this.panel) this.closePanel(); return; }
     const id = this.folderId(open);
@@ -189,7 +193,7 @@ const gipfolders = {
     document.head.appendChild(this.styleEl);
     const self = this;
     this.handlers = {
-      ctx: (e) => { try { self.onContext(e); } catch (er) {} },
+      ctx: (e) => { try { if (self.panel) self.panel.classList.add('gfp-under'); self.onContext(e); } catch (er) {} },
       away: (e) => {
         if (!self.panel) return;
         const t = e.target;
