@@ -1,3 +1,21 @@
+# GIP++ 3.2.1
+
+- The menu window no longer gets squished by Yappin's own styles (fixed size and layout, buttons and headings protected), has a solid background, bigger spacing and text, an accent-coloured active tab, and a nicer header.
+
+# GIP++ 3.2.0
+
+## New window instead of a Settings tab
+- GIP++ no longer adds a button or page to Yappin's Settings. It opens in **its own window**: click the GIP++ icon next to your name, or press **Ctrl+Shift+G**. This fixes the menu showing up in server settings and breaking the real settings page.
+- The sidebar went from about 15 entries to **6**: Features, Appearance, Chat and voice, Accounts, App, About. Everything else is a collapsible section inside those pages and only loads when opened.
+- **Features** page: search plus All / On / Off filter, categories you can collapse, and per-feature **Options** that stay hidden until you click them.
+- *App > Menu button* lets you put the button next to your name, floating in a corner, or hide it (keyboard shortcut only).
+- Fixed the origin tags (GIP++ / Yap++) rendering far too large.
+
+## New feature
+- **Keep Stream Audio When Deafened** (`gipstreamaudio.js`, on by default, under Voice). Deafen silences voice chat but the stream you are watching keeps playing. Muting or changing the stream with its own controls still works while deafened. Debug: run `gipstreamaudio.debug()` in the console.
+
+---
+
 # GIP++ changelog: 2.1.0 → 3.1.0
 
 Everything that differs between the 2.1.0 and 3.1.0 packages. This covers the 3.0.0, 3.0.1 and 3.1.0 releases, plus the Emoji Text feature added on top of 3.1.0. It was checked against the actual file differences, not only the old notes.

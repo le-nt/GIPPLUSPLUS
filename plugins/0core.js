@@ -3,7 +3,7 @@
 window.YapPlus = window.YapPlus || {};
 window.GipPlus = window.YapPlus;
 window.YapPlus.LINKS = { server: 'https://yapin.gg/invite/gip', repo: 'https://github.com/le-nt/GIPPLUSPLUS', bugs: 'https://github.com/le-nt/GIPPLUSPLUS/issues/new' };
-window.YapPlus.VERSION = '3.1.0';
+window.YapPlus.VERSION = '3.2.1';
 
 /* ---------- error log (3.0.0) ---------- */
 // Everything that goes wrong inside a plugin lands here, shows up in GIP++ > Health, and is copied by "Copy debug info".
@@ -132,7 +132,7 @@ window.YapPlus.tagHTML = function (origin) {
   const st = document.createElement('style');
   st.id = 'gip-core-style';
   st.textContent = `
-    .gip-tag{display:inline-block;vertical-align:middle;margin-left:6px;padding:1px 5px;font:700 9px/1.5 inherit;font-family:inherit;letter-spacing:.06em;text-transform:uppercase;border-radius:4px;white-space:nowrap;user-select:none}
+    .gip-tag{display:inline-block;vertical-align:middle;margin-left:6px;padding:1px 5px;font-family:inherit;font-weight:700;font-size:9px;line-height:1.5;letter-spacing:.06em;text-transform:uppercase;border-radius:4px;white-space:nowrap;user-select:none}
     .gip-tag-gip{background:var(--gip-inv-bg,#f3f3f1);color:var(--gip-inv-fg,#080808)}
     .gip-tag-yap{border:1px solid currentColor;opacity:.7}
     .gip-toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:2147483000;padding:9px 14px;border-radius:8px;font-size:13px;background:var(--bg-elev,#1e1f22);color:var(--fg,#f3f3f1);border:1px solid color-mix(in srgb,currentColor 25%,transparent);box-shadow:0 6px 24px rgba(0,0,0,.4);pointer-events:none}

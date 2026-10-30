@@ -1,4 +1,4 @@
-// GIP++ menu. One tab in Yappin's own Settings that holds everything: plugins, settings, themes, about.
+// GIP++ menu. Its own window (button next to your name, or Ctrl+Shift+G). It does not add anything to Yappin's Settings.
 // Built from Yappin's own classes and the page's own colours so it looks like part of the app.
 // Everything from GIP++ carries a GIP++ tag; everything inherited from Yap++ carries a Yap++ tag.
 (function () {
@@ -94,6 +94,111 @@
       #${panelid} .gp-side h4{display:none}
       #${panelid} .gp-side .gp-tab{width:auto}
     }
+
+    /* ============ v3.3 window layout. Geometry is !important because Yappin's own .modal / button / heading rules must not squeeze it. ============ */
+    #gip-menu-ov{position:fixed !important;inset:0 !important;z-index:2147482000;display:flex !important;align-items:center;justify-content:center;background:rgba(6,7,10,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);padding:3vh 3vw !important;box-sizing:border-box}
+    #gip-menu-ov .gip-menu-win{position:relative !important;display:flex !important;flex-direction:column !important;gap:0 !important;width:min(1180px,100%) !important;max-width:none !important;min-width:0 !important;height:min(820px,100%) !important;max-height:100% !important;min-height:0 !important;margin:0 !important;padding:0 !important;overflow:hidden !important;border-radius:18px !important;box-shadow:0 30px 90px rgba(0,0,0,.6),0 0 0 1px color-mix(in srgb,currentColor 12%,transparent) !important;transform:none !important}
+    #gip-menu-ov .gip-menu-win.gip-fill{background:var(--gip-win-bg,Canvas) !important}
+    #gip-menu-ov #${panelid}{box-sizing:border-box;padding:0 !important;margin:0 !important;max-width:none !important;width:100% !important;flex:1 1 auto;min-height:0;display:flex !important;flex-direction:column;font-size:15px;line-height:1.5;color:inherit}
+    #${panelid} *,#${panelid} *::before,#${panelid} *::after{box-sizing:border-box}
+    #${panelid} button{height:auto;min-height:0;line-height:inherit;font-family:inherit}
+    #${panelid} h2,#${panelid} h3,#${panelid} p{margin:0;padding:0;line-height:1.35}
+
+    /* header */
+    #${panelid} .gip-top{display:flex;align-items:center;gap:14px;padding:18px 26px;flex:0 0 auto;border-bottom:1px solid color-mix(in srgb,currentColor 12%,transparent);background:linear-gradient(180deg,color-mix(in srgb,currentColor 5%,transparent),transparent)}
+    #${panelid} .gip-logo{display:flex;align-items:center;justify-content:center;width:38px;height:38px;flex:0 0 38px;border-radius:11px;background:var(--accent,var(--gip-inv-bg,#6b8afd));color:var(--gip-inv-fg,#fff)}
+    #${panelid} .gip-logo svg{width:22px;height:22px}
+    #${panelid} .gip-title{display:flex;flex-direction:column;gap:1px;margin-right:auto;min-width:0}
+    #${panelid} .gip-title b{font-size:19px;letter-spacing:.01em;line-height:1.2}
+    #${panelid} .gip-title span{font-size:12px;opacity:.6}
+    #${panelid} .gip-x{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;flex:0 0 36px;padding:0;border-radius:10px;border:0;background:none;color:inherit;cursor:pointer;opacity:.7;font-size:24px;line-height:1}
+    #${panelid} .gip-x:hover{opacity:1;background:color-mix(in srgb,currentColor 12%,transparent)}
+
+    /* body: sidebar + content */
+    #${panelid} .gp-layout{flex:1 1 auto;min-height:0;display:grid !important;grid-template-columns:236px minmax(0,1fr) !important;gap:0 !important;align-items:stretch}
+    #${panelid} .gp-side{display:flex !important;flex-direction:column;gap:4px;padding:18px 14px !important;margin:0;position:static !important;overflow-y:auto;border-right:1px solid color-mix(in srgb,currentColor 12%,transparent);background:color-mix(in srgb,currentColor 3%,transparent);min-height:0}
+    #${panelid} .gp-side .gp-tab{flex:0 0 auto !important;display:flex !important;align-items:center;gap:12px;width:100% !important;margin:0 !important;padding:12px 14px !important;border:0;border-radius:11px;background:none;color:inherit;font-size:15px;font-weight:500;text-align:left;cursor:pointer;opacity:.78;position:relative}
+    #${panelid} .gp-side .gp-tab svg{width:20px;height:20px;flex:0 0 20px;opacity:.9}
+    #${panelid} .gp-side .gp-tab:hover{opacity:1;background:color-mix(in srgb,currentColor 8%,transparent)}
+    #${panelid} .gp-side .gp-tab.on{opacity:1;font-weight:700;background:color-mix(in srgb,var(--accent,var(--gip-inv-bg,#6b8afd)) 22%,transparent)}
+    #${panelid} .gp-side .gp-tab.on::before{content:"";position:absolute;left:-14px;top:9px;bottom:9px;width:4px;border-radius:0 4px 4px 0;background:var(--accent,var(--gip-inv-bg,#6b8afd))}
+    #${panelid} .gp-side .gp-sep{flex:1 1 auto;min-height:12px}
+    #${panelid} .gp-content.gip-scroll{overflow-y:auto;padding:28px 36px 44px !important;min-width:0;min-height:0}
+    #${panelid} .gp-head{margin:0 0 22px !important}
+    #${panelid} .gp-head h2{font-size:24px;font-weight:700;margin:0 0 6px}
+    #${panelid} .gp-head p{font-size:14px;opacity:.7}
+    #${panelid} .gp-group{margin:0 0 26px}
+    #${panelid} .gp-group h3{font-size:15px;font-weight:700;margin:0 0 4px}
+    #${panelid} .gp-note{font-size:13px;opacity:.7;margin:0 0 10px;line-height:1.45}
+
+    /* rows, switches, controls */
+    #${panelid} .gp-row{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 0;border-bottom:1px solid color-mix(in srgb,currentColor 9%,transparent)}
+    #${panelid} .gp-row:last-child{border-bottom:0}
+    #${panelid} .gp-name{font-size:15px;font-weight:600;display:flex;align-items:center;flex-wrap:wrap;gap:2px 0}
+    #${panelid} .gp-desc{font-size:13px;opacity:.7;line-height:1.5;margin-top:3px}
+    #${panelid} .gp-sw{width:46px;height:26px;flex:0 0 46px}
+    #${panelid} .gp-sw span{border-radius:26px}
+    #${panelid} .gp-sw span::before{width:20px;height:20px;left:3px;top:3px}
+    #${panelid} .gp-sw input:checked + span::before{transform:translateX(20px)}
+    #${panelid} input.input,#${panelid} select.input,#${panelid} textarea.input{padding:9px 12px;border-radius:10px;border:1px solid color-mix(in srgb,currentColor 22%,transparent);background:color-mix(in srgb,currentColor 5%,transparent);color:inherit;font:inherit;font-size:14px;min-height:38px;outline:0}
+    #${panelid} input.input:focus,#${panelid} select.input:focus,#${panelid} textarea.input:focus{border-color:var(--accent,var(--gip-inv-bg,#6b8afd))}
+    #${panelid} .btn{padding:8px 14px;border-radius:10px;min-height:36px;font-size:14px}
+    #${panelid} .gp-line{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0}
+    #${panelid} .gp-chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+    #${panelid} .gp-chip{padding:6px 13px;border-radius:99px;font-size:13px;opacity:.8;border:1px solid color-mix(in srgb,currentColor 25%,transparent);background:none;color:inherit;cursor:pointer}
+    #${panelid} .gp-chip.on{opacity:1;background:color-mix(in srgb,var(--accent,var(--gip-inv-bg,#6b8afd)) 25%,transparent);border-color:var(--accent,var(--gip-inv-bg,#6b8afd))}
+    #${panelid} .gp-count{font-size:13px;opacity:.7;margin:10px 2px 4px}
+    #${panelid} .gp-trow{padding:12px 0}
+    #${panelid} .gip-tag{font-size:9px !important;line-height:1.5 !important;padding:1px 6px;margin-left:8px;opacity:.85}
+
+    /* features page */
+    #${panelid} .gip-bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:0 0 4px}
+    #${panelid} .gip-bar .input{flex:1 1 220px;min-width:0}
+    #${panelid} .gip-bar .gp-chips{margin:0;flex:0 0 auto}
+    #${panelid} .gip-cat{display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;color:inherit;cursor:pointer;padding:6px 4px;margin:20px 0 8px;text-align:left}
+    #${panelid} .gip-cat b{font-size:12px;text-transform:uppercase;letter-spacing:.09em;opacity:.65}
+    #${panelid} .gip-cat .gp-ver{margin-left:auto;font-size:12px;opacity:.55}
+    #${panelid} .gip-card{border:1px solid color-mix(in srgb,currentColor 13%,transparent);border-radius:14px;padding:2px 20px;background:color-mix(in srgb,currentColor 4%,transparent);box-shadow:0 1px 2px rgba(0,0,0,.15)}
+    #${panelid} .gip-main{min-width:0;flex:1 1 auto}
+    #${panelid} .gip-ctl{display:flex;align-items:center;gap:14px;flex:0 0 auto}
+    #${panelid} .gip-opt-btn{background:none;border:1px solid color-mix(in srgb,currentColor 25%,transparent);color:inherit;border-radius:9px;padding:5px 12px;font-size:13px;cursor:pointer;opacity:.8}
+    #${panelid} .gip-opt-btn:hover,#${panelid} .gip-opt-btn[aria-expanded="true"]{opacity:1;background:color-mix(in srgb,currentColor 10%,transparent)}
+    #${panelid} .gip-opts{margin:0 0 12px;padding:2px 14px;border-radius:11px;background:color-mix(in srgb,currentColor 5%,transparent)}
+    #${panelid} .gip-opts .gp-row{padding:11px 0}
+    #${panelid} .gp-sub-row{margin:0;padding-left:0;border-left:0}
+    #${panelid} .gp-dim{opacity:.45}
+
+    /* collapsible sections */
+    #${panelid} .gip-sec{border:1px solid color-mix(in srgb,currentColor 13%,transparent);border-radius:14px;margin:0 0 12px;overflow:hidden;background:color-mix(in srgb,currentColor 4%,transparent);box-shadow:0 1px 2px rgba(0,0,0,.15)}
+    #${panelid} .gip-sec.open{background:color-mix(in srgb,currentColor 2%,transparent)}
+    #${panelid} .gip-sec-h{display:flex;align-items:center;gap:14px;width:100%;padding:16px 20px;background:none;border:0;color:inherit;text-align:left;cursor:pointer}
+    #${panelid} .gip-sec-h:hover{background:color-mix(in srgb,currentColor 6%,transparent)}
+    #${panelid} .gip-sec-t{font-weight:700;font-size:16px}
+    #${panelid} .gip-sec-d{font-size:13px;opacity:.68;margin-top:2px;line-height:1.4}
+    #${panelid} .gip-chev{margin-left:auto;flex:0 0 18px;width:18px;height:18px;opacity:.6;transition:transform .15s}
+    #${panelid} .gip-chev svg{width:18px;height:18px;display:block}
+    #${panelid} .gip-sec.open .gip-chev{transform:rotate(90deg)}
+    #${panelid} .gip-sec-body{display:none;padding:12px 20px 20px;border-top:1px solid color-mix(in srgb,currentColor 11%,transparent)}
+    #${panelid} .gip-sec.open .gip-sec-body{display:block}
+    #${panelid} .gip-sec-body .gp-group:first-child:last-child > h3{display:none}
+    #${panelid} .gip-sec-body .gp-group:last-child{margin-bottom:0}
+
+    /* the open button */
+    .gip-menu-btn{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;padding:0;border-radius:9px;border:0;background:none;color:inherit;opacity:.75;cursor:pointer}
+    .gip-menu-btn:hover{opacity:1;background:color-mix(in srgb,currentColor 12%,transparent)}
+    .gip-menu-btn svg{width:19px;height:19px}
+    .gip-menu-btn.in-bar{margin-left:4px}
+    .gip-menu-btn.floating{position:fixed;left:12px;bottom:12px;z-index:2147481000;width:40px;height:40px;border-radius:50%;border:1px solid color-mix(in srgb,currentColor 28%,transparent);background:color-mix(in srgb,Canvas 82%,transparent);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:.9}
+
+    @media (max-width:820px){
+      #gip-menu-ov{padding:0 !important}
+      #gip-menu-ov .gip-menu-win{border-radius:0 !important;height:100% !important;width:100% !important}
+      #${panelid} .gp-layout{grid-template-columns:1fr !important;grid-template-rows:auto minmax(0,1fr)}
+      #${panelid} .gp-side{flex-direction:row;overflow-x:auto;overflow-y:hidden;border-right:0;border-bottom:1px solid color-mix(in srgb,currentColor 12%,transparent);padding:10px !important}
+      #${panelid} .gp-side .gp-tab{width:auto !important;white-space:nowrap;padding:9px 13px !important}
+      #${panelid} .gp-side .gp-tab.on::before,#${panelid} .gp-side .gp-sep{display:none}
+      #${panelid} .gp-content.gip-scroll{padding:20px 16px 32px !important}
+    }
   `;
   document.head.appendChild(style);
 
@@ -117,7 +222,7 @@
   const CATS = [['chat', 'Chat and messages'], ['voice', 'Voice'], ['nav', 'Servers and navigation'], ['look', 'Look and feel'], ['acct', 'Accounts and privacy'], ['fun', 'Fun'], ['other', 'Other']];
   const CAT_OF = {
     giptextcursor: 'chat', doubleclickreply: 'chat', charactercounter: 'chat', draftsaved: 'chat', notyping: 'chat', gipgifs: 'chat', imagesearch: 'chat', filenamedisguiser: 'chat', gipsearch: 'chat',
-    gipvolume: 'voice', giphifimic: 'voice', customvoice: 'voice', gipvoice: 'voice', gipsounds: 'voice',
+    gipvolume: 'voice', gipstreamaudio: 'voice', giphifimic: 'voice', customvoice: 'voice', gipvoice: 'voice', gipsounds: 'voice',
     gipnav: 'nav', gipreadall: 'nav', gipfolders: 'nav', gipserverinfo: 'nav',
     gipfx: 'look', gipprofileguard: 'look', gipbrand: 'look', custombackground: 'look',
     gipalts: 'acct', gipcounter: 'acct', gipnopopups: 'look',
@@ -127,27 +232,48 @@
   };
   function tabPlugins() {
     const root = el('div');
-    const search = el('input', { class: 'input', placeholder: 'Search features\u2026', style: 'width:100%', 'aria-label': 'Search features' });
-    const count = el('div', { class: 'gp-count' }); const list = el('div');
-    root.append(search, count, list);
+    let filter = 'all'; const openOpts = new Set(); const shut = new Set();
+    const search = el('input', { class: 'input', placeholder: 'Search features\u2026', style: 'flex:1;min-width:180px', 'aria-label': 'Search features' });
+    const chips = el('div', { class: 'gp-chips', style: 'margin:0' });
+    [['all', 'All'], ['on', 'On'], ['off', 'Off']].forEach(([v, l]) => {
+      const c = el('button', { class: 'gp-chip' + (v === 'all' ? ' on' : ''), type: 'button', text: l });
+      c.addEventListener('click', () => { filter = v; chips.querySelectorAll('.gp-chip').forEach(x => x.classList.toggle('on', x === c)); draw(); });
+      chips.appendChild(c);
+    });
+    const count = el('div', { class: 'gp-count', style: 'margin:4px 2px 0' }); const list = el('div');
+    root.append(el('div', { class: 'gip-bar' }, search, chips), count, list);
     const draw = () => {
+      const sc = root.closest('.gip-scroll'); const keep = sc ? sc.scrollTop : 0;
       const q = search.value.trim().toLowerCase(); list.innerHTML = '';
       const all = Y.PluginHost.all(); const on = all.filter(p => Y.PluginHost.isEnabled(p)).length;
-      count.textContent = on + ' of ' + all.length + ' features on. Click a feature or its switch to turn it on or off.';
-      let shown = 0;
+      count.textContent = on + ' of ' + all.length + ' features on. Click a feature to switch it.';
+      const filtering = !!q || filter !== 'all'; let shown = 0;
       CATS.forEach(([cid, title]) => {
-        const ps = all.filter(p => (CAT_OF[p.id] || 'other') === cid && (!q || (p.name + ' ' + (p.description || '')).toLowerCase().includes(q)));
+        const inCat = all.filter(p => (CAT_OF[p.id] || 'other') === cid);
+        const ps = inCat.filter(p => (!q || (p.name + ' ' + (p.description || '')).toLowerCase().includes(q)) && (filter === 'all' || (filter === 'on') === Y.PluginHost.isEnabled(p)));
         if (!ps.length) return; shown += ps.length;
-        const g = group(title, null); list.appendChild(g);
+        const closed = !filtering && shut.has(cid);
+        const hd = el('button', { class: 'gip-cat', type: 'button', 'aria-expanded': String(!closed) }, el('b', { text: title }), el('span', { class: 'gp-ver', text: inCat.filter(p => Y.PluginHost.isEnabled(p)).length + ' of ' + inCat.length + ' on' }));
+        hd.addEventListener('click', () => { if (shut.has(cid)) shut.delete(cid); else shut.add(cid); draw(); });
+        list.appendChild(hd); if (closed) return;
+        const card = el('div', { class: 'gip-card' }); list.appendChild(card);
         ps.forEach(p => {
           const enabled = Y.PluginHost.isEnabled(p); const swl = sw(enabled, (v) => { Y.PluginHost.setEnabled(p, v); draw(); });
-          const row = el('div', { class: 'gp-row gp-click' }, el('div', null, el('div', { class: 'gp-name' }, p.name, Y.tag(p.origin)), el('div', { class: 'gp-desc', text: p.description || '' })), swl);
-          row.addEventListener('click', (e) => { if (e.target.closest('.gp-sw')) return; swl.querySelector('input').click(); });
-          g.appendChild(row);
-          (p.options || []).forEach(o => { const r = optionRow(p, o); r.classList.add('gp-sub-row'); if (!enabled) r.classList.add('gp-dim'); g.appendChild(r); });
+          const opts = p.options || []; const isOpen = openOpts.has(p.id);
+          const ob = opts.length ? el('button', { class: 'gip-opt-btn', type: 'button', 'aria-expanded': String(isOpen), text: 'Options' }) : null;
+          if (ob) ob.addEventListener('click', (e) => { e.stopPropagation(); if (openOpts.has(p.id)) openOpts.delete(p.id); else openOpts.add(p.id); draw(); });
+          const row = el('div', { class: 'gp-row gp-click' }, el('div', { class: 'gip-main' }, el('div', { class: 'gp-name' }, p.name, Y.tag(p.origin)), el('div', { class: 'gp-desc', text: p.description || '' })), el('div', { class: 'gip-ctl' }, ob, swl));
+          row.addEventListener('click', (e) => { if (e.target.closest('.gp-sw, .gip-opt-btn')) return; swl.querySelector('input').click(); });
+          card.appendChild(row);
+          if (opts.length && isOpen) {
+            const box = el('div', { class: 'gip-opts' }); if (!enabled) box.classList.add('gp-dim');
+            opts.forEach(o => { const r = optionRow(p, o); r.classList.add('gp-sub-row'); box.appendChild(r); });
+            card.appendChild(box);
+          }
         });
       });
-      if (!shown) list.appendChild(el('div', { class: 'gp-desc', text: 'No features match \u201c' + search.value + '\u201d.' }));
+      if (!shown) list.appendChild(el('div', { class: 'gp-desc', style: 'margin-top:14px', text: 'No features match.' }));
+      if (sc) sc.scrollTop = keep;
     };
     search.addEventListener('input', draw); draw();
     return root;
@@ -163,12 +289,8 @@
     }
     return el('div', { class: 'gp-row' }, el('div', null, el('div', { class: 'gp-name' }, o.label, Y.tag(p.origin)), o.desc ? el('div', { class: 'gp-desc', text: o.desc }) : null), ctl);
   }
-  function tabSettings() {
-    const root = el('div'); const parts = {};
-    const gs = group('Good to know', 'gip', 'Per-feature options now live under each feature in the Features tab.');
-    gs.appendChild(el('div', { class: 'gp-row' }, el('div', null, el('div', { class: 'gp-name' }, 'Right-click a folder', Y.tag('gip')), el('div', { class: 'gp-desc', text: 'Set a custom folder icon or hide server icons for just that folder.' }))));
-    gs.appendChild(el('div', { class: 'gp-row' }, el('div', null, el('div', { class: 'gp-name' }, 'Volume and direction', Y.tag('gip')), el('div', { class: 'gp-desc', text: 'Use the normal right-click menu on a person in voice. Volume is the built-in slider; Direction is the new one under it.' }))));
-    parts.gs = gs;
+  function tabSettingsParts() {
+    const parts = {};
 
     const us = group('Updates', 'yap');
     const btn = el('button', { class: 'btn', text: 'Look for updates' }); const status = el('span', { class: 'gp-ver' });
@@ -244,8 +366,7 @@
     }
     cb.append(el('div', { class: 'gp-line' }, url), el('div', { class: 'gp-line' }, el('span', { class: 'gp-ver', text: 'Opacity' }), op, opv), el('div', { class: 'gp-note', text: 'Custom CSS' }), css);
     parts.cb = cb;
-    ['us', 'ae', 'fd', 'cb', 'gs', 'rs'].forEach(k => root.appendChild(parts[k]));
-    return root;
+    return parts;
   }
 
 
@@ -454,89 +575,157 @@
     return root;
   }
 
-  const BASE_TABS = [['plugins', 'Features', tabPlugins], ['settings', 'Settings', tabSettings], ['accounts', 'Accounts', tabAccounts], ['themes', 'Themes', tabThemes]];
-  // Sounds, Voice and Search register themselves through YapPlus.registerTab; About always comes last.
-  const allTabs = () => BASE_TABS.concat((Y.extraTabs || []).map(t => [t.id, t.label, () => t.build(Y.ui)]), [['about', 'About', tabAbout]]);
-  let currentTab = 'plugins', currentMode = false;
-
-  // Sidebar sections. Tabs that register themselves later and are not listed here land under "More".
-  const SIDE = [['Features', ['plugins']], ['Appearance', ['themes', 'sounds']], ['Chat and voice', ['voice', 'search', 'words', 'people', 'downloads']], ['App', ['accounts', 'sync', 'settings']], ['', ['about']]];
-  const INFO = {
-    plugins: ['Features', 'Switch features on or off. Changes apply straight away.'],
-    themes: ['Themes', 'Choose how the app looks. Click a preview to switch it on.'],
-    sounds: ['Sounds', 'Pick a sound pack and when it plays.'],
-    voice: ['Voice', 'Saved volume and direction for people, and presets.'],
-    search: ['Message search', 'Search the messages you have seen while this is on.'],
-    words: ['Word filter', 'Hide, collapse or highlight messages that contain words you choose.'],
-    people: ['Nicknames', 'Rename people for yourself only. Nobody else sees it.'],
-    downloads: ['Downloads', 'Save files and emoji from chat with their real names.'],
-    sync: ['Sync accounts', 'Copy GIP++ settings from one account to another.'],
-    accounts: ['Accounts', 'Use several accounts at once, each in its own window.'],
-    settings: ['Settings', 'Updates, shortcuts, uploads, background and reset.'],
-    about: ['About', 'Version, credits and links.'],
+  // ---------------------------------------------------------------------------------------------------------
+  // The window. GIP++ no longer adds anything to Yappin's Settings (that is what used to leak into server settings
+  // and break the real settings page). It opens as its own window from a small button or with Ctrl+Shift+G.
+  // ---------------------------------------------------------------------------------------------------------
+  const ovid = 'gip-menu-ov', btnid = 'gip-menu-btn';
+  const PAGE_ICON = {
+    plugins: '<path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/>',
+    look: '<circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="10.5" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="15.5" cy="10.5" r="1"/><path d="M12 21c-1.5 0-2-1.5-1-2.5s0-2.5 2-2.5h3"/>',
+    chat: '<path d="M4 5h16v11H9l-5 4z"/>',
+    accounts: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+    app: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>',
+    about: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',
   };
-  function buildpanel() {
+  const svg = (inner) => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + inner + '</svg>';
+  const CHEV = svg('<path d="M9 6l6 6-6 6"/>');
+
+  // Settings parts are built once per time the window is opened.
+  let sp = null; const parts = () => sp || (sp = tabSettingsParts());
+  const ext = (id) => (Y.extraTabs || []).find(t => t.id === id);
+
+  // Sections inside a page. ext: the tab another plugin registered with YapPlus.registerTab.
+  const SECS = {
+    themes: { t: 'Themes and accent colour', d: 'Click a preview to switch a theme on. The slider recolours themes that support it.', b: () => tabThemes() },
+    sounds: { t: 'Sound packs', d: 'Pick a sound pack and choose when it plays.', ext: 'sounds' },
+    background: { t: 'Custom background', d: 'A picture or your own CSS behind the app.', b: () => parts().cb },
+    voice: { t: 'Voice presets', d: 'Saved volume and direction for people, and presets.', ext: 'voice' },
+    search: { t: 'Message search', d: 'Search the messages you have seen while this is on.', ext: 'search' },
+    words: { t: 'Word filter', d: 'Hide, collapse or highlight messages with words you choose.', ext: 'words' },
+    people: { t: 'Nicknames', d: 'Rename people for yourself only. Nobody else sees it.', ext: 'people' },
+    downloads: { t: 'Downloads', d: 'Save files and emoji from chat with their real names.', ext: 'downloads' },
+    emojitext: { t: 'Emoji text', d: 'Turns :emoji_names: written as text into the emoji picture.', ext: 'emojitext' },
+    shortcut: { t: 'Text shortcut', d: 'Type a shortcut in chat and it is replaced with your text.', b: () => parts().ae },
+    filenames: { t: 'Upload file names', d: 'Pick which kinds of files get a random name when you upload them.', b: () => parts().fd },
+    accounts: { t: 'Your accounts', d: 'Use several accounts at once, each in its own window.', b: () => tabAccounts() },
+    sync: { t: 'Sync settings between accounts', d: 'Copy GIP++ settings from one account to another.', ext: 'sync' },
+    updates: { t: 'Updates', d: 'Check for a new GIP++ version.', b: () => parts().us },
+    menubtn: { t: 'Menu button', d: 'Where the GIP++ button shows up, and the keyboard shortcut.', b: () => menuBtnSection() },
+    health: { t: 'Health check', d: 'Finds features that stopped working after a Yappin update.', ext: 'health' },
+    reset: { t: 'Reset and troubleshooting', d: 'Put GIP++ back to how it was on a fresh install.', b: () => parts().rs },
+  };
+  const PAGES = [
+    { id: 'plugins', label: 'Features', head: ['Features', 'Switch features on or off. Changes apply straight away.'], build: () => tabPlugins() },
+    { id: 'look', label: 'Appearance', head: ['Appearance', 'Themes, sounds and background.'], secs: ['themes', 'sounds', 'background'] },
+    { id: 'chat', label: 'Chat and voice', head: ['Chat and voice', 'Tools for messages, people and calls. Open a section to use it.'], secs: ['voice', 'search', 'words', 'people', 'downloads', 'emojitext', 'shortcut', 'filenames'] },
+    { id: 'accounts', label: 'Accounts', head: ['Accounts', 'Several logins at once, and moving settings between them.'], secs: ['accounts', 'sync'] },
+    { id: 'app', label: 'App', head: ['App', 'Updates, the menu button, health and reset.'], secs: ['updates', 'menubtn', 'health', 'reset'] },
+    { id: 'about', label: 'About', head: ['About', 'Version, credits and links.'], build: () => tabAbout() },
+  ];
+  const LISTED = new Set(Object.keys(SECS)); LISTED.add('plugins');
+
+  function menuBtnSection() {
+    const root = el('div'); const g = group('Menu button', 'gip', 'GIP++ opens in its own window and does not touch Yappin\u2019s Settings. You can always open it with Ctrl+Shift+G.');
+    const sel = el('select', { class: 'input', style: 'width:auto' });
+    [['auto', 'Next to my name (or floating if not there)'], ['userbar', 'Next to my name'], ['float', 'Floating corner button'], ['hidden', 'Hidden (keyboard shortcut only)']].forEach(([v, l]) => { const o = el('option', { value: v, text: l }); if (v === (localStorage.getItem('gip.menuBtn') || 'auto')) o.selected = true; sel.appendChild(o); });
+    sel.addEventListener('change', () => { try { localStorage.setItem('gip.menuBtn', sel.value); } catch (e) {} placeBtn(); });
+    g.appendChild(el('div', { class: 'gp-row' }, el('div', null, el('div', { class: 'gp-name' }, 'Where to show it', Y.tag('gip')), el('div', { class: 'gp-desc', text: 'Pick Floating if the button looks out of place next to your name.' })), sel));
+    root.appendChild(g); return root;
+  }
+
+  function buildSection(id, state) {
+    const s = SECS[id]; const e = s.ext ? ext(s.ext) : null;
+    if (s.ext && !e) return null;
+    const box = el('div', { class: 'gip-sec' + (state.open.has(id) ? ' open' : '') });
+    const head = el('button', { class: 'gip-sec-h', type: 'button', 'aria-expanded': String(state.open.has(id)) }, el('div', null, el('div', { class: 'gip-sec-t', text: s.t }), el('div', { class: 'gip-sec-d', text: s.d })), el('span', { class: 'gip-chev', html: '' }));
+    head.querySelector('.gip-chev').innerHTML = CHEV;
+    const body = el('div', { class: 'gip-sec-body' }); let built = false;
+    const fill = () => { if (built) return; built = true; try { body.appendChild(e ? e.build(Y.ui) : s.b()); } catch (err) { console.error('[GIP++] section failed', id, err); body.textContent = 'This section failed to load. See the console.'; } };
+    if (state.open.has(id)) fill();
+    head.addEventListener('click', () => { const o = !box.classList.contains('open'); box.classList.toggle('open', o); head.setAttribute('aria-expanded', String(o)); if (o) { state.open.add(id); fill(); } else state.open.delete(id); });
+    box.append(head, body); return box;
+  }
+
+  function buildpanel(startPage, close) {
     const p = el('div', { id: panelid });
-    const h = el('h1', null, 'GIP++', el('span', { class: 'gp-ver', text: 'v' + Y.VERSION }));
-    const sub = el('div', { class: 'gp-sub', text: 'Unofficial client mod, not affiliated with Yapper Media LLC. Based on Yap++.' });
-    const side = el('nav', { class: 'gp-side', 'aria-label': 'GIP++ sections' }); const head = el('div', { class: 'gp-head' }); const body = el('div');
-    const content = el('div', { class: 'gp-content' }, head, body);
-    const tabsNow = allTabs();
+    const top = el('div', { class: 'gip-top' });
+    const logo = el('div', { class: 'gip-logo' }); logo.innerHTML = svg('<path d="M5 12h14"/><path d="M12 5v14"/><path d="M4 4l3 3M20 4l-3 3M4 20l3-3M20 20l-3-3"/>');
+    top.append(logo, el('div', { class: 'gip-title' }, el('b', { text: 'GIP++' }), el('span', { text: 'v' + Y.VERSION + ' \u00b7 unofficial client mod' })));
+    const xb = el('button', { class: 'gip-x', type: 'button', title: 'Close (Esc)', 'aria-label': 'Close', text: '\u00d7' }); xb.addEventListener('click', close); top.appendChild(xb);
+    const side = el('div', { class: 'gp-side', role: 'navigation', 'aria-label': 'GIP++ sections' }); const head = el('div', { class: 'gp-head' }); const body = el('div');
+    const content = el('div', { class: 'gp-content gip-scroll' }, head, body);
+    const state = { open: new Set(['themes', 'voice', 'accounts', 'updates']) };
+    // Plugins that register a tab we have no section for yet go under App so nothing disappears.
+    const extras = (Y.extraTabs || []).filter(t => !LISTED.has(t.id) && !Object.values(SECS).some(s => s.ext === t.id));
+    extras.forEach(t => { SECS['x:' + t.id] = { t: t.label, d: 'Added by a feature.', ext: t.id }; });
+    const pages = PAGES.map(pg => pg.id === 'app' && extras.length ? Object.assign({}, pg, { secs: pg.secs.concat(extras.map(t => 'x:' + t.id)) }) : pg);
     const show = (id) => {
-      currentTab = id;
-      side.querySelectorAll('.gp-tab').forEach(b => b.classList.toggle('on', b.dataset.id === id));
-      body.innerHTML = ''; head.innerHTML = '';
-      const t = allTabs().find(x => x[0] === id) || allTabs()[0];
-      const info = INFO[t[0]]; if (info) head.append(el('h2', { text: info[0] }), el('p', { text: info[1] }));
-      try { body.appendChild(t[2]()); } catch (e) { console.error('[GIP++] tab failed', id, e); body.textContent = 'This tab failed to load. See the console.'; }
+      const pg = pages.find(x => x.id === id) || pages[0]; currentPage = pg.id;
+      side.querySelectorAll('.gp-tab').forEach(b => b.classList.toggle('on', b.dataset.id === pg.id));
+      body.innerHTML = ''; head.innerHTML = ''; content.scrollTop = 0;
+      head.append(el('h2', { text: pg.head[0] }), el('p', { text: pg.head[1] }));
+      try {
+        if (pg.build) body.appendChild(pg.build());
+        else pg.secs.forEach(sid => { const s = buildSection(sid, state); if (s) body.appendChild(s); });
+      } catch (e) { console.error('[GIP++] page failed', pg.id, e); body.textContent = 'This page failed to load. See the console.'; }
     };
-    const placed = new Set();
-    const addGroup = (title, ids) => {
-      const tabs = ids.map(id => tabsNow.find(t => t[0] === id)).filter(Boolean); if (!tabs.length) return;
-      if (title) side.appendChild(el('h4', { text: title }));
-      tabs.forEach(([id, label]) => { placed.add(id); const b = el('button', { class: 'gp-tab', 'data-id': id, text: label }); b.addEventListener('click', () => show(id)); side.appendChild(b); });
-    };
-    SIDE.filter(g => g[0] !== '').forEach(g => addGroup(g[0], g[1]));
-    addGroup('More', tabsNow.filter(t => !placed.has(t[0]) && t[0] !== 'about').map(t => t[0]));
-    addGroup('', ['about']);
-    const links = el('div', { class: 'gp-links' });
-    const lk = (t, u) => { const a = el('a', { href: u, text: t, target: '_blank' }); a.addEventListener('click', (e) => { e.preventDefault(); try { window.electronAPI.openExternal(u); } catch (er) { window.open(u, '_blank'); } }); return a; };
-    links.append(lk('Join the GIP & CO server', Y.LINKS.server), lk('Report a bug', Y.LINKS.bugs), lk('GitHub', Y.LINKS.repo));
-    const cnt = el('div', { class: 'gp-sub', style: 'margin:-10px 0 14px' });
-    if (window.gipcounter) window.gipcounter.describe().then((t) => { if (t) cnt.textContent = t; else cnt.remove(); }); else cnt.remove();
-    p.append(h, sub, cnt, links, el('div', { class: 'gp-layout' }, side, content)); show(currentTab);
-    return p;
-  }
-  function safebuild(main) {
-    try { main.appendChild(buildpanel()); }
-    catch (err) { console.error('[GIP++] menu failed', err); main.appendChild(el('div', { style: 'padding:28px 40px', text: 'The GIP++ menu failed to load. See the console.' })); }
-  }
-  function inject() {
-    if (document.getElementById(navid)) return;
-    const nav = document.querySelector('.settings-nav'); const main = document.querySelector('.settings-main');
-    if (!nav || !main) return;
-    currentMode = false; // settings was just opened: Yappin shows its own page first
-    const btn = el('button', { id: navid });
-    btn.innerHTML = `${ICON}<span>GIP++</span>`;
-    // Leaving GIP++ for one of Yappin's own settings pages: remove our panel before Yappin draws its page,
-    // otherwise Yappin adds its page underneath ours.
-    const leave = () => {
-      currentMode = false; btn.classList.remove('active');
-      const pnl = document.getElementById(panelid); if (pnl) pnl.remove();
-    };
-    new MutationObserver(() => {
-      const pnl = document.getElementById(panelid);
-      if (currentMode) { if (!pnl && main.innerHTML === '') safebuild(main); }
-      else if (pnl) pnl.remove();
-    }).observe(main, { childList: true });
-    btn.addEventListener('click', (e) => {
-      e.preventDefault(); e.stopPropagation(); currentMode = true;
-      nav.querySelectorAll('button').forEach(b => b.classList.remove('active')); btn.classList.add('active');
-      main.innerHTML = ''; safebuild(main);
+    pages.forEach((pg) => {
+      if (pg.id === 'about') side.appendChild(el('div', { class: 'gp-sep' }));
+      const b = el('button', { class: 'gp-tab', type: 'button', 'data-id': pg.id }); b.innerHTML = svg(PAGE_ICON[pg.id] || '') + '<span></span>'; b.querySelector('span').textContent = pg.label;
+      b.addEventListener('click', () => show(pg.id)); side.appendChild(b);
     });
-    nav.addEventListener('click', (e) => { const b = e.target.closest && e.target.closest('button'); if (b && b !== btn && !btn.contains(b)) leave(); }, true);
-    nav.appendChild(btn);
+    p.append(top, el('div', { class: 'gp-layout' }, side, content)); show(startPage || currentPage);
+    p.__show = show; return p;
   }
-  Y.events.on('dom', inject, '1menu');
-  inject();
+
+  let currentPage = 'plugins';
+  function isOpen() { return !!document.getElementById(ovid); }
+  function closeMenu() {
+    const ov = document.getElementById(ovid); if (!ov) return;
+    document.removeEventListener('keydown', ov.__key, true); ov.remove(); sp = null;
+    const b = document.getElementById(btnid); if (b && b.isConnected) { try { b.focus({ preventScroll: true }); } catch (e) {} }
+  }
+  function openMenu(page) {
+    const old = document.getElementById(ovid);
+    if (old) { if (page && old.firstChild && old.firstChild.firstChild && old.firstChild.firstChild.__show) old.firstChild.firstChild.__show(page); return; }
+    sp = null;
+    const ov = el('div', { id: ovid }); const win = el('div', { class: 'modal gip-menu-win', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'GIP++' });
+    let panel; try { panel = buildpanel(page, closeMenu); } catch (err) { console.error('[GIP++] menu failed', err); panel = el('div', { style: 'padding:28px 40px', text: 'The GIP++ menu failed to load. See the console.' }); }
+    win.appendChild(panel); ov.appendChild(win); document.body.appendChild(ov);
+    try { // if Yappin's .modal gives no solid background, borrow the page's own
+      const bg = getComputedStyle(win).backgroundColor; const m = /rgba?\(([^)]+)\)/.exec(bg); const a = m ? (m[1].split(',')[3] === undefined ? 1 : parseFloat(m[1].split(',')[3])) : 0;
+      if (!m || a < 0.9) { let c = getComputedStyle(document.body).backgroundColor; if (!/rgb/.test(c) || /rgba\(.*,\s*0\)/.test(c)) c = getComputedStyle(document.documentElement).backgroundColor; if (!/rgb/.test(c) || /rgba\(.*,\s*0\)/.test(c)) c = '#1e1f24'; win.style.setProperty('--gip-win-bg', c); win.classList.add('gip-fill'); }
+    } catch (e) {}
+    ov.addEventListener('pointerdown', (e) => { if (e.target === ov) closeMenu(); });
+    ov.__key = (e) => { if (e.key === 'Escape' && !document.querySelector('.gip-overlay, .gip-popmenu')) { e.stopPropagation(); e.preventDefault(); closeMenu(); } };
+    document.addEventListener('keydown', ov.__key, true);
+  }
+  Y.openMenu = openMenu; Y.closeMenu = closeMenu;
+
+  // The button that opens the window.
+  function placeBtn() {
+    let mode = 'auto'; try { mode = localStorage.getItem('gip.menuBtn') || 'auto'; } catch (e) {}
+    let btn = document.getElementById(btnid);
+    if (mode === 'hidden') { if (btn) btn.remove(); return; }
+    if (!btn) {
+      btn = el('button', { id: btnid, type: 'button', title: 'GIP++ (Ctrl+Shift+G)', 'aria-label': 'Open GIP++' });
+      btn.innerHTML = ICON; btn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); isOpen() ? closeMenu() : openMenu(); });
+    }
+    const bar = Y.sel.q('userBar');
+    if ((mode === 'userbar' || mode === 'auto') && bar) { if (btn.parentElement !== bar || btn.className !== 'gip-menu-btn in-bar') { btn.className = 'gip-menu-btn in-bar'; bar.appendChild(btn); } }
+    else if (btn.parentElement !== document.body || btn.className !== 'gip-menu-btn floating') { btn.className = 'gip-menu-btn floating'; document.body.appendChild(btn); }
+  }
+  Y.events.watch(placeBtn, '1menu', 150); placeBtn();
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && !e.altKey && !e.metaKey && (e.key === 'G' || e.key === 'g')) { e.preventDefault(); e.stopPropagation(); isOpen() ? closeMenu() : openMenu(); }
+  }, true);
+
+  // The menu used to sit inside Yappin's Settings. Say where it went, once.
+  try {
+    if (!localStorage.getItem('gip.menuMovedHint')) {
+      localStorage.setItem('gip.menuMovedHint', '1');
+      setTimeout(() => Y.toast('GIP++ has its own window now. Click the GIP++ icon or press Ctrl+Shift+G.', 7000), 3500);
+    }
+  } catch (e) {}
 })();
