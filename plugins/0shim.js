@@ -15,7 +15,7 @@
   }
 
   // Switch on the plugins that matter most once, on first launch, without overriding anyone's later choice.
-  ['gipcodeblocks', 'gipdownloads', 'gipemojidl', 'gipemojitext', 'gipvolume', 'giptextcursor', 'gipgifs', 'gipfolders', 'gipvoice', 'gipreadall', 'gipnav', 'gipprofileguard', 'gipserverinfo', 'gipnopopups', 'gipbrand', 'gipcounter', 'gipalts', 'gipfx'].forEach(function (id) {
+  ['gipcodeblocks', 'gipdownloads', 'gipemojidl', 'gipemojitext', 'gipvolume', 'giptextcursor', 'gipgifs', 'gipfolders', 'gipvoice', 'gipreadall', 'gipprofileguard', 'gipserverinfo', 'gipnopopups', 'gipbrand', 'gipcounter', 'gipalts', 'gipfx'].forEach(function (id) {
     try {
       if (!localStorage.getItem('yapplus.gip.default.' + id)) {
         localStorage.setItem('yapplus.gip.default.' + id, '1');

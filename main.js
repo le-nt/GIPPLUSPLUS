@@ -657,16 +657,15 @@ function openClient(profile) {
     };
 
     // Mouse side buttons (Windows sends these as app commands)
-    // The GIP++ Back/Forward plugin walks the servers/channels you visited; if it is off, fall back to browser history.
+    // The GIP++ Back/Forward plugin (deprecated, off by default) walks the servers/channels you visited. If it is off, Yappin's own back/forward handles the buttons.
     mainWindow.on('app-command', (e, cmd) => {
         if (!guest || guest.isDestroyed()) return;
         const dir = cmd === 'browser-backward' ? 'back' : cmd === 'browser-forward' ? 'forward' : null;
         if (!dir) return;
         guest.executeJavaScript(`typeof window.__gipNavHandle === 'function' ? (window.__gipNavHandle('${dir}'), true) : false`).then((handled) => {
-            if (handled || guest.isDestroyed()) return;
-            const h = guest.navigationHistory;
-            if (dir === 'back' && h && h.canGoBack()) h.goBack();
-            if (dir === 'forward' && h && h.canGoForward()) h.goForward();
+            // Not handled here means the plugin is off: Yappin's own back/forward takes the mouse event, so do nothing
+            // (going through browser history as well would jump twice).
+            void handled;
         }).catch(() => {});
     });
 
@@ -706,6 +705,7 @@ function openClient(profile) {
 
         const linkHook = `
             document.addEventListener('click', (e) => {
+                if (e.defaultPrevented) return; // Yappin's own "leaving the app" warning (or Link Preview) already took this click
                 const a = e.target.closest ? e.target.closest('a') : null;
                 if (!a) return;
                 const href = a.getAttribute('href');
@@ -719,7 +719,7 @@ function openClient(profile) {
                     e.stopPropagation();
                     window.electronAPI.openExternal(href);
                 }
-            }, true);
+            }, false);
         `;
         wc.on('dom-ready', () => { wc.executeJavaScript(`if (!window.__gipLinkHook) { window.__gipLinkHook = true; ${linkHook} }`).catch(() => {}); });
 

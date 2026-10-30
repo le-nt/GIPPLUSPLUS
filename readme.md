@@ -24,7 +24,7 @@ Built on [Yap++](https://github.com/salami-reborn/yapplusplus) by salami (Apache
 - **Volume fix**: Yappin's own user and stream volume sliders now work (0 to 500%). Nothing new to learn, the controls you already have just do their job.
 - **Server hover info**: hover a server in the rail to see its name and who is in voice.
 - **Voice direction**: a Direction slider in the right-click menu of a person in voice sets which side they sound like they come from (use headphones).
-- **GIF Favorites + categories** in the GIF picker, **Folder sidebar + custom folder icons + privacy mode**, **Mark all as read**, **voice-switch confirmation**, **mouse back/forward**, **black and white logo**.
+- **GIF Favorites + categories** in the GIF picker, **Folder sidebar + custom folder icons + privacy mode**, **Mark all as read**, **voice-switch confirmation**, **black and white logo**.
 - Everything is tagged **GIP++** or **Yap++** in the GIP++ menu (Settings > GIP++) so you can see what came from where.
 - **GIP & CO themes**: `gipco-dark` (on by default on first launch) and `gipco-light`. Black and white, halftone dots, square corners.
 - **Themes**: GIP & CO (`gipco-dark`, `gipco-light`), Web 2.0 (light and dark), Frutiger Aero, Dark Aero, Frutiger Eco, Time-of-day Aero, Windows XP Luna, Winamp, Steam Classic (olive) and Steam 2013 (dark blue). Live previews, an Accent slider and import/export (share code or .css) in Settings > GIP++ > Themes. Dark and light themes also switch Yappin's own mode to match.
@@ -41,9 +41,13 @@ Built on [Yap++](https://github.com/salami-reborn/yapplusplus) by salami (Apache
 - **Visualizer**: a Winamp-style bar strip that moves with the voice call.
 - **Sync accounts**: publish one account's GIP++ settings and apply them in another account.
 - **Reset GIP++**: Settings > Reset GIP++ puts GIP++ back to a fresh install without touching your login.
-- **Zoom** (`Ctrl +` / `Ctrl -` / `Ctrl 0` / `Ctrl + wheel`), **DevTools** (`F12`), **reload** (`F5`), mouse back/forward buttons.
+- **Zoom** (`Ctrl +` / `Ctrl -` / `Ctrl 0` / `Ctrl + wheel`), **DevTools** (`F12`), **reload** (`F5`).
 - **Text Cursor In Chat**, **Hi-Fi Mic** (experimental stereo), **GIP Inspector** (dev helper).
 - Bug and security fixes (Draft Saver, theme persistence, updater, screen picker, file access). Details in `CHANGES.md`.
+
+## Deprecated
+
+- **Mouse Back / Forward** (GIP++ plugin): Yappin has mouse back/forward and Alt+Left/Right built in now. The plugin is off by default and only kept as a fallback. See `CHANGELOG.md` for what was deprecated and what was kept.
 
 ## Run it
 

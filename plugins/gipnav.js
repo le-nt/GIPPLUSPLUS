@@ -1,10 +1,11 @@
+// DEPRECATED: Yappin now has mouse back/forward and Alt+Left/Right built in. This stays as an opt-in fallback (off by default).
 // GIP++ Back / Forward. Mouse side buttons (and Alt+Left / Alt+Right) go back and forward through the servers, channels and DMs you visited.
 // Yappin does not always add a browser-history entry on server switches, so GIP++ keeps its own trail and replays it by clicking for you.
 const gipnav = {
   id: 'gipnav',
   origin: 'gip',
-  name: 'Mouse Back / Forward',
-  description: 'Mouse side buttons (and Alt+Left / Alt+Right) go back and forward through the servers, channels and DMs you visited.',
+  name: 'Mouse Back / Forward (deprecated)',
+  description: 'Deprecated: Yappin now does this itself. Leave this off unless the built-in version misbehaves. Mouse side buttons (and Alt+Left / Alt+Right) go back and forward through the servers, channels and DMs you visited.',
   trail: [], at: -1, restoring: false, timer: null, offs: null, handlers: null, lastFire: 0,
   sleep(ms) { return new Promise(r => setTimeout(r, ms)); },
   railId(btn) { if (!btn) return ''; const r = btn.closest('[data-rail-row]'); return r ? r.getAttribute('data-rail-row') : 'title:' + (btn.getAttribute('title') || ''); },
@@ -80,7 +81,7 @@ const gipnav = {
         if (!e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
         if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
         const t = e.target; if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
-        e.preventDefault(); self.fire(e.key === 'ArrowLeft' ? 'back' : 'forward');
+        e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); self.fire(e.key === 'ArrowLeft' ? 'back' : 'forward');   // keep Yappin's own handler from jumping a second time
       },
       click: () => setTimeout(() => self.poll(), 450),
     };

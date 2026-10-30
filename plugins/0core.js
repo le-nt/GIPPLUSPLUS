@@ -461,7 +461,7 @@ window.YapPlus.uiSound = {
 
 /* ---------- 5. Settings backup, restore and versioning ---------- */
 window.YapPlus.settings = {
-  VERSION: 3,
+  VERSION: 4,
   allowed: /^(gip\.|yapplus\.)/,
   blocked: /token|password|secret|session|cookie|auth/i,
   keys() { const out = []; try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (this.allowed.test(k) && !this.blocked.test(k)) out.push(k); } } catch (e) {} return out.sort(); },
@@ -488,6 +488,9 @@ window.YapPlus.settings = {
   migrations: [
     { to: 3, run() { // the "Return to last DM" plugin was removed in 3.0
       try { Object.keys(localStorage).filter(k => k === 'yapplus.plugin.gipdmreturn' || /^gip\.dmreturn/.test(k)).forEach(k => localStorage.removeItem(k)); } catch (e) {}
+    } },
+    { to: 4, run() { // Mouse Back / Forward is built into Yappin now; switch ours off once so both do not jump (can be turned back on)
+      try { localStorage.setItem('yapplus.plugin.gipnav', '0'); } catch (e) {}
     } },
   ],
   migrate() {

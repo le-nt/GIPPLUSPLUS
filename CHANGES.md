@@ -1,5 +1,16 @@
 # Changes
 
+## Unreleased (after 3.1.0)
+
+**Deprecated**
+- **Mouse Back / Forward** (`plugins/gipnav.js`): Yappin now has mouse back/forward and Alt+Left/Right itself. The plugin is renamed *(deprecated)*, is off by default, is no longer in the first-launch defaults, and a settings migration (version 4, in `plugins/0core.js`) switches it off once for existing installs. If you turn it back on it takes the Alt+Arrow keys for itself. `main.js` no longer falls back to browser history for the mouse buttons when the plugin is off (that would jump twice).
+
+**Fixes so GIP++ works with the newer Yappin**
+- `main.js`: the hook that sends outside links to your browser now runs after the page's own click handlers and skips clicks they already handled, so Yappin's "leaving the app" warning and Link Preview's confirm box are not bypassed or doubled.
+- `plugins/gipgifs.js`: a second GIF Favorites send within 0.9 s is ignored (double sends).
+
+**Checked and kept** (GIP++ does more than Yappin): Mini Call (drag / hide), Link Preview (real address, look-alike and short-link warnings, works with masked links), Message Search (different from Ctrl/Cmd+K), Draft Saver (different from the offline send queue). Full table in `CHANGELOG.md`.
+
 ## 3.1.0
 
 **New features** (all in GIP++ > Features; the ones with settings have their own tab)

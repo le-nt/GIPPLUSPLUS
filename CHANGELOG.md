@@ -116,10 +116,39 @@ Moved onto the patch registry: Hi-Fi Mic (`getUserMedia`, `createOffer`, `create
 
 ---
 
+## Deprecated (after 3.1.0)
+
+Checked against Yappin's latest official changelog (faster app, Ctrl/Cmd+K quick switcher, offline send queue with a "reconnecting" pill, masked links, mini call, mouse back/forward and Alt+Left/Right, phone fixes, small fixes). Every official item was compared with what GIP++ already does.
+
+### Deprecated (Yappin does this now)
+| GIP++ feature | Official feature | What changed |
+|---|---|---|
+| **Mouse Back / Forward** (`gipnav.js`) | Mouse back/forward buttons and Alt+Left/Right | Renamed *(deprecated)* and **off by default**. Removed from the first-launch defaults. A one-time settings migration (settings version 4) switches it off for existing installs so the two do not both jump. It still works if you turn it back on, and when it is on it takes the Alt+Arrow keys for itself. `main.js` no longer also steps through browser history for the mouse buttons (that would jump twice). |
+
+### Kept, because GIP++ does more (and checked it still works with the official version)
+| GIP++ feature | Official feature | Why it stays / what was checked |
+|---|---|---|
+| **Mini Call** (`gipminicall.js`) | Floating call card while you browse other channels | Yappin only shows the card. GIP++ lets you drag it, remembers where you put it, Alt+double-click resets it, or hides it. It only restyles the card and never replaces it. |
+| **Link Preview** (`giplinkpreview.js`) | Masked links `[text](url)` with a warning before opening | GIP++ shows the real address on hover and flags look-alike names, hidden logins, raw IPs, short links and tracking parts. A masked link with plain text only gets an "info" note. A masked link whose text looks like a different website still counts as risky and asks first. |
+| **Link opening** (`main.js`) | "We warn you before it opens somewhere else" | The app's outside-link hook used to open links the moment they were clicked, which would skip Yappin's warning. It now runs after the page's own handlers and does nothing for a click they already handled. Links nobody handled still go to your browser as before. |
+| **GIF Favorites** (`gipgifs.js`) | "No more double GIF sends" | Yappin fixed its own picker. The Favorites list sends through its own path, so it got its own guard: a second send within 0.9 s is ignored. |
+
+### Kept, no overlap
+- **Message Search** (`gipsearch.js`) searches message text you have already read. The official quick switcher (Ctrl/Cmd+K) jumps to servers, channels and DMs, so they do different jobs. GIP++ does not use Ctrl+K anywhere, so there is no clash.
+- **Draft Saver** (`draftsave.js`) keeps text you have typed but not sent. The official offline queue holds messages you have sent. It already clears only on send, so a queued message does not bring the draft back.
+- **Settings menus, popups and confirm boxes** already close on Escape.
+- Phone fixes (swipe to open servers, keyboard handling) are not relevant: GIP++ is a desktop client.
+- Speed improvements and screen-reader fixes in Yappin need nothing from GIP++.
+
+### Not verified
+This was checked against the code and the official notes, not against the live site. `.mini-call` and the message-link selector (`.msg .msg-text a[href]`) are the two class names that Yappin could have changed. GIP++ > Health shows whether they still match.
+
+---
+
 ### Release-by-release summary
 | Release | Theme |
 |---|---|
 | **3.0.0** | Stability: new core (event bus, selector list, patch registry, crash isolation), Health tab, safe mode, rollback, check script; 500% volume; sound packs replace defaults; Server Info; No Popups; profile guard; Steam themes |
 | **3.0.1** | Bug fixes: Health tab load failure, Draft Saver erasing drafts, Volume/Sound Pack conflict; more plugins moved to the bus; Streamer Mode removed; "(Unofficial)" dropped |
 | **3.1.0** | Nine new features (Word Filter, Nicknames, Blur Media, Visualizer, Link Preview, Code Blocks, Downloads, Emoji Downloader, Sync accounts); core version guard; trusted-page checks on new app calls |
-| *Added after 3.1.0* | Emoji Text, with emoji-list preloading and a Sync accounts group for it |
+| *Added after 3.1.0* | Emoji Text, with emoji-list preloading and a Sync accounts group for it; Mouse Back / Forward deprecated (Yappin has it now); GIF double-send guard; link-open hook yields to Yappin's warning |

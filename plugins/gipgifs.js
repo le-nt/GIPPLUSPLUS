@@ -35,6 +35,8 @@ const gipgifs = {
   },
 
   send(url) {
+    const now = Date.now(); if (this._sentAt && now - this._sentAt < 900) return;   // a double click must not post the GIF twice
+    this._sentAt = now;
     const ta = document.querySelector('.composer-box textarea, .composer textarea');
     if (!ta) { try { navigator.clipboard.writeText(url); } catch (e) {} window.YapPlus.toast('Open a channel first. GIF link copied.'); return; }
     const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
