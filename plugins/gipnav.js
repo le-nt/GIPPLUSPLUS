@@ -5,7 +5,7 @@ const gipnav = {
   origin: 'gip',
   name: 'Mouse Back / Forward',
   description: 'Mouse side buttons (and Alt+Left / Alt+Right) go back and forward through the servers, channels and DMs you visited.',
-  trail: [], at: -1, restoring: false, timer: null, handlers: null, lastFire: 0,
+  trail: [], at: -1, restoring: false, timer: null, offs: null, handlers: null, lastFire: 0,
   sleep(ms) { return new Promise(r => setTimeout(r, ms)); },
   railId(btn) { if (!btn) return ''; const r = btn.closest('[data-rail-row]'); return r ? r.getAttribute('data-rail-row') : 'title:' + (btn.getAttribute('title') || ''); },
   sig() {
@@ -65,10 +65,13 @@ const gipnav = {
     this.lastFire = t; this.go(dir === 'back' ? -1 : 1);
   },
   start() {
-    if (this.timer) return;
-    const self = this;
+    if (this.offs) return;
+    const self = this; const E = window.YapPlus.events;
     this.trail = []; this.at = -1; this.poll();
-    this.timer = setInterval(() => self.poll(), 250);
+    // Page changes and channel changes come from the shared event bus. The slow timer is only a safety net for
+    // changes that touch a class and nothing else (the bus does not watch class changes).
+    this.offs = [E.watch(() => self.poll(), 'gipnav', 120), E.on('channel', () => self.poll(), 'gipnav')];
+    this.timer = setInterval(() => self.poll(), 1500);
     const stopNative = (e) => { if (e.button === 3 || e.button === 4) { e.preventDefault(); e.stopPropagation(); } };
     this.handlers = {
       down: stopNative, aux: stopNative,
@@ -90,6 +93,7 @@ const gipnav = {
   },
   stop() {
     clearInterval(this.timer); this.timer = null;
+    if (this.offs) { window.YapPlus.util.offAll(this.offs); this.offs = null; }
     if (this.handlers) {
       document.removeEventListener('mousedown', this.handlers.down, true);
       document.removeEventListener('auxclick', this.handlers.aux, true);

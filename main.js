@@ -1,9 +1,13 @@
 // GIP++ main process.
 // Based on Yap++ by salami (Apache-2.0). Changes from upstream are listed in CHANGES.md.
-const { app, BrowserWindow, ipcMain, Menu, shell, desktopCapturer, session, nativeTheme } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, shell, desktopCapturer, session, nativeTheme, dialog } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const dns = require('dns').promises;
+const net = require('net');
+const { pipeline } = require('stream/promises');
+const { Readable, Transform } = require('stream');
 const hotDir = process.env.YAPPLUS_HOT_DIR;
 const appDir = process.env.YAPPLUS_APP_DIR;
 
@@ -27,6 +31,36 @@ function safeBase(name) {
     return /^[\w. -]+$/.test(base) && !base.startsWith('.') ? base : null;
 }
 
+// ---- 3.0 stability ------------------------------------------------------------------------------
+// Safe mode: start with every GIP++ feature off. Hold Shift while the window opens, or start with --safe-mode.
+let safeMode = process.argv.includes('--safe-mode');
+const bootT0 = Date.now();
+function watchShift(wc) {
+    wc.on('before-input-event', (ev, input) => {
+        if (input.type === 'keyDown' && input.key === 'Shift' && input.isAutoRepeat && Date.now() - bootT0 < 10000) safeMode = true;
+    });
+}
+// Errors from plugins and from this process go to one log file you can send when something breaks.
+const errorLogFile = () => path.join(app.getPath('userData'), 'gip-errors.log');
+function logLine(text) {
+    try {
+        const f = errorLogFile();
+        try { if (fs.statSync(f).size > 200000) fs.writeFileSync(f, fs.readFileSync(f, 'utf-8').slice(-100000)); } catch (e) {}
+        fs.appendFileSync(f, new Date().toISOString() + ' ' + String(text).slice(0, 2000) + '\n');
+    } catch (e) {}
+}
+process.on('uncaughtException', (e) => { logLine('main uncaught: ' + (e && e.stack || e)); });
+process.on('unhandledRejection', (e) => { logLine('main rejection: ' + (e && e.stack || e)); });
+// One copy of the app at a time: two copies would fight over the same saved data. Relaunching releases the lock first.
+const gotLock = app.requestSingleInstanceLock();
+if (!gotLock) app.quit();
+function relaunch(extraArgs, dropArgs) {
+    try { app.releaseSingleInstanceLock(); } catch (e) {}
+    const args = process.argv.slice(1).filter(a => !(dropArgs || []).includes(a)).concat(extraArgs || []);
+    app.relaunch({ args });
+    app.exit(0);
+}
+
 function resolve(relPath) {
     if (hotDir) {
         const hotPath = path.join(hotDir, relPath);
@@ -44,10 +78,33 @@ function saveSettings(patch) {
     try { fs.writeFileSync(settingsFile(), JSON.stringify(Object.assign(loadSettings(), patch))); } catch (e) {}
 }
 
+// The plugins share one core (plugins/0core.js). If the downloaded update copy has an OLDER core than the one bundled with
+// the app, its plugins would run against the wrong API (this is what broke the Health tab: "H.stats is not a function").
+// In that case the whole downloaded plugin set is ignored and the bundled plugins run instead.
+function coreVersion(file) {
+    try { const m = /VERSION = '([^']+)'/.exec(fs.readFileSync(file, 'utf-8')); return m ? m[1] : ''; } catch (e) { return ''; }
+}
+function cmpVer(a, b) {
+    const x = String(a || '0').split('.').map(Number), y = String(b || '0').split('.').map(Number);
+    for (let i = 0; i < 3; i++) { const d = (x[i] || 0) - (y[i] || 0); if (d) return d < 0 ? -1 : 1; }
+    return 0;
+}
+let hotPluginsStale = false;
+function hotPluginsUsable() {
+    if (!hotDir) return false;
+    const hotCore = path.join(hotDir, 'plugins', '0core.js');
+    if (!fs.existsSync(hotCore)) { hotPluginsStale = false; return true; } // no core of its own: it runs on the bundled core
+    const hv = coreVersion(hotCore), bv = coreVersion(path.join(appDir, 'plugins', '0core.js'));
+    const ok = !!hv && cmpVer(hv, bv) >= 0;
+    if (!ok && !hotPluginsStale) logLine('update copy has core ' + (hv || '?') + ' but the app has ' + bv + ': using bundled plugins');
+    hotPluginsStale = !ok;
+    return ok;
+}
+
 // Every plugin as its own entry, so one broken plugin cannot take the rest down with it.
 function getPluginFiles() {
     const dirs = [
-        hotDir ? path.join(hotDir, 'plugins') : null,
+        hotPluginsUsable() ? path.join(hotDir, 'plugins') : null,
         path.join(appDir, 'plugins')
     ].filter(Boolean);
     const byName = {};
@@ -60,9 +117,6 @@ function getPluginFiles() {
         });
     }
     return Object.keys(byName).sort().map(file => ({ file, code: byName[file] }));
-}
-function getPluginCode() {
-    return getPluginFiles().map(p => `\n// [Libyapcore] [P.L]> ${p.file} >.<\n${p.code}\n`).join('');
 }
 
 function getThemeCode() {
@@ -82,6 +136,37 @@ function getThemeCode() {
     return themes;
 }
 
+function hotSource(rel) { if (/^plugins\//.test(rel) && hotPluginsStale) return 'bundled'; return hotDir && fs.existsSync(path.join(hotDir, rel)) ? 'update' : 'bundled'; }
+function moveHotAside() {
+    if (!hotDir || !fs.existsSync(hotDir)) return false;
+    const aside = hotDir + '.broken';
+    try { fs.rmSync(aside, { recursive: true, force: true }); } catch (e) {}
+    fs.renameSync(hotDir, aside); return true;
+}
+ipcMain.handle('get-safe-mode', () => safeMode);
+ipcMain.handle('restart-safe', () => relaunch(['--safe-mode'], ['--safe-mode']));
+ipcMain.handle('log-error', (e, text) => { logLine('page: ' + text); return true; });
+ipcMain.handle('open-error-log', () => { try { if (fs.existsSync(errorLogFile())) shell.showItemInFolder(errorLogFile()); else shell.openPath(app.getPath('userData')); } catch (e) {} return true; });
+ipcMain.handle('get-run-info', () => {
+    const st = loadSettings(); let files = [];
+    try { files = getPluginFiles().map(p => ({ file: 'plugins/' + p.file, source: hotSource('plugins/' + p.file) })); } catch (e) {}
+    ['main.js', 'preload.js', 'html/client.html'].forEach(f => files.push({ file: f, source: hotSource(f) }));
+    return { appVersion: app.getVersion(), electron: process.versions.electron, chrome: process.versions.chrome, platform: process.platform, safeMode, updates: !!hotDir,
+        autoUpdate: autoUpdateOn(), hotTree: st.hotTree || '', rolledBack: st.rolledBack || null, badBoots: st.badBoots || 0, files };
+});
+// Put the update copy aside and run the files bundled with the app. The same update is not downloaded again until a newer one exists.
+ipcMain.handle('reset-hot', () => { try { const st = loadSettings(); moveHotAside(); saveSettings({ badTree: st.hotTree || '', hotTree: '', badBoots: 0, rolledBack: { t: Date.now(), reason: 'manual' } }); } catch (e) { logLine('reset-hot failed: ' + e); } relaunch(); return true; });
+// client.html reports whether GIP++ loaded properly. Two bad starts in a row after an update roll back to the bundled files.
+ipcMain.handle('boot-result', (e, ok) => {
+    const st = loadSettings();
+    if (ok) { if (st.badBoots) saveSettings({ badBoots: 0 }); return 'ok'; }
+    const bad = (st.badBoots || 0) + 1; saveSettings({ badBoots: bad }); logLine('GIP++ did not load properly (bad start #' + bad + ')');
+    if (bad >= 2 && hotDir && fs.existsSync(hotDir)) {
+        try { moveHotAside(); saveSettings({ badTree: st.hotTree || '', hotTree: '', badBoots: 0, rolledBack: { t: Date.now(), reason: 'two bad starts' } }); logLine('rolled back to bundled files'); } catch (er) { logLine('rollback failed: ' + er); }
+        relaunch();
+    }
+    return 'bad';
+});
 ipcMain.handle('get-plugin-files', () => getPluginFiles());
 ipcMain.handle('get-themes', () => getThemeCode());
 ipcMain.handle('get-asset', (event, assetName) => {
@@ -147,6 +232,8 @@ async function update() {
         }
 
         const treeData = await response.json();
+        // After a rollback, do not download the same broken update again. A new push changes the tree id and updates resume.
+        if (treeData.sha && treeData.sha === loadSettings().badTree) return { success: true, count: 0, changed: [], skipped: 'rolled back' };
         let updatedCount = 0;
         const validPaths = new Set();
         const SAFE_PATHS = /^(app\.js|main\.js|preload\.js|html\/client\.html|assets\/[^/]+|plugins\/[^/]+|themes\/[^/]+)$/;
@@ -185,12 +272,170 @@ async function update() {
             }
         })(hotDir);
 
+        // Never keep an update that is OLDER than the app itself (a repo that still holds an old release).
+        const hv = coreVersion(path.join(hotDir, 'plugins', '0core.js')), bv = coreVersion(path.join(appDir, 'plugins', '0core.js'));
+        if (hv && bv && cmpVer(hv, bv) < 0) {
+            try { moveHotAside(); saveSettings({ badTree: treeData.sha || '', hotTree: '' }); logLine('update was core ' + hv + ' but the app is ' + bv + ': ignored'); } catch (e) {}
+            return { success: true, count: 0, changed: [], skipped: 'older than this app' };
+        }
+        if (treeData.sha) saveSettings({ hotTree: treeData.sha });
         return { success: true, count: updatedCount, changed };
     } catch (error) {
         console.error('[Libyapcore] [E]> Update failed:', error);
         return { success: false, error: error.message };
     }
 }
+
+// ---- 3.1: downloads, link previews, account sync ------------------------------------------------
+// These are called from the Yappin page, so each one checks that the caller really is a trusted Yappin page first.
+const fromTrustedPage = (event) => { try { return isTrustedUrl(event.sender.getURL()); } catch (e) { return false; } };
+const isWebUrl = (u) => { try { const x = new URL(u); return x.protocol === 'https:' || x.protocol === 'http:'; } catch (e) { return false; } };
+const MAX_DL = 1024 * 1024 * 1024; // 1 GB
+const MIME_EXT = { 'image/png': '.png', 'image/jpeg': '.jpg', 'image/gif': '.gif', 'image/webp': '.webp', 'image/avif': '.avif', 'image/svg+xml': '.svg', 'image/bmp': '.bmp', 'video/mp4': '.mp4', 'video/webm': '.webm', 'video/quicktime': '.mov', 'audio/mpeg': '.mp3', 'audio/ogg': '.ogg', 'audio/wav': '.wav', 'audio/webm': '.weba', 'application/pdf': '.pdf', 'text/plain': '.txt', 'application/zip': '.zip', 'application/json': '.json' };
+const RISKY_EXT = /\.(exe|bat|cmd|com|scr|msi|msp|ps1|psm1|vbs|vbe|js|jse|wsf|wsh|jar|lnk|dll|reg|hta|cpl|pif|appx|msix|apk|sh|command|app|dmg|pkg)$/i;
+function cleanName(name) {
+    let n = path.basename(String(name || '').split(/[?#]/)[0]);
+    try { n = decodeURIComponent(n); } catch (e) {}
+    n = n.replace(/[<>:"/\\|?*\x00-\x1f]/g, '_').replace(/^\.+/, '').replace(/[. ]+$/, '').slice(0, 120);
+    if (/^(con|prn|aux|nul|com\d|lpt\d)(\..*)?$/i.test(n)) n = '_' + n;
+    return n || 'file';
+}
+function uniquePath(dir, name) {
+    const ext = path.extname(name), base = name.slice(0, name.length - ext.length);
+    let p = path.join(dir, name), i = 1;
+    while (fs.existsSync(p)) p = path.join(dir, base + ' (' + (i++) + ')' + ext);
+    return p;
+}
+function headerName(res) {
+    const cd = String(res.headers.get('content-disposition') || '');
+    const m = /filename\*\s*=\s*(?:UTF-8'')?([^;]+)/i.exec(cd) || /filename\s*=\s*"?([^";]+)"?/i.exec(cd);
+    return m ? m[1].trim() : '';
+}
+const downloadsRoot = () => path.join(app.getPath('downloads'), 'GIP++');
+ipcMain.handle('gip-download', async (event, o) => {
+    if (!fromTrustedPage(event)) return { success: false, error: 'Not allowed from this page.' };
+    o = o || {}; const url = String(o.url || '');
+    if (!isWebUrl(url)) return { success: false, error: 'Only web links can be downloaded.' };
+    let dest = '';
+    try {
+        const wc = event.sender; const ses = wc.session;
+        const doFetch = ses && typeof ses.fetch === 'function' ? (u, op) => ses.fetch(u, op) : fetch;
+        // Only wait 30 seconds for the server to start answering; once the file is flowing it may take as long as it needs (capped at 1 GB).
+        // Yappin's own cookies are only sent to Yappin; every other site gets a clean request.
+        const ctl = new AbortController(); const startT = setTimeout(() => ctl.abort(), 30000);
+        let stall = 0; const poke = () => { clearTimeout(stall); stall = setTimeout(() => ctl.abort(), 60000); }; // gives up if no data arrives for 60 s
+        let res; try { res = await doFetch(url, { signal: ctl.signal, credentials: isTrustedUrl(url) ? 'include' : 'omit' }); } finally { clearTimeout(startT); }
+        if (!res.ok || !res.body) return { success: false, error: 'The server answered ' + res.status + '.' };
+        if ((Number(res.headers.get('content-length')) || 0) > MAX_DL) { try { res.body.cancel(); } catch (e) {} return { success: false, error: 'That file is larger than 1 GB.' }; }
+        let name = cleanName(o.name || headerName(res) || url);
+        if (!path.extname(name)) { const t = String(res.headers.get('content-type') || '').split(';')[0].trim().toLowerCase(); if (MIME_EXT[t]) name += MIME_EXT[t]; }
+        if (!o.ask && RISKY_EXT.test(name)) { try { res.body.cancel(); } catch (e) {} return { success: false, error: 'Programs and scripts are not saved automatically. Turn on "Ask where to save" for this one.' }; }
+        if (o.ask) {
+            const host = BrowserWindow.fromWebContents(wc.hostWebContents || wc); const opts = { defaultPath: path.join(app.getPath('downloads'), name) };
+            const r = await (host ? dialog.showSaveDialog(host, opts) : dialog.showSaveDialog(opts));
+            if (r.canceled || !r.filePath) { try { res.body.cancel(); } catch (e) {} return { success: false, canceled: true }; }
+            dest = r.filePath;
+        } else {
+            const dir = o.subdir ? path.join(downloadsRoot(), cleanName(o.subdir)) : downloadsRoot();
+            fs.mkdirSync(dir, { recursive: true }); dest = uniquePath(dir, name);
+        }
+        let bytes = 0;
+        const counter = new Transform({ transform(chunk, enc, cb) { poke(); bytes += chunk.length; if (bytes > MAX_DL) return cb(new Error('That file is larger than 1 GB.')); cb(null, chunk); } });
+        poke();
+        try { await pipeline(Readable.fromWeb(res.body), counter, fs.createWriteStream(dest)); } finally { clearTimeout(stall); }
+        if (o.reveal) shell.showItemInFolder(dest);
+        return { success: true, path: dest, name: path.basename(dest), bytes };
+    } catch (e) {
+        if (dest) { try { fs.unlinkSync(dest); } catch (x) {} }
+        return { success: false, error: (e && e.message) || String(e) };
+    }
+});
+ipcMain.handle('gip-open-downloads', (event) => {
+    if (!fromTrustedPage(event)) return false;
+    try { fs.mkdirSync(downloadsRoot(), { recursive: true }); shell.openPath(downloadsRoot()); return true; } catch (e) { return false; }
+});
+
+// Link preview (opt-in in the plugin). Fetched here, not in the page: no cookies, never a private or local address,
+// at most 3 redirects (each one checked again), small size limits, and the picture comes back as data so the page never contacts the site itself.
+function privateIp(ip) {
+    if (net.isIPv4(ip)) { const p = ip.split('.').map(Number); return p[0] === 10 || p[0] === 127 || p[0] === 0 || (p[0] === 169 && p[1] === 254) || (p[0] === 172 && p[1] >= 16 && p[1] <= 31) || (p[0] === 192 && p[1] === 168) || (p[0] === 100 && p[1] >= 64 && p[1] <= 127) || p[0] >= 224; }
+    const v = ip.toLowerCase(); if (v.startsWith('::ffff:')) return privateIp(v.slice(7));
+    return v === '::1' || v === '::' || /^f[cd]/.test(v) || /^fe[89ab]/.test(v);
+}
+async function publicHost(u) {
+    const url = new URL(u); const h = url.hostname.replace(/^\[|\]$/g, '');
+    if (/^localhost$|\.local$|\.internal$|\.localhost$/i.test(h)) return false;
+    const addrs = net.isIP(h) ? [{ address: h }] : await dns.lookup(h, { all: true });
+    return addrs.length > 0 && addrs.every(a => !privateIp(a.address));
+}
+async function readLimited(res, limit) {
+    const chunks = []; let n = 0; const reader = res.body.getReader();
+    for (;;) { const { done, value } = await reader.read(); if (done) break; n += value.length; chunks.push(Buffer.from(value)); if (n >= limit) { try { await reader.cancel(); } catch (e) {} break; } }
+    return Buffer.concat(chunks).slice(0, limit);
+}
+async function safeGet(u, accept, limit) {
+    let cur = u;
+    for (let hop = 0; hop < 4; hop++) {
+        if (!isWebUrl(cur) || !(await publicHost(cur))) throw new Error('blocked');
+        const res = await fetch(cur, { redirect: 'manual', signal: AbortSignal.timeout(8000), headers: { 'User-Agent': 'Mozilla/5.0 (compatible; GIPPreview)', 'Accept': accept } });
+        if (res.status >= 300 && res.status < 400 && res.headers.get('location')) { cur = new URL(res.headers.get('location'), cur).href; continue; }
+        if (!res.ok || !res.body) throw new Error('status ' + res.status);
+        return { res, url: cur, buf: await readLimited(res, limit) };
+    }
+    throw new Error('too many redirects');
+}
+const unent = (s) => String(s || '').replace(/&(#x?[0-9a-f]+|amp|lt|gt|quot|apos|nbsp);/gi, (m, e) => { const t = e.toLowerCase(); if (t === 'amp') return '&'; if (t === 'lt') return '<'; if (t === 'gt') return '>'; if (t === 'quot') return '"'; if (t === 'apos') return "'"; if (t === 'nbsp') return ' '; const c = t[1] === 'x' ? parseInt(t.slice(2), 16) : parseInt(t.slice(1), 10); try { return String.fromCodePoint(c); } catch (x) { return ''; } }).replace(/\s+/g, ' ').trim();
+const metaCache = new Map();
+ipcMain.handle('gip-link-meta', async (event, link, wantImage) => {
+    if (!fromTrustedPage(event)) return { success: false, error: 'not-allowed' };
+    link = String(link || ''); if (!isWebUrl(link)) return { success: false, error: 'bad-url' };
+    const hit = metaCache.get(link); if (hit && Date.now() - hit.t < 600000) return hit.v;
+    try {
+        const { res, url, buf } = await safeGet(link, 'text/html,application/xhtml+xml', 300000);
+        if (!/html/i.test(res.headers.get('content-type') || '')) return { success: true, url, title: '', description: '', site: '', image: null };
+        const html = buf.toString('utf-8');
+        const meta = (k) => { const re = new RegExp('<meta[^>]+(?:property|name)=["\']' + k + '["\'][^>]*>', 'i'); const m = re.exec(html); if (!m) return ''; const c = /content=["']([^"']*)["']/i.exec(m[0]); return c ? unent(c[1]) : ''; };
+        const t = /<title[^>]*>([\s\S]*?)<\/title>/i.exec(html);
+        const out = { success: true, url, title: (meta('og:title') || meta('twitter:title') || (t ? unent(t[1]) : '')).slice(0, 200), description: (meta('og:description') || meta('description') || meta('twitter:description')).slice(0, 400), site: meta('og:site_name').slice(0, 80), image: null };
+        const img = meta('og:image') || meta('twitter:image');
+        if (wantImage && img) {
+            try {
+                const im = await safeGet(new URL(img, url).href, 'image/*', 1500000);
+                const type = String(im.res.headers.get('content-type') || '').split(';')[0].trim().toLowerCase();
+                if (/^image\/(png|jpeg|gif|webp|avif)$/.test(type) && im.buf.length) out.image = 'data:' + type + ';base64,' + im.buf.toString('base64');
+            } catch (e) {}
+        }
+        if (metaCache.size > 100) metaCache.clear();
+        metaCache.set(link, { t: Date.now(), v: out });
+        return out;
+    } catch (e) { return { success: false, error: (e && e.message) || 'failed' }; }
+});
+
+// Account sync: each account is its own window with its own saved settings. This shared file lets one account
+// publish a copy of its settings and another account apply it. Only GIP++ settings are accepted, never logins.
+const syncFile = () => path.join(app.getPath('userData'), 'gip-sync.json');
+function readSync() { try { const o = JSON.parse(fs.readFileSync(syncFile(), 'utf-8')); return o && o.profiles && typeof o.profiles === 'object' ? o : { profiles: {} }; } catch (e) { return { profiles: {} }; } }
+const okProfileId = (id) => id === 'default' || /^[a-z0-9]{4,16}$/.test(String(id));
+ipcMain.handle('sync-save', (event, id, name, data) => {
+    if (!fromTrustedPage(event)) return { success: false, error: 'Not allowed from this page.' };
+    if (!okProfileId(id) || !data || typeof data !== 'object') return { success: false, error: 'Bad request.' };
+    const clean = {}; let size = 0;
+    for (const k of Object.keys(data)) {
+        if (!/^(gip\.|yapplus\.)/.test(k) || /token|password|secret|session|cookie|auth/i.test(k) || typeof data[k] !== 'string') continue;
+        size += k.length + data[k].length; if (size > 2500000) return { success: false, error: 'Too much data.' };
+        clean[k] = data[k];
+    }
+    const s = readSync(); s.profiles[id] = { name: String(name || id).slice(0, 40), t: Date.now(), data: clean };
+    try { fs.writeFileSync(syncFile(), JSON.stringify(s)); return { success: true, count: Object.keys(clean).length }; } catch (e) { return { success: false, error: e.message }; }
+});
+ipcMain.handle('sync-list', (event) => {
+    if (!fromTrustedPage(event)) return [];
+    const s = readSync(); return Object.keys(s.profiles).map(id => ({ id, name: s.profiles[id].name, t: s.profiles[id].t, count: Object.keys(s.profiles[id].data || {}).length }));
+});
+ipcMain.handle('sync-load', (event, id) => {
+    if (!fromTrustedPage(event) || !okProfileId(id)) return null;
+    const p = readSync().profiles[id]; return p ? p.data : null;
+});
 
 // ---- User counter -------------------------------------------------------------------------------
 // Optional. Needs a counter server (see counter-worker/). Off until "gip.counterUrl" in package.json
@@ -244,10 +489,7 @@ ipcMain.handle('set-auto-update', (event, on) => { saveSettings({ autoUpdate: !!
 const CORE_FILES = ['main.js', 'preload.js'];
 
 ipcMain.handle('update', async () => update());
-ipcMain.handle('restart-app', () => {
-    app.relaunch();
-    app.exit(0);
-});
+ipcMain.handle('restart-app', () => { relaunch([], ['--safe-mode']); });
 
 // ---- Alt manager --------------------------------------------------------------------------------
 // Each account profile gets its own webview partition (own cookies/login/localStorage) and its own window,
@@ -288,7 +530,7 @@ ipcMain.handle('alts-save', (event, p) => {
         saveSettings({ profiles: list });
     }
     const win = clientWindows.get(c.id);
-    if (win && !win.isDestroyed()) win.setTitle('GIP++ (Unofficial) - ' + c.name);
+    if (win && !win.isDestroyed()) win.setTitle('GIP++ - ' + c.name);
     return { success: true, profile: c };
 });
 ipcMain.handle('alts-new', (event, name, color) => {
@@ -387,7 +629,7 @@ function openClient(profile) {
         height: 800,
         autoHideMenuBar: true,
         backgroundColor: '#080808',
-        title: 'GIP++ (Unofficial)' + (profile.id === 'default' ? '' : ' - ' + profile.name),
+        title: 'GIP++' + (profile.id === 'default' ? '' : ' - ' + profile.name),
         icon: path.join(appDir, 'assets', 'Icon.ico'),
         webPreferences: {
             webviewTag: true,
@@ -404,6 +646,7 @@ function openClient(profile) {
         return { action: 'deny' };
     });
 
+    watchShift(mainWindow.webContents);
     let guest = null;
     const ZOOM_MIN = 0.5, ZOOM_MAX = 3;
     let zoom = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, Number(loadSettings().zoom) || 1));
@@ -429,7 +672,16 @@ function openClient(profile) {
 
     mainWindow.webContents.on('did-attach-webview', (event, wc) => {
         guest = wc;
+        watchShift(wc);
         wc.on('dom-ready', () => wc.setZoomFactor(zoom));
+        // If the page process crashes, reload it (at most 3 times in 5 minutes) instead of leaving a dead window.
+        const crashes = [];
+        wc.on('render-process-gone', (ev, d) => {
+            logLine('page process gone: ' + (d && d.reason));
+            if (!d || d.reason === 'clean-exit') return;
+            const now = Date.now(); while (crashes.length && now - crashes[0] > 300000) crashes.shift(); crashes.push(now);
+            if (crashes.length <= 3) setTimeout(() => { try { if (!wc.isDestroyed()) wc.reload(); } catch (e) {} }, 1000);
+        });
 
         // Links/files that open a new tab or window (target="_blank", window.open) happen inside the WEBVIEW, so the
         // handler on mainWindow never saw them and they silently did nothing. Send them to the real browser.
@@ -488,7 +740,12 @@ function openClient(profile) {
     mainWindow.loadFile(clientPath, { query: { profile: profile.id } });
 }
 
+app.on('second-instance', () => {
+    const w = Array.from(clientWindows.values()).find(x => x && !x.isDestroyed());
+    if (w) { if (w.isMinimized()) w.restore(); w.focus(); }
+});
 app.whenReady().then(async () => {
+    if (!gotLock) return;
     Menu.setApplicationMenu(null);
     installScreenPicker(session.defaultSession);
 
@@ -497,8 +754,7 @@ app.whenReady().then(async () => {
         try {
             const r = await Promise.race([update(), new Promise(res => setTimeout(() => res(null), 6000))]);
             if (r && r.success && (r.changed || []).some(f => CORE_FILES.includes(f)) && !process.argv.includes('--gip-updated')) {
-                app.relaunch({ args: process.argv.slice(1).concat('--gip-updated') });
-                app.exit(0);
+                relaunch(['--gip-updated']);
                 return;
             }
         } catch (e) { console.error('[GIP++] auto-update failed:', e); }

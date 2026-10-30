@@ -3,7 +3,7 @@
 // Configured in its own tab: GIP++ > Sounds.
 (function () {
   const Y = window.YapPlus; const KEY = 'gip.sounds.v1';
-  const DEF = { pack: 'aero', vol: 60, recv: true, sent: true, join: false, leave: false };
+  const DEF = { pack: 'aero', vol: 60, recv: true, sent: true, join: false, leave: false, replace: true };
   const load = () => { try { return Object.assign({}, DEF, JSON.parse(localStorage.getItem(KEY)) || {}); } catch (e) { return Object.assign({}, DEF); } };
   const save = (c) => { try { localStorage.setItem(KEY, JSON.stringify(c)); } catch (e) {} };
   const PACKS = [['aero', 'Aero Glass', 'Soft glassy bells'], ['luna', 'Luna Bells', 'Warm early-2000s chimes'], ['im', 'Instant Messenger', 'Blips and sweeps'], ['retro', '8-bit', 'Square-wave arpeggios']];
@@ -67,52 +67,78 @@
     });
   }
 
-  // ---- event detection (best effort: Yappin has no public events, so this watches the page) ----
-  const MSG = '.msg[data-message-id]';
-  let obs = null, timer = null, lastSent = 0, ignoreUntil = 0, lastHref = '', lastVoice = null, lastPlay = {}, seen = new Set(), gesture = null, keyH = null, clickH = null;
+  // ---- events come from the shared GIP++ event bus (0core.js), so this plugin runs no page watcher of its own ----
+  const ME = 'gipsounds';
+  let lastPlay = {}, gesture = null, unsubs = [];
   const fire = (ev) => {
     const c = load(); if (!c[ev] || !c.pack) return; const now = Date.now();
     if (now - (lastPlay[ev] || 0) < 250) return; lastPlay[ev] = now; play(c.pack, ev, c.vol);
   };
-  const hasText = (t) => ((t.value !== undefined ? t.value : t.textContent) || '').trim().length > 0;
-  function onMutations(list) {
-    const fresh = [];
-    list.forEach(m => m.addedNodes.forEach(n => {
-      if (n.nodeType !== 1) return;
-      if (n.matches && n.matches(MSG)) fresh.push(n); else if (n.querySelectorAll) n.querySelectorAll(MSG).forEach(x => fresh.push(x));
-    }));
-    if (!fresh.length) return;
-    const ids = fresh.map(x => x.getAttribute('data-message-id')).filter(id => id && !seen.has(id));
-    ids.forEach(id => seen.add(id)); if (seen.size > 3000) seen = new Set(Array.from(seen).slice(-1500));
-    const now = Date.now();
-    if (ids.length > 3 || now < ignoreUntil || now - lastSent < 2000 || !ids.length) return; // history loading, channel switch, or my own message
-    fire('recv');
+
+  // ---- replacing Yappin's own sounds ----
+  // While this plugin is on, the site's built-in short UI sounds are muted so the pack REPLACES them instead of playing on top.
+  // Muted: short sounds the page plays from a detached Audio element, a hidden audio tag, or Web Audio, plus the OS ding on desktop
+  // notifications. Never touched: voice chat, videos, voice messages, audio in chat, ringing and calls.
+  // A sound whose name says it belongs to an event this pack plays (message, send, join, leave) is muted only while that event is
+  // switched on in the Sounds tab. Everything else is muted while "Replace default sounds" is on.
+  // If an old sound still plays, run __gipSoundLog in the DevTools console and send me what it shows.
+  const REPL = { on: false, log: [] };
+  window.__gipSoundLog = REPL.log;
+  const note = (kind, what, muted) => { REPL.log.push({ t: new Date().toLocaleTimeString(), kind, what: String(what).slice(0, 160), muted }); if (REPL.log.length > 40) REPL.log.shift(); };
+  function shouldMute(name) {
+    const c = load(); if (!c.pack) return false;
+    const cat = Y.uiSound.category(name);
+    if (cat === 'keep') return false;
+    if (cat) return !!c[cat];
+    return !!c.replace;
   }
-  function poll() {
-    if (location.href !== lastHref) { lastHref = location.href; ignoreUntil = Date.now() + 1800; lastVoice = null; }
-    const n = Array.prototype.reduce.call(document.querySelectorAll('.voice-people'), (a, el) => a + el.children.length, 0);
-    if (lastVoice !== null && Date.now() > ignoreUntil) {
-      const d = n - lastVoice; if (d !== 0 && Math.abs(d) <= 3) fire(d > 0 ? 'join' : 'leave');
-    }
-    lastVoice = n;
+  function startReplace() {
+    if (REPL.on) return; REPL.on = true;
+    Y.patches.add(ME, HTMLMediaElement.prototype, 'play', (next) => function () {
+      try {
+        if (REPL.on && Y.uiSound.isUi(this)) {
+          const name = this.currentSrc || this.src || this.id || this.className; const mute = shouldMute(name);
+          note('audio', name, mute); if (mute) return Promise.resolve();
+        }
+      } catch (e) {}
+      return next.apply(this, arguments);
+    });
+    const quiet = (node) => { try { node.disconnect(); } catch (e) {} node.connect = function (t) { return t; }; };
+    if (window.AudioBufferSourceNode) Y.patches.add(ME, AudioBufferSourceNode.prototype, 'start', (next) => function () {
+      try {
+        const c = this.context;
+        if (REPL.on && c !== ctx && !c.__gipKeep && !this.loop && this.buffer && this.buffer.duration < 3 && shouldMute('')) { note('buffer', this.buffer.duration.toFixed(2) + 's', true); quiet(this); }
+      } catch (e) {}
+      return next.apply(this, arguments);
+    });
+    if (window.OscillatorNode) Y.patches.add(ME, OscillatorNode.prototype, 'start', (next) => function () {
+      try {
+        const c = this.context;
+        if (REPL.on && c !== ctx && !c.__gipKeep && shouldMute('')) { note('oscillator', this.frequency && this.frequency.value, true); quiet(this); }
+      } catch (e) {}
+      return next.apply(this, arguments);
+    });
+    if (window.Notification) Y.patches.add(ME, window, 'Notification', (next) => new Proxy(next, { construct(t, args, nt) {
+      try { const c = load(); if (REPL.on && c.pack && c.recv && args[0] !== undefined) args = [args[0], Object.assign({}, args[1] || {}, { silent: true })]; } catch (e) {}
+      return Reflect.construct(t, args, nt);
+    } }));
   }
+  function stopReplace() { REPL.on = false; Y.patches.removeOwner(ME); }
   const sounds = {
     id: 'gipsounds', origin: 'gip', name: 'Sound Packs',
-    description: 'Plays short synthesised sounds for new messages, sending, and people joining or leaving voice. Pick a pack in the Sounds tab.',
+    description: 'Plays short synthesised sounds for new messages, sending, and people joining or leaving voice, and mutes Yappin\u2019s own sounds so the pack replaces them. Pick a pack in the Sounds tab.',
     start() {
-      if (obs) return; lastHref = location.href; ignoreUntil = Date.now() + 1800;
-      document.querySelectorAll(MSG).forEach(x => seen.add(x.getAttribute('data-message-id')));
-      obs = new MutationObserver(onMutations); obs.observe(document.body, { childList: true, subtree: true });
-      timer = setInterval(poll, 800);
-      keyH = (e) => { if (e.key === 'Enter' && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.isComposing) { const t = e.target; if (t && t.closest && t.closest('.composer-box') && hasText(t)) { lastSent = Date.now(); fire('sent'); } } };
-      clickH = (e) => { const b = e.target.closest && e.target.closest('button'); if (b && b.closest('.main') && /send/i.test((b.getAttribute('aria-label') || '') + ' ' + (b.title || '') + ' ' + b.className)) { lastSent = Date.now(); fire('sent'); } };
+      if (unsubs.length) return; startReplace();
+      unsubs = [
+        Y.events.on('message', () => fire('recv'), ME),
+        Y.events.on('sent', () => fire('sent'), ME),
+        Y.events.on('voice', (v) => { if (Math.abs(v.delta) <= 3) fire(v.delta > 0 ? 'join' : 'leave'); }, ME),
+      ];
       gesture = () => { if (ctx && ctx.state === 'suspended') ctx.resume().catch(() => {}); };
-      document.addEventListener('keydown', keyH, true); document.addEventListener('click', clickH, true);
       ['pointerdown', 'keydown'].forEach(t => document.addEventListener(t, gesture, true));
     },
     stop() {
-      if (!obs) return; obs.disconnect(); obs = null; clearInterval(timer); timer = null;
-      document.removeEventListener('keydown', keyH, true); document.removeEventListener('click', clickH, true);
+      if (!unsubs.length) return; stopReplace(); unsubs.forEach(f => f()); unsubs = [];
       ['pointerdown', 'keydown'].forEach(t => document.removeEventListener(t, gesture, true));
     },
   };
@@ -122,6 +148,8 @@
     const on = group('Sound packs', 'gip', 'Separate from themes: pick any pack with any theme. Sounds are synthesised, so there is nothing to download.');
     on.appendChild(el('div', { class: 'gp-row' }, el('div', null, el('div', { class: 'gp-name' }, 'Play sounds', Y.tag('gip')), el('div', { class: 'gp-desc', text: 'Master switch for this feature.' })),
       sw(Y.PluginHost.isEnabled(sounds), (v) => Y.PluginHost.setEnabled(sounds, v))));
+    on.appendChild(el('div', { class: 'gp-row' }, el('div', null, el('div', { class: 'gp-name' }, 'Replace default sounds', Y.tag('gip')), el('div', { class: 'gp-desc', text: 'Mutes Yappin\u2019s own built-in sounds (and the system ding on desktop notifications) so only the pack plays. Calls, ringing, voice chat and voice messages are never touched. Events you switch off below keep their default sound.' })),
+      sw(cfg.replace, (v) => { cfg.replace = v; save(cfg); })));
     const chips = el('div', { class: 'gp-chips' });
     PACKS.forEach(([id, label, desc]) => {
       const b = el('button', { class: 'gp-chip' + (cfg.pack === id ? ' on' : ''), title: desc, text: label });

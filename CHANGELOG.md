@@ -1,0 +1,125 @@
+# GIP++ changelog: 2.1.0 → 3.1.0
+
+Everything that differs between the 2.1.0 and 3.1.0 packages. This covers the 3.0.0, 3.0.1 and 3.1.0 releases, plus the Emoji Text feature added on top of 3.1.0. It was checked against the actual file differences, not only the old notes.
+
+At a glance: 3 releases · 14 new plugins · 2 new themes · 3 features removed (Emoji Source Card, Streamer Mode, Return to last DM) · most older themes touched.
+
+---
+
+## New features
+
+### Chat and messages
+- **Word Filter** (`gipwordfilter.js`, tab *Word filter*). Hide, collapse (click to show) or blur messages containing words you choose, and highlight other words. Highlighting uses the browser highlight feature, so message text is never rewritten.
+- **Nicknames** (`gipnicknames.js`, tab *Nicknames*). Rename people for yourself only. Alt+click a name in chat, or manage the list in the tab. Drawn with CSS; the real name text underneath is untouched.
+- **Link Preview** (`giplinkpreview.js`). Hover card showing the real address and warnings for fake link text, short links, look-alike (punycode) names, hidden logins, raw IP addresses and tracking parts, with *Copy clean link*. Risky links ask before opening. Loading the page title and picture is optional and **off by default**. When on, the app fetches it with no cookies, never from a local or private address, with redirects re-checked and size limits.
+- **Code Blocks** (`gipcodeblocks.js`). Hover copy button and syntax colours for JS/TS, Python, C-family, Rust, Go, shell, JSON, HTML/XML, CSS, SQL and more. On by default.
+- **Downloads** (`gipdownloads.js`, tab *Downloads*). A download button on hover for pictures, videos, audio and files. The app fetches the file and saves it with its real name to Downloads/GIP++ (or asks where). Programs and scripts are not saved automatically. On by default.
+- **Emoji Downloader** (`gipemojidl.js`). Alt+click an emoji to save it; Alt+Shift+click saves every emoji in the same picker or list. Also a button in the Downloads tab. Saved to Downloads/GIP++/Emoji. On by default.
+- **Emoji Text** (`gipemojitext.js`, tab *Emoji Text*). Turns `:emoji_names:` that Yappin leaves as plain text (bios, statuses, profile cards, anywhere else) into the emoji picture. On by default.
+  - Matching ignores capitals, so `:GIP_logo:` and `:gip_LOGO:` find the same emoji.
+  - Names come from three places: Yappin's own emoji lists as they load, a once-a-day read-only request for your account's emoji list (option *Load Yappin's emoji list*, plus a *Load emoji list from Yappin now* button), and any emoji seen on screen. They are remembered between sessions.
+  - Unknown names are left as text. The original text is kept and restored when the feature is turned off.
+
+### Voice
+- **Visualizer** (`gipvisualizer.js`). Winamp-style bars that move with the voice call. The analyser is never connected to the speakers, so call audio is unchanged, and it follows per-person mute and volume.
+- **Volume sliders now go to 500%** (was 200%). Streams play natively up to 100% and only use the Web Audio boost above that, which fixes silent streams. Voice presets were raised to match.
+- **Sound packs replace Yappin's own sounds** instead of playing on top (calls, voice chat and voice messages are untouched). New switch: *Replace default sounds*.
+
+### Look and feel
+- **Two new themes:** *Steam Classic* (the olive-green 2003–2010 skin: flat khaki panels, bevelled edges, gold highlights) and *Steam 2013* (the dark blue client; follows the Accent slider).
+- **Themes no longer restyle other people's profile themes** (profile cards, banners, name colours). `.profile-card` was removed from every theme's override rules, and a new `gipprofileguard.js` plus a rewrite of theme selectors in `0shim.js` keep themes out of profiles.
+- **Blur Media** (`gipimageblur.js`). Pictures and videos in chat stay blurred until hover or click. Emoji, avatars and tiny images are skipped. Ctrl+Alt+B toggles it.
+- **No Popups** (`gipnopopups.js`). Hides pop-up nags such as the "Help keep Yappin running" card (hide only, reversible).
+
+### Servers and accounts
+- **Server Info** (`gipserverinfo.js`). Hover a server in the rail for a card with its name and who is in voice. It ignores the Direct messages button and other non-server buttons. On by default.
+- **Sync accounts** (`gipsync.js`, tab *Sync accounts*). Publish one account's GIP++ settings and apply them in another, choosing which groups to copy. Logins and tokens are never included. Includes a *Learned emoji names* group for Emoji Text.
+- **Settings backup and restore**, in the Health tab (see Stability below).
+
+---
+
+## Stability and safety (3.0.0 → 3.1.0)
+
+### New core (`plugins/0core.js`)
+- **Event bus**: one page watcher for `message`, `sent`, `channel`, `voice` and `dom` events. A debounced helper, `YapPlus.events.watch(fn, owner, ms)`, replaces page-wide MutationObservers.
+- **Selector list** (`YapPlus.sel`) with a health check, so a Yappin class rename has one place to fix. New selectors: `msgText`, `msgAuthor`, `emoji`.
+- **Patch registry** (`YapPlus.patches`), so plugins cannot undo each other's changes to browser functions.
+- **Crash isolation**: a plugin that throws is turned off and its leftovers cleaned up. Five handler errors in a minute also turn it off. Plugins can declare `requires`.
+- **Error log**, per-plugin options helpers, and **settings backup/restore** with versioned migrations.
+- **Safe mode** banner.
+- New helper `YapPlus.download(url, name, opts)`.
+
+### New Health tab (`plugins/giphealth.js`)
+- Feature status, start time, errors, page check, file sources, settings backup/restore, *Copy debug info*, a **What's new** popup after each update, and a theme panic key (**Ctrl+Alt+Shift+T**).
+- Detects an outdated downloaded core and offers a **Reset updates** button. Every Health section now fails on its own instead of taking the tab down.
+
+### App and updater (`main.js`, `preload.js`, `app.js`, `html/client.html`)
+- **Safe mode**: hold Shift while the window opens, or use `--safe-mode`. GIP++ loads but no feature starts.
+- **Automatic rollback**: two failed starts in a row after an update return to the bundled files, and that update is not downloaded again.
+- **Core version guard** (`app.js`, `main.js`): if a downloaded copy has an older core than the app, the whole copy is set aside (`yapplus-hot.stale`) and the bundled files run. The updater also refuses to keep an update older than the app. A downloaded plugin set with no core of its own runs on the bundled core.
+- The page process is **reloaded if it crashes** (at most 3 times in 5 minutes).
+- **Single-instance lock**: opening the app twice focuses the running window.
+- Errors are written to `gip-errors.log`, with an *Open error log* action.
+- New app calls for downloads, link preview and sync only answer to a real Yappin page (trusted-URL check).
+- New IPC calls: `getSafeMode`, `restartSafe`, `getRunInfo`, `resetHot`, `bootResult`, `logError`, `openErrorLog`, `download`, `openDownloads`, `linkMeta`, `syncSave`, `syncList`, `syncLoad`.
+
+### Developer tooling
+- `scripts/check.js` (new), run by `push.ps1` before every push. It checks syntax of every file, duplicate top-level names between plugins, plugins that never register, direct patches of browser functions, page-wide MutationObservers, and direct assignment over `getUserMedia`, `createOffer`, `createAnswer` and `play`.
+- `push.ps1` and `push.bat` added (both are git-ignored). `clean.js` removed.
+- `plugins/READ-BEFORE-DEVELOPING.md` documents the new plugin API.
+
+---
+
+## Bug fixes
+- **Health tab failed to load** (`H.stats is not a function`, `Cannot read properties of undefined`). An old downloaded copy of `0core.js` was running next to newer plugins. Fixed by the core version guard and by Health detecting an old core.
+- **Draft Saver** erased your draft whenever anybody else posted in the channel. It now clears only when you send.
+- **Volume and Sound Packs** both replaced `HTMLMediaElement.play`, and turning one off could undo the other. Both now use the patch registry.
+- **Server Info**: the hover card no longer shows on non-server rail buttons and no longer writes to storage every few seconds.
+- **Volume**: the "NN%" label fix now edits the site's own text node, so Yappin can keep updating it.
+- **Folders**: the right-click menu is no longer covered by the folder sidebar. While the panel is open, menus are lifted into the browser's top layer.
+- **Visual Effects (send ring)** and **Draft Saver** no longer use their own key and click listeners for send detection.
+- Streams that were silent at normal volume now play correctly (see Volume above).
+
+## Final polish before release
+- Downloads: no longer cut off after 3 minutes. The app waits 30 s for the server to start answering, then only gives up if no data arrives for 60 s (still capped at 1 GB). Yappin's cookies are now only sent to Yappin's own addresses (a precaution; other sites get a clean request).
+- Link Preview: file names such as `README.md` or `setup.exe` are no longer flagged as "link says one site but goes to another", and a sub-domain of the same site (`m.example.com` for `example.com`) counts as the same place.
+- Word Filter does nothing (and cleans up after itself) when no words are set, instead of scanning every message on every page change.
+- Emoji Text: the automatic daily check only tries the remembered address or the two likeliest ones (the full guess list is for the manual button), and backs off for a week after a miss.
+- Shared helpers added to the core (`YapPlus.util.store`, `offAll`, `isIconMedia`) replace copies of the same code in Downloads, Blur Media, Nicknames, Word Filter, Code Blocks, Link Preview, Visualizer, Navigation, Draft Saver and Emoji Text.
+- Removed unused code (`getPluginCode`, an unused counter in Emoji Text).
+
+## Performance and internals
+Moved onto the shared event bus (no more separate page-wide observers): Folders, GIF Favorites, Keep Profile Colors, Mark All Read, Volume, Message Search, Custom voice messages, the Settings menu, Navigation (slow 1.5 s safety timer replaces the 250 ms poll), Visual Effects, Draft Saver and Silent Typing.
+
+Moved onto the patch registry: Hi-Fi Mic (`getUserMedia`, `createOffer`, `createAnswer`), Custom voice messages, Volume and Sound Packs.
+
+## Removed or renamed
+- **Emoji Source Card** (`gipemoji.js`) removed. Yappin has this built in now. Its readme entry is gone.
+- **Streamer Mode** (`gipstreamer.js`) removed, with its menu entry and selector-list entries. Its saved-settings key is left unused.
+- **Return to last DM** plugin removed (taken from the project's own 3.0.0 notes; it is not present in either package).
+- **"(Unofficial)" dropped from the name** in the window title, settings header, shortcut name, readme title, NOTICE, `package.json` and the counter-worker README. The "not affiliated with Yapper Media LLC" notices stay.
+- `clean.js` removed.
+
+## Menu and settings
+- Features are grouped into sections (*Chat and messages*, *Voice*, *Servers and navigation*, *Look and feel*, *Accounts and privacy*, *Fun*, *Other*) with a search box.
+- First launch switches on: Code Blocks, Downloads, Emoji Downloader, Emoji Text, Volume, Text Cursor, GIF Favorites, Folders, Voice, Mark All Read, Navigation, Profile Guard, Server Info, No Popups, Brand, Counter, Alts and Visual Effects. Everything else is off until turned on. Existing choices are never overridden.
+- New tabs: Health, Word filter, Nicknames, Downloads, Emoji Text, Sync accounts.
+
+## Themes
+- **54 → 56 themes** (the two Steam themes).
+- Most older themes had `.profile-card` removed from their override rules.
+- Six themes (`gip-aqua`, `gip-ios6`, `gip-msn`, `gip-myspace`, `gip-os9`, `squircly`) also had a small stray-comma/CSS-rule cleanup.
+
+## Version
+- `package.json`: 2.1.0 → 3.1.0. Core `YapPlus.VERSION` is 3.1.0, and Health expects 3.1.0 or newer.
+- What's new popup now shows 3.1.0, 3.0.1 and 3.0.0 notes.
+
+---
+
+### Release-by-release summary
+| Release | Theme |
+|---|---|
+| **3.0.0** | Stability: new core (event bus, selector list, patch registry, crash isolation), Health tab, safe mode, rollback, check script; 500% volume; sound packs replace defaults; Server Info; No Popups; profile guard; Steam themes |
+| **3.0.1** | Bug fixes: Health tab load failure, Draft Saver erasing drafts, Volume/Sound Pack conflict; more plugins moved to the bus; Streamer Mode removed; "(Unofficial)" dropped |
+| **3.1.0** | Nine new features (Word Filter, Nicknames, Blur Media, Visualizer, Link Preview, Code Blocks, Downloads, Emoji Downloader, Sync accounts); core version guard; trusted-page checks on new app calls |
+| *Added after 3.1.0* | Emoji Text, with emoji-list preloading and a Sync accounts group for it |

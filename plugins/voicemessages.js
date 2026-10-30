@@ -72,7 +72,7 @@ const customvoice = {
     const file = this.armed;
     this.armed = null;
     try {
-      const ctx = new AudioContext();
+      const ctx = new AudioContext(); ctx.__gipKeep = true; // GIP++ Sound Packs must never mute this
       await ctx.resume();
       const data = await file.arrayBuffer();
       const buf = await ctx.decodeAudioData(data);
@@ -98,25 +98,21 @@ const customvoice = {
     if (this.timer) return;
     const self = this;
     const md = navigator.mediaDevices;
-    if (md && !this.origgum) {
-      this.origgum = md.getUserMedia;
-      md.getUserMedia = function (constraints) {
+    if (md && md.getUserMedia) {
+      window.YapPlus.patches.add('customvoice', md, 'getUserMedia', (next) => function (constraints) {
         if (self.armed && constraints && constraints.audio && !constraints.video) {
           return self.makestream();
         }
-        return self.origgum.call(md, constraints);
-      };
+        return next.call(this, constraints);
+      });
     }
-    this.timer = setInterval(function () { self.ensurebtn(); }, 800);
+    this.timer = window.YapPlus.events.watch(function () { self.ensurebtn(); }, 'customvoice', 100);
     this.ensurebtn();
     console.log('[CustomVoice] armed');
   },
   stop() {
-    if (this.timer) { clearInterval(this.timer); this.timer = null; }
-    if (this.origgum && navigator.mediaDevices) {
-      navigator.mediaDevices.getUserMedia = this.origgum;
-      this.origgum = null;
-    }
+    if (this.timer) { this.timer(); this.timer = null; }
+    window.YapPlus.patches.removeOwner('customvoice');
     if (this.btn) { this.btn.remove(); this.btn = null; }
     if (this.input) { this.input.remove(); this.input = null; }
     this.armed = null;

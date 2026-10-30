@@ -213,14 +213,13 @@ const gipfolders = {
     };
     document.addEventListener('contextmenu', this.handlers.ctx, true);
     document.addEventListener('pointerdown', this.handlers.away, true);
-    this.obs = new MutationObserver(() => { try { self.lift(); } catch (e) {} if (!self.pend) self.pend = setTimeout(() => { self.pend = 0; try { self.sync(); } catch (e) {} }, 60); });
-    this.obs.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['aria-expanded', 'class'] });
+    this.obs = window.YapPlus.events.on('dom', () => { try { self.lift(); } catch (e) {} if (!self.pend) self.pend = setTimeout(() => { self.pend = 0; try { self.sync(); } catch (e) {} }, 60); }, 'gipfolders'); // class changes are caught by the 700ms sync below
     this.timer = setInterval(() => { try { this.sync(); } catch (e) {} }, 700);
     this.sync();
   },
   stop() {
     clearInterval(this.timer); this.timer = null;
-    if (this.obs) { this.obs.disconnect(); this.obs = null; }
+    if (this.obs) { this.obs(); this.obs = null; }
     if (this.handlers) { document.removeEventListener('contextmenu', this.handlers.ctx, true); document.removeEventListener('pointerdown', this.handlers.away, true); this.handlers = null; }
     this.closePanel();
     document.querySelectorAll('.rail-folder').forEach(b => {

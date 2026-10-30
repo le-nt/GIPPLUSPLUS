@@ -67,31 +67,27 @@ const filenamedisguiser = {
     if (this._fetchPatched) return;
     const self = this;
 
-    this.origXhrSend = XMLHttpRequest.prototype.send;
-    const origXhrSend = this.origXhrSend;
-    XMLHttpRequest.prototype.send = function (body) {
+    // Through the GIP++ patch registry, so other plugins cannot undo these changes (or be undone by them).
+    window.YapPlus.patches.add('filenamedisguiser', XMLHttpRequest.prototype, 'send', (origXhrSend) => function (body) {
       if (body instanceof FormData && !body._ypp_patched) {
         try { body = self.patchFormData(body); } catch (e) {}
       }
       return origXhrSend.call(this, body);
-    };
+    });
 
-    this.origFetch = window.fetch;
-    const origFetch = this.origFetch;
-    window.fetch = function (input, init) {
+    window.YapPlus.patches.add('filenamedisguiser', window, 'fetch', (origFetch) => function (input, init) {
       if (init && init.body instanceof FormData && !init.body._ypp_patched) {
         try { init = Object.assign({}, init, { body: self.patchFormData(init.body) }); } catch (e) {}
       }
       return origFetch.call(this, input, init);
-    };
+    });
 
     this._fetchPatched = true;
     console.log('[FilenameDisguiser] armed');
   },
 
   stop() {
-    if (this.origXhrSend) { XMLHttpRequest.prototype.send = this.origXhrSend; this.origXhrSend = null; }
-    if (this.origFetch) { window.fetch = this.origFetch; this.origFetch = null; }
+    window.YapPlus.patches.removeOwner('filenamedisguiser');
     this._fetchPatched = false;
     console.log('[FilenameDisguiser] disarmed');
   },

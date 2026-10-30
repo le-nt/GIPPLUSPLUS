@@ -7,7 +7,7 @@ const gipnopopups = {
   description: 'Hides pop-up nags such as the "Help keep Yapin\u2019 running" Plus card.',
   styleEl: null, obs: null, pend: 0,
   // Add more selectors here if Yapin adds new nag popups.
-  SEL: ['.plus-nudge', '[class*="plus-nudge"]'],
+  get SEL() { return [window.YapPlus.sel.css('plusNudge'), '[class*="plus-nudge"]']; },
   sweep() {
     this.pend = 0;
     // Fallback: a nudge whose class name changes is still caught by its heading text.
@@ -23,12 +23,12 @@ const gipnopopups = {
     this.styleEl.textContent = this.SEL.join(',') + ',.gip-nopopup-hid{display:none !important}';
     document.head.appendChild(this.styleEl);
     const self = this;
-    this.obs = new MutationObserver(() => { if (!self.pend) self.pend = setTimeout(() => { try { self.sweep(); } catch (e) {} }, 200); });
-    this.obs.observe(document.body, { childList: true });
+    // Page changes come from the shared event bus instead of a watcher of our own.
+    this.obs = window.YapPlus.events.on('dom', () => { if (!self.pend) self.pend = setTimeout(() => { try { self.sweep(); } catch (e) {} }, 200); }, 'gipnopopups');
     this.sweep();
   },
   stop() {
-    if (this.obs) { this.obs.disconnect(); this.obs = null; }
+    if (this.obs) { this.obs(); this.obs = null; }
     clearTimeout(this.pend); this.pend = 0;
     document.querySelectorAll('.gip-nopopup-hid').forEach(n => n.classList.remove('gip-nopopup-hid'));
     if (this.styleEl) { this.styleEl.remove(); this.styleEl = null; }

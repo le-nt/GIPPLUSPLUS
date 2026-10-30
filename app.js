@@ -30,6 +30,23 @@ process.env.YAPPLUS_APP_DIR = __dirname;
 
 
 
+// Core version guard. The downloaded copy (main.js, preload.js, html/client.html, plugins) must never be OLDER than the app itself.
+// If its core (plugins/0core.js) is older than the bundled one, the whole downloaded copy is set aside so the bundled files run.
+// A downloaded copy with no core of its own is fine: it runs on the bundled core.
+if (useHot && fs.existsSync(hotDir)) {
+  try {
+    const ver = (f) => { try { const m = /VERSION = '([^']+)'/.exec(fs.readFileSync(f, 'utf-8')); return m ? m[1] : ''; } catch (e) { return ''; } };
+    const older = (a, b) => { const x = a.split('.').map(Number), y = b.split('.').map(Number); for (let i = 0; i < 3; i++) { const d = (x[i] || 0) - (y[i] || 0); if (d) return d < 0; } return false; };
+    const hv = ver(path.join(hotDir, 'plugins', '0core.js')), bv = ver(path.join(__dirname, 'plugins', '0core.js'));
+    if (hv && bv && older(hv, bv)) {
+      fs.rmSync(hotDir + '.stale', { recursive: true, force: true });
+      fs.renameSync(hotDir, hotDir + '.stale');
+      try { fs.appendFileSync(path.join(app.getPath('userData'), 'gip-errors.log'), new Date().toISOString() + ' downloaded copy was core ' + hv + ' but the app is ' + bv + ': set aside, using bundled files\n'); } catch (e) {}
+      console.error('[Bootstrap] Downloaded copy is older than the app, using bundled files.');
+    }
+  } catch (e) { console.error('[Bootstrap] version guard failed:', e); }
+}
+
 let chosenMain = bundledMain;
 if (useHot && fs.existsSync(hotMain)) {
   try {

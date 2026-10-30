@@ -200,8 +200,7 @@ const gipgifs = {
     this.styleEl = document.createElement('style'); this.styleEl.id = 'gip-gifs-style'; this.styleEl.textContent = this.css;
     document.head.appendChild(this.styleEl);
     const self = this;
-    this.obs = new MutationObserver(() => { if (!self.raf) self.raf = requestAnimationFrame(() => self.scan()); });
-    this.obs.observe(document.body, { childList: true, subtree: true });
+    this.obs = window.YapPlus.events.on('dom', () => { if (!self.raf) self.raf = requestAnimationFrame(() => self.scan()); }, 'gipgifs');
     this.handlers = {
       over: (e) => { if (self.isChatGif(e.target)) self.hoverStar(e.target); },
       out: (e) => { if (self.hover && self.isChatGif(e.target) && !(e.relatedTarget && self.hover.contains(e.relatedTarget))) self.hover.style.display = 'none'; },
@@ -213,7 +212,7 @@ const gipgifs = {
     this.scan();
   },
   stop() {
-    if (this.obs) { this.obs.disconnect(); this.obs = null; }
+    if (this.obs) { this.obs(); this.obs = null; }
     if (this.handlers) {
       document.removeEventListener('mouseover', this.handlers.over, true);
       document.removeEventListener('mouseout', this.handlers.out, true);

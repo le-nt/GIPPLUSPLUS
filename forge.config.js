@@ -23,7 +23,7 @@ module.exports = {
       allowToChangeInstallationDirectory: false,
       createDesktopShortcut: true,
       createStartMenuShortcut: true,
-      shortcutName: "GIP++ (Unofficial)"
+      shortcutName: "GIP++"
     }),
   ]
 };

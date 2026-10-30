@@ -78,7 +78,8 @@ const gipvolume = {
         set(v) { d.srcObject.set.call(this, v); const el = this; setTimeout(() => { try { self.consider(el); } catch (e) {} }, 0); },
       });
     }
-    proto.play = function () { try { self.consider(this); } catch (e) {} return d.play.apply(this, arguments); };
+    // play() goes through the patch registry so Sound Packs and this plugin cannot undo each other.
+    window.YapPlus.patches.add('gipvolume', proto, 'play', (next) => function () { try { self.consider(this); } catch (e) {} return next.apply(this, arguments); });
   },
   unhook() {
     if (!this.d) return;
@@ -86,7 +87,7 @@ const gipvolume = {
     Object.defineProperty(proto, 'volume', this.d.volume);
     Object.defineProperty(proto, 'muted', this.d.muted);
     if (this.d.srcObject) Object.defineProperty(proto, 'srcObject', this.d.srcObject);
-    proto.play = this.d.play;
+    window.YapPlus.patches.remove('gipvolume', proto, 'play');
     this.d = null;
   },
 
@@ -359,8 +360,7 @@ const gipvolume = {
     document.addEventListener('input', this.handlers.input, true);
     document.addEventListener('click', this.handlers.click, true);
     ['pointerdown', 'keydown'].forEach(t => document.addEventListener(t, this.handlers.gesture, true));
-    this.obs = new MutationObserver(() => this.scan());
-    this.obs.observe(document.body, { childList: true, subtree: true });
+    this.obs = window.YapPlus.events.on('dom', () => this.scan(), 'gipvolume');
     this.timer = setInterval(() => this.tick(), 1000);
     this.tick(); this.scan();
     window.YapPlus.volume = this;
@@ -368,7 +368,7 @@ const gipvolume = {
   },
   stop() {
     clearInterval(this.timer); this.timer = null;
-    if (this.obs) { this.obs.disconnect(); this.obs = null; }
+    if (this.obs) { this.obs(); this.obs = null; }
     if (this.handlers) {
       document.removeEventListener('input', this.handlers.input, true);
       document.removeEventListener('click', this.handlers.click, true);

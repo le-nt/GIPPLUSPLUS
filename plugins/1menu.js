@@ -122,6 +122,8 @@
     gipfx: 'look', gipprofileguard: 'look', gipbrand: 'look', custombackground: 'look',
     gipalts: 'acct', gipcounter: 'acct', gipnopopups: 'look',
     oneko: 'fun',
+    gipwordfilter: 'chat', gipnicknames: 'chat', giplinkpreview: 'chat', gipcodeblocks: 'chat', gipdownloads: 'chat', gipemojidl: 'chat', gipemojitext: 'chat',
+    gipimageblur: 'acct', gipvisualizer: 'voice',
   };
   function tabPlugins() {
     const root = el('div');
@@ -458,20 +460,24 @@
   let currentTab = 'plugins', currentMode = false;
 
   // Sidebar sections. Tabs that register themselves later and are not listed here land under "More".
-  const SIDE = [['Features', ['plugins']], ['Appearance', ['themes', 'sounds']], ['Chat and voice', ['voice', 'search']], ['App', ['accounts', 'settings']], ['', ['about']]];
+  const SIDE = [['Features', ['plugins']], ['Appearance', ['themes', 'sounds']], ['Chat and voice', ['voice', 'search', 'words', 'people', 'downloads']], ['App', ['accounts', 'sync', 'settings']], ['', ['about']]];
   const INFO = {
     plugins: ['Features', 'Switch features on or off. Changes apply straight away.'],
     themes: ['Themes', 'Choose how the app looks. Click a preview to switch it on.'],
     sounds: ['Sounds', 'Pick a sound pack and when it plays.'],
     voice: ['Voice', 'Saved volume and direction for people, and presets.'],
     search: ['Message search', 'Search the messages you have seen while this is on.'],
+    words: ['Word filter', 'Hide, collapse or highlight messages that contain words you choose.'],
+    people: ['Nicknames', 'Rename people for yourself only. Nobody else sees it.'],
+    downloads: ['Downloads', 'Save files and emoji from chat with their real names.'],
+    sync: ['Sync accounts', 'Copy GIP++ settings from one account to another.'],
     accounts: ['Accounts', 'Use several accounts at once, each in its own window.'],
     settings: ['Settings', 'Updates, shortcuts, uploads, background and reset.'],
     about: ['About', 'Version, credits and links.'],
   };
   function buildpanel() {
     const p = el('div', { id: panelid });
-    const h = el('h1', null, 'GIP++ (Unofficial)', el('span', { class: 'gp-ver', text: 'v' + Y.VERSION }));
+    const h = el('h1', null, 'GIP++', el('span', { class: 'gp-ver', text: 'v' + Y.VERSION }));
     const sub = el('div', { class: 'gp-sub', text: 'Unofficial client mod, not affiliated with Yapper Media LLC. Based on Yap++.' });
     const side = el('nav', { class: 'gp-side', 'aria-label': 'GIP++ sections' }); const head = el('div', { class: 'gp-head' }); const body = el('div');
     const content = el('div', { class: 'gp-content' }, head, body);
@@ -531,6 +537,6 @@
     nav.addEventListener('click', (e) => { const b = e.target.closest && e.target.closest('button'); if (b && b !== btn && !btn.contains(b)) leave(); }, true);
     nav.appendChild(btn);
   }
-  new MutationObserver(inject).observe(document.body, { childList: true, subtree: true });
+  Y.events.on('dom', inject, '1menu');
   inject();
 })();

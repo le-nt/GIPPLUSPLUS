@@ -63,11 +63,10 @@
     description: 'Keeps a private, local index of the messages you see and lets you search them across every server in GIP++ > Search. Off by default.',
     start() {
       if (obs) return; scan();
-      obs = new MutationObserver(() => { clearTimeout(scanT); scanT = setTimeout(scan, 700); });
-      obs.observe(document.body, { childList: true, subtree: true });
+      obs = Y.events.on('dom', () => { clearTimeout(scanT); scanT = setTimeout(scan, 700); }, 'gipsearch');
       pruneT = setInterval(prune, 300000); setTimeout(prune, 20000);
     },
-    stop() { if (!obs) return; obs.disconnect(); obs = null; clearInterval(pruneT); clearTimeout(scanT); flush(); },
+    stop() { if (!obs) return; obs(); obs = null; clearInterval(pruneT); clearTimeout(scanT); flush(); },
   };
   window.PluginHost.register(plugin);
 

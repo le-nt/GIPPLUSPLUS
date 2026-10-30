@@ -2,11 +2,9 @@ const draftsaved = {
   id: 'draftsaved',
   name: 'Draft Saver',
   description: 'Saves your unsent message drafts per channel so you dont lose them if you refresh or switch channels. (By @ood)',
-  origFetch: null,
-  origAddEventListener: null,
+  offs: null,
   saveTimer: null,
   isRestoring: false,
-  pendingRestore: false,
 
   getKey() {
     const cid = messagelogger.currentChannelId();
@@ -17,80 +15,33 @@ const draftsaved = {
     return document.querySelector('.composer textarea, .composer-box textarea, textarea.msg-input') || document.querySelector('.composer textarea');
   },
 
+  // Everything comes from the shared GIP++ event bus (0core.js): 'sent' clears the draft when YOU send,
+  // 'dom' and 'channel' find the message box again after Yappin redraws it. No page watcher or WebSocket patch of its own.
+  // (The old version cleared the draft whenever ANYONE posted in the channel; now only your own send does.)
   start() {
-    const self = this;
-    if (this.origAddEventListener) return;
-
-    if (!this.origAddEventListener) this.origAddEventListener = WebSocket.prototype.addEventListener;
-    const origAddEL = this.origAddEventListener;
-
-    WebSocket.prototype.addEventListener = function (type, listener, options) {
-      if (type !== 'message') return origAddEL.call(this, type, listener, options);
-      const wrapped = function (ev) {
-        if (!self.isRestoring && !self.pendingRestore) {
-          try {
-            const frame = JSON.parse(ev.data);
-            const data = frame && frame.payload && frame.payload.data;
-            if (data && data.table === 'messages' && (data.type === 'INSERT' || frame.event === 'INSERT')) {
-              const record = data.record;
-              const cid = messagelogger.currentChannelId();
-              if (record && record.channel_id === cid) {
-                const key = self.getKey();
-                if (key) localStorage.removeItem(key);
-              }
-            }
-          } catch (e) {}
-        }
-        return listener.call(this, ev);
-      };
-      return origAddEL.call(this, type, wrapped, options);
-    };
-
-    this.installListeners();
+    if (this.offs) return;
+    const self = this; const E = window.YapPlus.events;
+    this.offs = [
+      E.on('sent', () => { setTimeout(() => { const key = self.getKey(); if (key) localStorage.removeItem(key); }, 50); }, 'draftsaved'),
+      E.on('dom', () => self.hook(), 'draftsaved'),
+      E.on('channel', () => { self.hook(); setTimeout(() => { const c = self.findComposer(); if (c && !c.value) self.restoreDraft(c); }, 300); }, 'draftsaved'),
+    ];
+    this.hook();
     console.log('[DraftSaver] armed');
   },
 
-  installListeners() {
+  hook() {
+    const composer = this.findComposer();
+    if (!composer || composer.dataset.ypDraftHooked) return;
     const self = this;
-    const attach = () => {
-      const composer = this.findComposer();
-      if (!composer || composer.dataset.ypDraftHooked) return false;
-      composer.dataset.ypDraftHooked = '1';
-
-      self.restoreDraft(composer);
-
-      composer.__ypDraftInput = () => {
-        if (self.isRestoring) return;
-        clearTimeout(self.saveTimer);
-        self.saveTimer = setTimeout(() => self.saveDraft(composer), 400);
-      };
-      composer.addEventListener('input', composer.__ypDraftInput);
-
-      composer.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          setTimeout(() => {
-            const key = self.getKey();
-            if (key) localStorage.removeItem(key);
-          }, 50);
-        }
-      });
-      return true;
+    composer.dataset.ypDraftHooked = '1';
+    self.restoreDraft(composer);
+    composer.__ypDraftInput = () => {
+      if (self.isRestoring) return;
+      clearTimeout(self.saveTimer);
+      self.saveTimer = setTimeout(() => self.saveDraft(composer), 400);
     };
-
-    if (!attach()) {
-      const obs = new MutationObserver(() => { if (attach()) obs.disconnect(); });
-      obs.observe(document.body, { childList: true, subtree: true });
-    }
-
-    if (!this.navObserver) {
-      this.navObserver = new MutationObserver(() => {
-        const composer = this.findComposer();
-        if (composer && !composer.dataset.ypDraftHooked) {
-          this.installListeners();
-        }
-      });
-      this.navObserver.observe(document.body, { childList: true, subtree: true });
-    }
+    composer.addEventListener('input', composer.__ypDraftInput);
   },
 
   saveDraft(composer) {
@@ -114,11 +65,7 @@ const draftsaved = {
   },
 
   stop() {
-    if (this.origAddEventListener) {
-      WebSocket.prototype.addEventListener = this.origAddEventListener;
-      this.origAddEventListener = null;
-    }
-    if (this.navObserver) { this.navObserver.disconnect(); this.navObserver = null; }
+    if (this.offs) { window.YapPlus.util.offAll(this.offs); this.offs = null; }
     clearTimeout(this.saveTimer);
     const composer = this.findComposer();
     if (composer) {

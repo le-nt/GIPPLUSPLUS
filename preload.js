@@ -20,5 +20,18 @@ contextBridge.exposeInMainWorld('electronAPI', {
     altsNew: (name, color) => ipcRenderer.invoke('alts-new', name, color),
     altsOpen: (id) => ipcRenderer.invoke('alts-open', id),
     altsDelete: (id) => ipcRenderer.invoke('alts-delete', id),
-    userCount: (ping) => ipcRenderer.invoke('gip-count', !!ping)
+    getSafeMode: () => ipcRenderer.invoke('get-safe-mode'),
+    restartSafe: () => ipcRenderer.invoke('restart-safe'),
+    getRunInfo: () => ipcRenderer.invoke('get-run-info'),
+    resetHot: () => ipcRenderer.invoke('reset-hot'),
+    bootResult: (ok) => ipcRenderer.invoke('boot-result', !!ok),
+    logError: (text) => ipcRenderer.invoke('log-error', String(text)),
+    openErrorLog: () => ipcRenderer.invoke('open-error-log'),
+    userCount: (ping) => ipcRenderer.invoke('gip-count', !!ping),
+    download: (o) => ipcRenderer.invoke('gip-download', o),
+    openDownloads: () => ipcRenderer.invoke('gip-open-downloads'),
+    linkMeta: (url, wantImage) => ipcRenderer.invoke('gip-link-meta', String(url), !!wantImage),
+    syncSave: (id, name, data) => ipcRenderer.invoke('sync-save', id, name, data),
+    syncList: () => ipcRenderer.invoke('sync-list'),
+    syncLoad: (id) => ipcRenderer.invoke('sync-load', id)
 });

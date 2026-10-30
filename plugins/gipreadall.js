@@ -95,10 +95,9 @@ const gipreadall = {
   start() {
     if (this.obs) return;
     const self = this;
-    this.obs = new MutationObserver(() => { if (!self.pend) self.pend = setTimeout(() => { self.pend = 0; self.ensure(); }, 100); });
-    this.obs.observe(document.body, { childList: true, subtree: true });
+    this.obs = window.YapPlus.events.on('dom', () => { if (!self.pend) self.pend = setTimeout(() => { self.pend = 0; self.ensure(); }, 100); }, 'gipreadall');
     this.ensure();
   },
-  stop() { if (this.obs) { this.obs.disconnect(); this.obs = null; } if (this.wrap) { this.wrap.remove(); this.wrap = null; } this.cancel = true; },
+  stop() { if (this.obs) { this.obs(); this.obs = null; } if (this.wrap) { this.wrap.remove(); this.wrap = null; } this.cancel = true; },
 };
 window.PluginHost.register(gipreadall);

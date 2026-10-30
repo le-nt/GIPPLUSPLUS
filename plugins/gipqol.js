@@ -33,12 +33,12 @@ const giphifimic = {
     });
   },
   start() {
-    if (this.origGum) return;
+    if (this.on) return;
+    this.on = true;
     const self = this;
-    const md = navigator.mediaDevices;
+    const md = navigator.mediaDevices; const P = window.YapPlus.patches;
     if (md && md.getUserMedia) {
-      this.origGum = md.getUserMedia.bind(md);
-      md.getUserMedia = function (constraints) {
+      P.add('giphifimic', md, 'getUserMedia', (next) => function (constraints) {
         if (constraints && constraints.audio) {
           const base = typeof constraints.audio === 'object' ? constraints.audio : {};
           constraints = Object.assign({}, constraints, {
@@ -48,30 +48,24 @@ const giphifimic = {
             }),
           });
         }
-        return self.origGum(constraints);
-      };
+        return next.call(this, constraints);
+      });
     }
     const proto = window.RTCPeerConnection && window.RTCPeerConnection.prototype;
     if (proto) {
-      this.origOffer = proto.createOffer;
-      this.origAnswer = proto.createAnswer;
       ['createOffer', 'createAnswer'].forEach((name) => {
-        const orig = proto[name];
-        proto[name] = function () {
-          return orig.apply(this, arguments).then((d) => {
+        P.add('giphifimic', proto, name, (next) => function () {
+          return next.apply(this, arguments).then((d) => {
             if (d && d.sdp) { try { d.sdp = self.munge(d.sdp); } catch (e) {} }
             return d;
           });
-        };
+        });
       });
     }
     console.log('[GIP HiFi Mic] armed');
   },
   stop() {
-    if (this.origGum) { navigator.mediaDevices.getUserMedia = this.origGum; this.origGum = null; }
-    const proto = window.RTCPeerConnection && window.RTCPeerConnection.prototype;
-    if (proto && this.origOffer) { proto.createOffer = this.origOffer; proto.createAnswer = this.origAnswer; }
-    this.origOffer = this.origAnswer = null;
+    window.YapPlus.patches.removeOwner('giphifimic'); this.on = false;
     console.log('[GIP HiFi Mic] disarmed');
   },
 };

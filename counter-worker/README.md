@@ -1,4 +1,4 @@
-# GIP++ (Unofficial) counter server
+# GIP++ counter server
 
 Part of GIP++, an unofficial client mod that is not affiliated with Yapper Media LLC.
 

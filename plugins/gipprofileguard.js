@@ -22,11 +22,10 @@ const gipprofileguard = {
   start() {
     if (this.obs) return;
     const self = this;
-    this.obs = new MutationObserver(() => { if (!self.pend) self.pend = setTimeout(() => { try { self.guard(); } catch (e) {} }, 120); });
-    this.obs.observe(document.body, { childList: true, subtree: true });
+    this.obs = window.YapPlus.events.on('dom', () => { if (!self.pend) self.pend = setTimeout(() => { try { self.guard(); } catch (e) {} }, 120); }, 'gipprofileguard');
     this.timer = setInterval(() => { try { self.guard(); } catch (e) {} }, 2000);
     this.guard();
   },
-  stop() { if (this.obs) { this.obs.disconnect(); this.obs = null; } clearInterval(this.timer); this.timer = null; },
+  stop() { if (this.obs) { this.obs(); this.obs = null; } clearInterval(this.timer); this.timer = null; },
 };
 window.PluginHost.register(gipprofileguard);

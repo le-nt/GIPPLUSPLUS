@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>GIP++ (Unofficial)</title>
+    <title>GIP++</title>
     <style>
         body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #080808; }
         webview { width: 100%; height: 100%; }
@@ -37,6 +37,11 @@
                 try { profile = await window.electronAPI.altsSelf() || profile; } catch (e) {}
                 await webview.executeJavaScript(`window.__gipProfile = ${JSON.stringify(profile)};`);
 
+                // Safe mode (hold Shift while the window opens): GIP++ loads, but no feature is started.
+                let safe = false;
+                try { safe = !!(await window.electronAPI.getSafeMode()); } catch (e) {}
+                await webview.executeJavaScript(`window.__gipSafeMode = ${safe ? 'true' : 'false'};`);
+
                 setTimeout(async () => {
                     // Each plugin runs on its own, so a syntax error in one no longer stops all the others.
                     let files = [];
@@ -47,8 +52,14 @@
                             await webview.executeJavaScript(p.code);
                         } catch (err) {
                             console.error('[GIP++] plugin failed to load:', p.file, err);
+                            try { window.electronAPI.logError('plugin file failed to load: ' + p.file + ': ' + (err && err.message || err)); } catch (e) {}
                         }
                     }
+                    // Tell the app whether GIP++ came up. Two bad starts in a row after an update roll back to the bundled files.
+                    try {
+                        const ok = await webview.executeJavaScript('!!(window.YapPlus && window.YapPlus.PluginHost && window.YapPlus.VERSION)');
+                        await window.electronAPI.bootResult(ok);
+                    } catch (e) {}
                 }, 1500);
             } catch (err) {
                 console.error('[GIP++] startup failed', err);

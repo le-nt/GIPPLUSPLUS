@@ -2,28 +2,22 @@ const notyping = {
   id: 'notyping',
   name: 'SilentTyping',
   description: "So sigma and mysterious #alphawolf",
-  origSend: null,
   
   start() {
-    if (this.origSend) return;
-    this.origSend = WebSocket.prototype.send;
-    const orig = this.origSend;
-    WebSocket.prototype.send = function (data) {
+    // Goes through the GIP++ patch registry, so turning other plugins on or off can never undo this (or be undone by it).
+    window.YapPlus.patches.add('notyping', WebSocket.prototype, 'send', (next) => function (data) {
       try {
         if (typeof data === 'string') {
           const f = JSON.parse(data);
-          if (f && f.type === 'typing') return; 
+          if (f && f.type === 'typing') return;
         }
       } catch (e) {}
-      return orig.call(this, data);
-    };
+      return next.call(this, data);
+    });
   },
   
   stop() {
-    if (this.origSend) {
-      WebSocket.prototype.send = this.origSend;
-      this.origSend = null;
-    }
+    window.YapPlus.patches.removeOwner('notyping');
   },
 };
 

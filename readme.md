@@ -1,8 +1,8 @@
 
 
-# GIP++ (Unofficial)
+# GIP++
 
-> **Unofficial.** GIP++ is a community client mod. It is not affiliated with, endorsed by or supported by Yapper Media LLC.
+> **Not affiliated.** GIP++ is a community client mod. It is not affiliated with, endorsed by or supported by Yapper Media LLC.
 
 A client modification for [Yappin'](https://www.yapin.gg), made by **GIP & CO International**.
 Built on [Yap++](https://github.com/salami-reborn/yapplusplus) by salami (Apache-2.0). See `CHANGES.md` for everything that differs.
@@ -32,6 +32,14 @@ Built on [Yap++](https://github.com/salami-reborn/yapplusplus) by salami (Apache
 - **Sounds tab**: synthesised sound packs (Aero Glass, Luna Bells, Instant Messenger, 8-bit) for new messages, sending, and voice join/leave.
 - **Voice tab**: edit the volume and direction GIP++ remembers per person, and apply presets.
 - **Search tab**: search every server you have read in. Keeps a local index of messages your client displayed (off by default; it cannot see messages you never opened).
+- **Word filter**: hide, collapse, blur or highlight messages with words you choose (GIP++ > Word filter).
+- **Nicknames**: rename people for yourself only. Alt+click a name in chat.
+- **Blur Media**: pictures and videos in chat stay blurred until you hover or click them (Ctrl+Alt+B toggles).
+- **Link Preview**: hover a link to see where it really goes, with warnings for fake link text, short links and look-alike addresses; risky links ask before opening.
+- **Code Blocks**: a copy button and syntax colours on code blocks.
+- **Downloads** and **Emoji Downloader**: a download button on chat media that keeps the real file name (saved to Downloads/GIP++), and Alt+click an emoji to save it.
+- **Visualizer**: a Winamp-style bar strip that moves with the voice call.
+- **Sync accounts**: publish one account's GIP++ settings and apply them in another account.
 - **Reset GIP++**: Settings > Reset GIP++ puts GIP++ back to a fresh install without touching your login.
 - **Zoom** (`Ctrl +` / `Ctrl -` / `Ctrl 0` / `Ctrl + wheel`), **DevTools** (`F12`), **reload** (`F5`), mouse back/forward buttons.
 - **Text Cursor In Chat**, **Hi-Fi Mic** (experimental stereo), **GIP Inspector** (dev helper).

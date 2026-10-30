@@ -89,17 +89,8 @@
     d.style.cssText = `left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;border-radius:${getComputedStyle(box).borderRadius}`;
     document.body.appendChild(d); setTimeout(() => d.remove(), 650);
   }
-  const hasText = (t) => ((t.value !== undefined ? t.value : t.textContent) || '').trim().length > 0;
-  const onKey = (e) => {
-    if (e.key !== 'Enter' || e.shiftKey || e.ctrlKey || e.altKey || e.isComposing) return;
-    const t = e.target; const box = t && t.closest && t.closest('.composer-box');
-    if (box && hasText(t)) ring(box);
-  };
-  const onClick = (e) => {
-    const b = e.target.closest && e.target.closest('button'); if (!b) return;
-    const box = b.closest('.composer-box') || (b.closest('.main') && b.closest('.main').querySelector('.composer-box'));
-    if (box && /send/i.test((b.getAttribute('aria-label') || '') + ' ' + (b.title || '') + ' ' + b.className)) ring(box);
-  };
+  // Send detection comes from the shared event bus ('sent'), so this plugin has no key or click listeners for it.
+  const onSent = () => { const box = Y.sel.q('composer'); if (box) ring(box); };
   let tTimer = null;
   const onInput = (e) => {
     if (!opt('typing', true)) return;
@@ -117,7 +108,7 @@
   }
   const vis = () => document.documentElement.classList.toggle('gip-hidden', document.hidden);
 
-  let style = null, timers = [];
+  let style = null, timers = [], offSent = null;
   const fx = {
     id: 'gipfx', origin: 'gip', name: 'Visual Effects',
     description: 'Animated bubbles or aurora behind the app, a time-of-day sky, a glossy ring when you send and a glow while typing. Works best with the GIP++ Aero themes.',
@@ -132,7 +123,7 @@
       if (style) return;
       style = document.createElement('style'); style.id = 'gipfx-style'; style.textContent = CSS; document.head.appendChild(style);
       buildLayer(); setSky(); vis();
-      document.addEventListener('keydown', onKey, true); document.addEventListener('click', onClick, true);
+      offSent = Y.events.on('sent', onSent, 'gipfx');
       document.addEventListener('input', onInput, true); document.addEventListener('visibilitychange', vis);
       timers = [setInterval(ensure, 2000), setInterval(setSky, 60000), setInterval(othersTyping, 700)];
     },
@@ -140,7 +131,7 @@
       if (!style) return;
       style.remove(); style = null; timers.forEach(clearInterval); timers = [];
       if (layer) { layer.remove(); layer = null; }
-      document.removeEventListener('keydown', onKey, true); document.removeEventListener('click', onClick, true);
+      if (offSent) { offSent(); offSent = null; }
       document.removeEventListener('input', onInput, true); document.removeEventListener('visibilitychange', vis);
       document.documentElement.classList.remove('gip-others-typing', 'gip-hidden');
       NAMES.forEach(n => document.documentElement.style.removeProperty('--gip-tod-' + n));
