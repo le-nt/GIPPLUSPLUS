@@ -1,10 +1,10 @@
-// GIP++ Mini Call. The little call card that shows up when you are in voice (or watching a stream) and open a different channel.
-// Pick one: let you drag it anywhere (it remembers where), or hide it completely. It is only a visual change on your screen.
+// GIP++ Mini Call. The small call card that appears when you are in a voice call or watching a stream and switch to another channel.
+// Choose one: drag it anywhere (it remembers its position) or hide it completely. This only changes how it looks on your screen.
 (function () {
   const Y = window.YapPlus, ME = 'gipminicall', STYLE = 'gip-minicall-style', DRAGGING = 'gip-minicall-dragging';
   const THRESHOLD = 5; // pixels you must move before a press counts as a drag, so a normal click still goes back to the call
   const store = Y.util.store('gip.minicall.pos', { x: 0, y: 0 });
-  let pos = { x: 0, y: 0 }, drag = null, justDragged = false, offs = null, styleEl = null, h = null;
+  let pos = { x: 0, y: 0 }, drag = null, justDragged = false, offs = null, styleEl = null, h = null, raf = 0, last = null;
 
   Y.sel.define('miniCall', '.mini-call', 'ondemand', [ME]);
   const sel = () => Y.sel.css('miniCall');
@@ -27,7 +27,7 @@
     if (mode() === 'hide') { styleEl.textContent = s + '{display:none !important}'; clearVars(); return; }
     setVars();
     styleEl.textContent = s + '{translate:var(--gip-mc-x,0px) var(--gip-mc-y,0px) !important;cursor:grab;touch-action:none;user-select:none}' +
-      s + '.' + DRAGGING + '{cursor:grabbing}';
+      s + '.' + DRAGGING + '{cursor:grabbing;transition:none !important;animation:none !important;will-change:translate}';
   }
 
   // If the window got smaller (or the card appeared somewhere new), pull it back on screen.
@@ -46,24 +46,39 @@
     const el = e.target.closest(sel()), r = el.getBoundingClientRect();
     drag = { el, id: e.pointerId, moved: false, sx: e.clientX, sy: e.clientY, ox: pos.x, oy: pos.y, left: r.left, top: r.top, w: r.width, h: r.height };
   }
-  function onMove(e) {
-    if (!drag || e.pointerId !== drag.id) return;
-    let dx = e.clientX - drag.sx, dy = e.clientY - drag.sy;
-    if (!drag.moved) {
-      if (Math.hypot(dx, dy) < THRESHOLD) return;
-      drag.moved = true; drag.el.classList.add(DRAGGING);
-      try { drag.el.setPointerCapture(drag.id); } catch (err) {}
-    }
+  // While dragging, only the card itself is updated (once per frame). Changing a variable on the page root would
+  // make the browser re-check every element on the page on each mouse move, which is what made dragging laggy.
+  function frame() {
+    raf = 0;
+    if (!drag || !drag.moved || !last) return;
+    let dx = last.x - drag.sx, dy = last.y - drag.sy;
     // keep the whole card inside the window
     dx = Math.min(Math.max(dx, -drag.left), Math.max(-drag.left, innerWidth - drag.w - drag.left));
     dy = Math.min(Math.max(dy, -drag.top), Math.max(-drag.top, innerHeight - drag.h - drag.top));
-    pos.x = drag.ox + dx; pos.y = drag.oy + dy; setVars();
+    pos.x = drag.ox + dx; pos.y = drag.oy + dy;
+    drag.el.style.setProperty('--gip-mc-x', pos.x + 'px');
+    drag.el.style.setProperty('--gip-mc-y', pos.y + 'px');
+  }
+  function onMove(e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    if (!drag.moved) {
+      if (Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) < THRESHOLD) return;
+      drag.moved = true; drag.el.classList.add(DRAGGING);
+      try { drag.el.setPointerCapture(drag.id); } catch (err) {}
+    }
+    last = { x: e.clientX, y: e.clientY };
+    if (!raf) raf = requestAnimationFrame(frame);
   }
   function onUp(e) {
     if (!drag || e.pointerId !== drag.id) return;
+    if (raf) { cancelAnimationFrame(raf); raf = 0; frame(); }
     drag.el.classList.remove(DRAGGING);
-    if (drag.moved) { justDragged = true; setTimeout(() => { justDragged = false; }, 0); store.set(pos); }
-    drag = null;
+    if (drag.moved) {
+      setVars(); // save the final spot on the page root once, then let the card use it
+      drag.el.style.removeProperty('--gip-mc-x'); drag.el.style.removeProperty('--gip-mc-y');
+      justDragged = true; setTimeout(() => { justDragged = false; }, 0); store.set(pos);
+    }
+    drag = null; last = null;
   }
   // The click that ends a drag must not also take you back to the call.
   function onClick(e) { if (justDragged && inCard(e)) { e.preventDefault(); e.stopPropagation(); } }
@@ -76,7 +91,7 @@
 
   const plugin = {
     id: ME, name: 'Mini Call', origin: 'gip',
-    description: 'The small call card that appears when you are in voice or watching a stream and open another channel. Make it draggable (it remembers where; Alt+double-click puts it back) or hide it completely.',
+    description: 'Controls the small call card that appears when you are in a voice call or watching a stream and switch to another channel. Drag it anywhere (it remembers its position, and Alt+double-click resets it) or hide it completely.',
     options: [
       { key: 'mode', type: 'select', dflt: 'drag', label: 'Call card', choices: [['drag', 'Let me drag it'], ['hide', 'Never show it']] },
     ],
@@ -106,7 +121,8 @@
         window.removeEventListener('resize', h.resize);
         h = null;
       }
-      drag = null; justDragged = false;
+      if (raf) { cancelAnimationFrame(raf); raf = 0; }
+      drag = null; last = null; justDragged = false;
       document.querySelectorAll('.' + DRAGGING).forEach(n => n.classList.remove(DRAGGING));
       clearVars();
       if (styleEl) { styleEl.remove(); styleEl = null; }
