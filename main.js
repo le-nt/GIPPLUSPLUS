@@ -715,9 +715,16 @@ function openClient(profile) {
                 const trusted = ${JSON.stringify(TRUSTED_HOSTS)}.some(h => host === h || host.endsWith('.' + h));
                 if (trusted) return;
                 if (href.startsWith('http://') || href.startsWith('https://')) {
+                    // Fix: this used to cancel the click first and THEN call window.electronAPI.openExternal. If the app bridge was missing
+                    // (preload did not attach) that threw after the click was already cancelled, so the link did nothing at all.
+                    // Now the click is only taken over when the bridge exists; otherwise it goes through untouched and the
+                    // window-open / will-navigate handlers in this file send it to the browser.
+                    const api = window.electronAPI;
+                    if (!api || typeof api.openExternal !== 'function') return;
                     e.preventDefault();
                     e.stopPropagation();
-                    window.electronAPI.openExternal(href);
+                    const fallback = () => { try { window.open(href, '_blank'); } catch (x) {} };
+                    try { Promise.resolve(api.openExternal(href)).then((r) => { if (r && r.success === false) fallback(); }, fallback); } catch (x) { fallback(); }
                 }
             }, false);
         `;

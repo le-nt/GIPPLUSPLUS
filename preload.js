@@ -1,7 +1,8 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 const preloadPathArg = process.argv.find(arg => arg.startsWith('--preload-path='));
-const preloadPath = preloadPathArg ? preloadPathArg.split('=')[1] : '';
+// slice, not split('='): an install path that contains an "=" used to be cut off there, so the page got a broken preload path.
+const preloadPath = preloadPathArg ? preloadPathArg.slice('--preload-path='.length) : '';
 
 contextBridge.exposeInMainWorld('electronAPI', {
     getPluginFiles: () => ipcRenderer.invoke('get-plugin-files'),

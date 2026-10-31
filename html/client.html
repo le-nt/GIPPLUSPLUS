@@ -16,12 +16,18 @@
         const webview = document.createElement('webview');
         webview.id = 'yapper-view';
         webview.setAttribute('partition', profileId === 'default' ? 'persist:yapper' : 'persist:yapper-' + profileId);
+        // Fix: without "allowpopups" Electron makes window.open() / target="_blank" inside a <webview> return null BEFORE the app's
+        // window-open handler (main.js) ever runs, so every link or file that Yappin opens in a new tab silently did nothing.
+        // The handler in main.js denies every popup and sends web links to the real browser, so allowing them here opens no extra windows.
+        webview.setAttribute('allowpopups', '');
         document.body.appendChild(webview);
         if (window.electronAPI && window.electronAPI.getPreloadPath) {
             const path = window.electronAPI.getPreloadPath();
             if (path) {
                 const formattedPath = path.startsWith('/') ? path : '/' + path;
-                webview.setAttribute('preload', `file://${formattedPath}`);
+                // Fix: build a real file URL (spaces, %, # and ? in the install path used to break the preload, and without the
+                // preload the page has no window.electronAPI: no downloads, no link hand-off, no themes).
+                webview.setAttribute('preload', 'file://' + encodeURI(formattedPath).replace(/[?#]/g, (c) => encodeURIComponent(c)));
             }
         }
         webview.setAttribute('src', 'https://yapper.website');
@@ -67,6 +73,9 @@
         });
 
         webview.addEventListener('did-fail-load', (event) => {
+            // Defensive: -3 (ERR_ABORTED) means a navigation was cancelled or replaced by another one, not that the page failed to load.
+            // A reload cannot fix that and would restart the page (and drop a voice call), so only real load failures are retried.
+            if (event.errorCode === -3 || event.errorCode === 0) return;
             if (event.isMainFrame && retryCount < 3) {
                 retryCount++;
                 setTimeout(() => webview.reload(), 2000);

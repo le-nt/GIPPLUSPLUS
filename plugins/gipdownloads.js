@@ -8,6 +8,17 @@
   let btn = null, cur = null, hideT = 0, hs = null;
 
   const skip = (t) => Y.util.isIconMedia(t);
+  // Fix: GIF Favorites (gipgifs) draws its own star in the top-right corner of every chat GIF, at exactly the spot this button used,
+  // and the star sits higher (z-index), so on GIFs the download button was hidden underneath it and the click opened the star menu instead.
+  // On those GIFs this button now sits one slot to the left of the star.
+  const GIF = /\.gif(\?|$)|klipy\.com/i, STAR_W = 34;
+  function starBeside(t) {
+    try {
+      if (!(t instanceof HTMLImageElement) || !t.closest('.msg') || !GIF.test(t.currentSrc || t.src || '')) return false;
+      const p = Y.PluginHost.plugins.find((x) => x.id === 'gipgifs');
+      return !!(p && Y.PluginHost.isRunning(p));
+    } catch (e) { return false; }
+  }
   function urlFor(t) {
     if (t.tagName === 'A') return t.href;
     if (t instanceof HTMLImageElement) { const a = t.closest('a[href]'); if (a && /^https?:/i.test(a.href) && MEDIA_EXT.test(a.href)) return a.href; return t.currentSrc || t.src; }
@@ -36,7 +47,8 @@
       document.body.appendChild(btn);
     }
     cur = t; const r = t.getBoundingClientRect();
-    btn.style.top = Math.max(4, r.top + 6) + 'px'; btn.style.left = Math.max(4, Math.min(window.innerWidth - 34, r.right - 34)) + 'px'; btn.style.display = 'block';
+    const shift = starBeside(t) ? STAR_W : 0;
+    btn.style.top = Math.max(4, r.top + 6) + 'px'; btn.style.left = Math.max(4, Math.min(window.innerWidth - 34 - shift, r.right - 34 - shift)) + 'px'; btn.style.display = 'block';
   }
   function hide() { if (btn) btn.style.display = 'none'; cur = null; }
 
@@ -50,8 +62,16 @@
     start() {
       if (hs) return;
       hs = {
-        over: (e) => { const t = e.target.closest && e.target.closest(TARGET); if (!t || skip(t)) return; clearTimeout(hideT); if (t !== cur) show(t); },
-        out: (e) => { const t = e.target.closest && e.target.closest(TARGET); if (t) hideT = setTimeout(() => { if (!(btn && btn.matches(':hover'))) hide(); }, 200); },
+        over: (e) => {
+          const t = e.target.closest && e.target.closest(TARGET);
+          if (!t || skip(t)) {
+            // The pointer went somewhere that is not a file: hide, unless it is this button or the GIF star beside it.
+            if (cur && !(e.target.closest && e.target.closest('#gip-dl-btn, #gip-gif-hoverstar'))) { clearTimeout(hideT); hideT = setTimeout(hide, 200); }
+            return;
+          }
+          clearTimeout(hideT); if (t !== cur) show(t);
+        },
+        out: (e) => { const t = e.target.closest && e.target.closest(TARGET); if (t) hideT = setTimeout(() => { if (!(btn && btn.matches(':hover')) && !document.querySelector('#gip-gif-hoverstar:hover')) hide(); }, 200); },
         scroll: () => { if (cur && cur.isConnected) show(cur); else hide(); },
       };
       document.addEventListener('mouseover', hs.over, true); document.addEventListener('mouseout', hs.out, true); document.addEventListener('scroll', hs.scroll, true);

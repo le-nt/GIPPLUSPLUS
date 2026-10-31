@@ -18,14 +18,27 @@
     s.textContent = '[data-gip-nick]{font-size:0 !important}[data-gip-nick]::after{content:attr(data-gip-nick);font-size:var(--gip-nfs,14px)}';
     document.head.appendChild(s);
   }
+  // Fix: the real name is hidden with font-size:0 and the nickname is drawn at the size stored in --gip-nfs. That size was read from
+  // getComputedStyle while the element could already be at font-size:0, so "0px" got stored, the nickname was drawn at size 0 and the
+  // person's name disappeared completely. The size is now always measured with the nickname switched off, and a bad value is never kept.
+  function fontPx(e) {
+    const v = e.getAttribute('data-gip-nick');
+    if (v !== null) e.removeAttribute('data-gip-nick');
+    let px = 0; try { px = parseFloat(getComputedStyle(e).fontSize); } catch (x) {}
+    if (v !== null) e.setAttribute('data-gip-nick', v);
+    return px > 0 ? px + 'px' : '14px';
+  }
+  // Own keys only: a person called "constructor" or "toString" must not pick up a built-in function as a nickname.
+  const nickFor = (name) => (Object.prototype.hasOwnProperty.call(nicks, name) && typeof nicks[name] === 'string' && nicks[name].trim()) ? nicks[name] : '';
   function apply() {
     if (!nicks) nicks = load();
     document.querySelectorAll(TARGETS).forEach((e) => {
       if (!eligible(e)) return;
-      const n = nicks[nameOf(e)];
+      const n = nickFor(nameOf(e));
       if (n) {
-        if (e.getAttribute('data-gip-nick') === n) return;
-        if (!e.hasAttribute('data-gip-nick')) e.style.setProperty('--gip-nfs', getComputedStyle(e).fontSize || '14px');
+        const okSize = parseFloat(e.style.getPropertyValue('--gip-nfs')) > 0;
+        if (e.getAttribute('data-gip-nick') === n && okSize) return;
+        if (!okSize) e.style.setProperty('--gip-nfs', fontPx(e));
         e.setAttribute('data-gip-nick', n); e.setAttribute('title', nameOf(e));
       } else if (e.hasAttribute('data-gip-nick')) { e.removeAttribute('data-gip-nick'); e.style.removeProperty('--gip-nfs'); e.removeAttribute('title'); }
     });
