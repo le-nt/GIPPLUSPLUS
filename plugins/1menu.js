@@ -544,6 +544,14 @@
     return root;
   }
 
+  // Fix: the User Counter plugin (gipcounter.js) was never displayed anywhere after the 3.2.0 menu rewrite, so nobody could see it.
+  // Shown in the menu header and on the About page. It only reads the count; sending the install ID still needs the plugin switched on.
+  async function counterText(withReason) {
+    const c = window.gipcounter;
+    if (!c) return withReason ? 'The user counter is not loaded.' : '';
+    try { const t = await c.describe(); if (t) return t; } catch (e) {}
+    return withReason ? 'The count is not available right now (the counter server did not answer, or it is not set up).' : '';
+  }
   function tabAbout() {
     const root = el('div');
     const logo = el('img', { alt: 'GIP & CO', style: 'display:block;max-width:420px;width:100%;margin:0 0 18px;border-radius:8px' });
@@ -571,7 +579,9 @@
     y.append(el('div', { class: 'gp-desc' }, 'YouTube: ', el('a', { href: 'https://www.youtube.com/@sedesuu', target: '_blank', text: '@sedesuu' })),
       el('div', { class: 'gp-desc' }, 'Discord: ', el('a', { href: 'https://discord.com/users/1384802116106719384', target: '_blank', text: '.salamidev' })),
       el('div', { class: 'gp-desc', text: 'Neither Yap++ nor GIP++ saves, distributes or misuses your login tokens or login information.' }));
-    root.append(credit, a, dl, cm, y);
+    const uc = group('Users', 'gip'); const ucl = el('div', { class: 'gp-desc', text: 'Loading\u2026' }); uc.appendChild(ucl);
+    counterText(true).then((t) => { ucl.textContent = t; });
+    root.append(credit, a, uc, dl, cm, y);
     return root;
   }
 
@@ -651,7 +661,9 @@
     const p = el('div', { id: panelid });
     const top = el('div', { class: 'gip-top' });
     const logo = el('div', { class: 'gip-logo' }); logo.innerHTML = svg('<path d="M5 12h14"/><path d="M12 5v14"/><path d="M4 4l3 3M20 4l-3 3M4 20l3-3M20 20l-3-3"/>');
-    top.append(logo, el('div', { class: 'gip-title' }, el('b', { text: 'GIP++' }), el('span', { text: 'v' + Y.VERSION + ' \u00b7 unofficial client mod' })));
+    const cnt = el('span', { class: 'gip-count', text: '' });
+    top.append(logo, el('div', { class: 'gip-title' }, el('b', { text: 'GIP++' }), el('span', { text: 'v' + Y.VERSION + ' \u00b7 unofficial client mod' }), cnt));
+    counterText(false).then((t) => { if (t) cnt.textContent = t; });
     const xb = el('button', { class: 'gip-x', type: 'button', title: 'Close (Esc)', 'aria-label': 'Close', text: '\u00d7' }); xb.addEventListener('click', close); top.appendChild(xb);
     const side = el('div', { class: 'gp-side', role: 'navigation', 'aria-label': 'GIP++ sections' }); const head = el('div', { class: 'gp-head' }); const body = el('div');
     const content = el('div', { class: 'gp-content gip-scroll' }, head, body);

@@ -1,3 +1,16 @@
+# GIP++ 3.2.2
+
+## Fixes
+- **Links and files that open in a new tab did nothing.** The webview was missing `allowpopups`, so Electron returned null from `window.open()` / `target="_blank"` before the app's window-open handler ran. Added it (the handler still denies every popup and sends web links to your browser).
+- **Link hand-off could swallow a click.** The click hook in `main.js` cancelled the click before checking that the app bridge existed; it now only takes over when `window.electronAPI.openExternal` exists, and falls back to `window.open` if it reports failure.
+- **Preload could fail to attach** when the install path had characters like a space, `#`, `?` or `%` (the page then had no `window.electronAPI`: no downloads, link hand-off or themes). The preload `file://` URL is now encoded, and `--preload-path=` is parsed with `slice` instead of `split('=')`.
+- **Download button hidden under the GIF star.** On chat GIFs both buttons sat in the same corner and the star was on top. The download button now sits beside the star.
+- **Nicknames could remove a person's name entirely.** Names were hidden with `font-size:0` and the nickname drawn with `::after`; if the page's styles got in the way nothing showed. The name's text is now swapped for the nickname and restored when removed or when the feature is off. Also fixed: names like `constructor` / `toString` picked up built-in functions as nicknames.
+- **User Counter was never shown anywhere** after the 3.2.0 menu rewrite. It now shows in the GIP++ menu header and in a new "Users" section on the About page.
+- The page is no longer reloaded when a load fails with ERR_ABORTED (-3), which means a cancelled navigation, not a failed load.
+
+---
+
 # GIP++ 3.2.1
 
 - The menu window no longer gets squished by Yappin's own styles (fixed size and layout, buttons and headings protected), has a solid background, bigger spacing and text, an accent-coloured active tab, and a nicer header.

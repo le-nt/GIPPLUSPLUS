@@ -3,7 +3,7 @@
 window.YapPlus = window.YapPlus || {};
 window.GipPlus = window.YapPlus;
 window.YapPlus.LINKS = { server: 'https://yapin.gg/invite/gip', repo: 'https://github.com/le-nt/GIPPLUSPLUS', bugs: 'https://github.com/le-nt/GIPPLUSPLUS/issues/new' };
-window.YapPlus.VERSION = '3.2.1';
+window.YapPlus.VERSION = '3.2.2';
 
 /* ---------- error log (3.0.0) ---------- */
 // Everything that goes wrong inside a plugin lands here, shows up in GIP++ > Health, and is copied by "Copy debug info".

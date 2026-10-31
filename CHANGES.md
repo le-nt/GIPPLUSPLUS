@@ -1,5 +1,8 @@
 # Changes
 
+## 3.2.2
+See the top of `CHANGELOG.md`. Files touched: `main.js`, `preload.js`, `html/client.html`, `plugins/0core.js` (version), `plugins/1menu.js`, `plugins/gipdownloads.js`, `plugins/gipnicknames.js`, `package.json`.
+
 ## Unreleased (after 3.1.0)
 
 **Deprecated**
